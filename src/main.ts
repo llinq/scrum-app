@@ -30,9 +30,6 @@ async function bootstrap() {
     credentials: true,
   });
 
-  // Configuração do JWT
-  const options = new DocumentBuilder().addBearerAuth();
-
   await app.listen(process.env.PORT || 3001);
 }
 bootstrap();
