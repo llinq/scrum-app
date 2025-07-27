@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from './presentation/modules/auth.module';
-// import { TeamsModule } from './presentation/modules/teams.module';
-import { DatabaseModule } from './infrastructure/database/database.module';
+import { DatabaseModule } from './shared/database/database.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { UserModule } from './modules/user/user.module';
+import { RetroModule } from './modules/retro/retro.module';
+import { RoomModule } from './modules/rooms/room.module';
 
 @Module({
   imports: [
@@ -13,7 +14,9 @@ import { DatabaseModule } from './infrastructure/database/database.module';
     }),
     DatabaseModule,
     AuthModule,
-    // TeamsModule,
+    UserModule,
+    RetroModule,
+    RoomModule,
   ],
   controllers: [],
 })
