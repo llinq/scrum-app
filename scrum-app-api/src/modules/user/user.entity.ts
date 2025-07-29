@@ -1,3 +1,11 @@
+export interface IUser {
+  email: string | null;
+  name: string;
+  avatar_url: string | null;
+  is_guest: boolean;
+  guest_name: string | null;
+}
+
 export class UserEntity {
   constructor(
     public readonly id: string,
@@ -37,5 +45,15 @@ export class UserEntity {
       new Date(),
       null,
     );
+  }
+
+  toInterface(): IUser {
+    return {
+      email: this.email,
+      name: this.name,
+      avatar_url: this.avatar_url,
+      is_guest: this.is_guest,
+      guest_name: this.guest_name,
+    };
   }
 } 

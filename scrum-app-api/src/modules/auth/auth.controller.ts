@@ -11,6 +11,8 @@ import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { AuthService } from "./auth.service";
 import { CreateGuestUserDto } from "../user/dto/create-guest-user.dto";
 import { JwtAuthGuard } from "../../common/guards/jwt-auth.guard";
+import { CurrentUser } from "src/common/decorators";
+import { IUser } from "../user/user.entity";
 
 @ApiTags("Authentication")
 @Controller("auth")
@@ -29,12 +31,12 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get("token")
+  @Get("me")
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: "Verificar token de autenticação" })
-  @ApiResponse({ status: 200, description: "Token de autenticação válido" })
+  @ApiOperation({ summary: "Obter informações do usuário autenticado" })
+  @ApiResponse({ status: 200, description: "Usuário autenticado" })
   @ApiResponse({ status: 401, description: "Token de autenticação inválido" })
-  checkToken() {
-    return { message: "Token is valid" };
+  me(@CurrentUser() user: IUser) {
+    return { user };
   }
 }

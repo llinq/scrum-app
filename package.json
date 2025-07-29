@@ -1,0 +1,23 @@
+{
+  "name": "scrum-app",
+  "version": "0.0.1",
+  "scripts": {
+    "start": "concurrently \"npm run start:api\" \"npm run start:web\"",
+    "start:api": "cd scrum-app-api && yarn start",
+    "start:web": "cd scrum-app-web && npm run dev",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/llinq/scrum-app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/llinq/scrum-app/issues"
+  },
+  "homepage": "https://github.com/llinq/scrum-app#readme",
+  "devDependencies": {
+    "concurrently": "^9.2.0"
+  }
+}
