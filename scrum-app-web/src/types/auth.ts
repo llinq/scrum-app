@@ -2,7 +2,7 @@ export interface User {
   id: string;
   name: string;
   email?: string;
-  isGuest: boolean;
+  is_guest: boolean;
 }
 
 export interface LoginCredentials {

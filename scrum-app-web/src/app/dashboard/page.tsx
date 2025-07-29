@@ -29,10 +29,10 @@ export default function DashboardPage() {
         <div className="px-4 py-6 sm:px-0">
           <div className="mb-8">
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-              Bem-vindo, {user.name}!
+              Bem-vindo, {user.name}
             </h1>
             <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-              {user.isGuest 
+              {user.is_guest 
                 ? 'Você está acessando como convidado. Algumas funcionalidades podem estar limitadas.'
                 : 'Aqui está o resumo das suas atividades.'
               }

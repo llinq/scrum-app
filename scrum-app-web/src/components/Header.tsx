@@ -25,7 +25,7 @@ export function Header() {
               <UserIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
               <span className="text-sm text-gray-700 dark:text-gray-300">
                 {user.name}
-                {user.isGuest && (
+                {user.is_guest && (
                   <span className="ml-1 text-xs text-gray-500 dark:text-gray-400">(Convidado)</span>
                 )}
               </span>

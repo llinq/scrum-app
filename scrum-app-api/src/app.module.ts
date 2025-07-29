@@ -10,7 +10,7 @@ import { RoomModule } from './modules/rooms/room.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
+      envFilePath: ['.env.local', '.env'],
     }),
     DatabaseModule,
     AuthModule,

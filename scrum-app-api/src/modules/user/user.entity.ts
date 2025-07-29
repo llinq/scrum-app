@@ -1,4 +1,5 @@
 export interface IUser {
+  id: string;
   email: string | null;
   name: string;
   avatar_url: string | null;
@@ -49,6 +50,7 @@ export class UserEntity {
 
   toInterface(): IUser {
     return {
+      id: this.id,
       email: this.email,
       name: this.name,
       avatar_url: this.avatar_url,

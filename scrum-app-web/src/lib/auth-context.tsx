@@ -9,12 +9,14 @@ import React, {
 } from "react";
 import { User } from "@/types/auth";
 import { authService } from "@/services/auth";
+import Cookies from "js-cookie";
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   setUser: (user: User | null) => void;
   logout: () => void;
+  processGoogleToken: (token: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -53,8 +55,27 @@ export function AuthProvider({ children }: AuthProviderProps) {
     authService.logout();
   };
 
+  const processGoogleToken = async (token: string) => {
+    try {
+      setLoading(true);
+      // Salvar o token nos cookies
+      Cookies.set("auth-token", token, { expires: 7 });
+      
+      // Buscar as informações do usuário
+      const response = await authService.getCurrentUser();
+      if (response?.user) {
+        setUser(response.user);
+      }
+    } catch (error) {
+      console.error("Erro ao processar token do Google:", error);
+      Cookies.remove("auth-token");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, setUser, logout }}>
+    <AuthContext.Provider value={{ user, loading, setUser, logout, processGoogleToken }}>
       {children}
     </AuthContext.Provider>
   );

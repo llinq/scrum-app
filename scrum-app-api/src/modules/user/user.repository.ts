@@ -1,14 +1,14 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { UserEntity } from './user.entity';
-import { User } from '../../shared/database/entities/user.entity';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Equal, Repository } from "typeorm";
+import { UserEntity } from "./user.entity";
+import { User } from "../../shared/database/entities/user.entity";
 
 @Injectable()
 export class UserRepository {
   constructor(
     @InjectRepository(User)
-    private readonly userRepo: Repository<User>,
+    private readonly userRepo: Repository<User>
   ) {}
 
   async create(userEntity: UserEntity): Promise<UserEntity> {
@@ -24,7 +24,7 @@ export class UserRepository {
   }
 
   async findById(id: string): Promise<UserEntity | null> {
-    const user = await this.userRepo.findOne({ where: { id } });
+    const user = await this.userRepo.findOneBy({ id: Equal(id) });
     return user ? this.toDomain(user) : null;
   }
 
@@ -35,13 +35,14 @@ export class UserRepository {
 
   async update(id: string, data: Partial<UserEntity>): Promise<UserEntity> {
     const updateData: Partial<User> = {};
-    
+
     if (data.email !== undefined) updateData.email = data.email;
     if (data.name !== undefined) updateData.name = data.name;
     if (data.avatar_url !== undefined) updateData.avatar_url = data.avatar_url;
     if (data.is_guest !== undefined) updateData.is_guest = data.is_guest;
     if (data.guest_name !== undefined) updateData.guest_name = data.guest_name;
-    if (data.last_login !== null) updateData.last_login = data.last_login;
+    if (data.last_login !== undefined)
+      updateData.last_login = data.last_login || undefined;
 
     await this.userRepo.update(id, updateData);
     const user = await this.userRepo.findOne({ where: { id } });
@@ -62,7 +63,7 @@ export class UserRepository {
       user.guest_name,
       user.created_at,
       user.updated_at,
-      user.last_login,
+      user.last_login
     );
   }
-} 
+}

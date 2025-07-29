@@ -91,14 +91,18 @@ src/
 A aplicação está configurada para integrar com a API `scrum-app-api` rodando na porta 3001.
 
 ### Endpoints utilizados:
-- `POST /auth/login` - Login com credenciais
 - `POST /auth/guest` - Criar usuário convidado
+- `GET /auth/google` - Iniciar autenticação com Google
+- `GET /auth/google/callback` - Callback do Google OAuth
 - `GET /auth/me` - Obter usuário atual
 
 ### Autenticação
-- Tokens JWT são armazenados em cookies
-- Interceptors do Axios adicionam automaticamente o token nos headers
-- Redirecionamento automático para login em caso de token expirado
+- **Google OAuth**: Login seguro com conta Google via botão "Continuar com Google"
+- **Acesso como Convidado**: Login rápido apenas com nome
+- **Tokens JWT**: Armazenados em cookies com expiração de 24 horas
+- **Interceptors**: Axios adiciona automaticamente o token nos headers
+- **Redirecionamento**: Automático para login em caso de token expirado
+- **Middleware**: Proteção de rotas e redirecionamento baseado em autenticação
 
 ## Scripts Disponíveis
 
@@ -124,9 +128,16 @@ A aplicação está configurada para integrar com a API `scrum-app-api` rodando 
 1. **Usuário acessa a aplicação**
 2. **Middleware verifica se há token válido**
 3. **Se não autenticado**: redireciona para `/login`
-4. **Na tela de login**: escolhe entre login ou acesso como convidado
-5. **Após autenticação**: redireciona para `/dashboard`
-6. **Token é persistido**: para manter sessão entre reloads
+4. **Na tela de login**: usuário pode escolher entre:
+   - **Google OAuth**: Login com conta Google
+   - **Acesso como convidado**: Login apenas com nome
+5. **Autenticação Google**:
+   - Redirecionamento para Google OAuth
+   - Callback em `/login/callback` com token
+   - Processamento automático do token
+6. **Após autenticação**: redireciona para `/dashboard`
+7. **Token é persistido**: em cookies para manter sessão entre reloads
+8. **Expiração**: Tokens têm duração de 24 horas
 
 ## Próximos Passos
 
