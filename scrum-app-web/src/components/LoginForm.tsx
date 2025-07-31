@@ -5,9 +5,9 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
-import { Input } from '@/components/Input';
-import { Button } from '@/components/Button';
-import { Card, CardHeader, CardContent } from '@/components/Card';
+import Input from '@/components/Input';
+import Button from '@/components/Button';
+import Card, { CardHeader, CardContent } from '@/components/Card';
 import { authService } from '@/services/auth';
 import { useAuth } from '@/lib/auth-context';
 
@@ -23,7 +23,7 @@ const guestSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 type GuestFormData = z.infer<typeof guestSchema>;
 
-export function LoginForm() {
+export default function LoginForm() {
   const [mode, setMode] = useState<'login' | 'guest'>('login');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');

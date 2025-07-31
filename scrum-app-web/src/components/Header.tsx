@@ -1,11 +1,12 @@
 'use client';
 
 import React from 'react';
-import { LogOut, User as UserIcon } from 'lucide-react';
+import Link from 'next/link';
+import { LogOut, User as UserIcon, Home, RotateCcw } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
-import { Button } from '@/components/Button';
+import Button from '@/components/Button';
 
-export function Header() {
+export default function Header() {
   const { user, logout } = useAuth();
 
   if (!user) return null;
@@ -14,10 +15,28 @@ export function Header() {
     <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center">
-            <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+          <div className="flex items-center space-x-8">
+            <Link href="/dashboard" className="text-xl font-semibold text-gray-900 dark:text-gray-100">
               Scrum App
-            </h1>
+            </Link>
+            
+            <nav className="flex items-center space-x-6">
+              <Link 
+                href="/dashboard" 
+                className="flex items-center space-x-1 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+              >
+                <Home className="w-4 h-4" />
+                <span>Dashboard</span>
+              </Link>
+              
+              <Link 
+                href="/retro" 
+                className="flex items-center space-x-1 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+              >
+                <RotateCcw className="w-4 h-4" />
+                <span>Retrospectivas</span>
+              </Link>
+            </nav>
           </div>
 
           <div className="flex items-center space-x-4">

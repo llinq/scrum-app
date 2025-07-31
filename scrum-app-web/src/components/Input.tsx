@@ -5,7 +5,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string;
 }
 
-export function Input({ label, error, className = '', ...props }: InputProps) {
+export default function Input({ label, error, className = '', ...props }: InputProps) {
   return (
     <div className="space-y-1">
       {label && (

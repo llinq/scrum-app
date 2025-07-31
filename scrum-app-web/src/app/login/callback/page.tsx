@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function LoginCallbackPage() {
+function LoginCallback() {
   const { processGoogleToken, loading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -17,7 +17,7 @@ export default function LoginCallbackPage() {
         router.replace("/dashboard");
       });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (loading) {
@@ -27,4 +27,12 @@ export default function LoginCallbackPage() {
       </div>
     );
   }
+}
+
+export default function LoginCallbackPage() {
+  return (
+    <Suspense>
+      <LoginCallback />
+    </Suspense>
+  );
 }
