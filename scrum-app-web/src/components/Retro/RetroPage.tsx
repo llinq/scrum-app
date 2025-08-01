@@ -87,8 +87,6 @@ export default function RetroPage({ boardId }: RetroPageProps) {
     const mockBoard: RetroBoard = {
       id: boardId,
       title: "Sprint 1 - Retrospectiva",
-      description: "Retrospectiva da primeira sprint do projeto",
-      isActive: true,
       createdBy: "user1",
       createdAt: new Date(),
       activeUsers: mockActiveUsers,
@@ -102,7 +100,6 @@ export default function RetroPage({ boardId }: RetroPageProps) {
         {
           id: "col1",
           title: "O que foi bem?",
-          color: "bg-green-100 border-green-300",
           order: 0,
           cards: [
             {
@@ -128,7 +125,6 @@ export default function RetroPage({ boardId }: RetroPageProps) {
         {
           id: "col2",
           title: "O que pode melhorar?",
-          color: "bg-yellow-100 border-yellow-300",
           order: 1,
           cards: [
             {
@@ -145,7 +141,6 @@ export default function RetroPage({ boardId }: RetroPageProps) {
         {
           id: "col3",
           title: "Ações para próxima sprint",
-          color: "bg-blue-100 border-blue-300",
           order: 2,
           cards: [
             {
@@ -180,7 +175,6 @@ export default function RetroPage({ boardId }: RetroPageProps) {
     const newColumn: RetroColumn = {
       id: `col_${Date.now()}`,
       title: `Nova Coluna ${board.columns.length + 1}`,
-      color: "bg-gray-100 border-gray-300", // Cor padrão
       order: board.columns.length,
       cards: [],
     };

@@ -11,7 +11,6 @@ export interface RetroCard {
 export interface RetroColumn {
   id: string;
   title: string;
-  color: string;
   order: number;
   cards: RetroCard[];
 }
@@ -27,9 +26,7 @@ export interface ActiveUser {
 export interface RetroBoard {
   id: string;
   title: string;
-  description?: string;
   columns: RetroColumn[];
-  isActive: boolean;
   createdBy: string;
   createdAt: Date;
   activeUsers?: ActiveUser[];
@@ -49,7 +46,6 @@ export interface CreateRetroCardData {
 
 export interface CreateColumnData {
   title: string;
-  color: string;
 }
 
 export interface UpdateColumnData {
@@ -82,17 +78,14 @@ export const COLUMN_COLORS = [
 export const DEFAULT_RETRO_COLUMNS: Omit<RetroColumn, 'id' | 'cards'>[] = [
   {
     title: 'O que foi bem?',
-    color: 'bg-green-100 border-green-300',
     order: 0,
   },
   {
     title: 'O que pode melhorar?',
-    color: 'bg-yellow-100 border-yellow-300',
     order: 1,
   },
   {
     title: 'Ações para próxima sprint',
-    color: 'bg-blue-100 border-blue-300',
     order: 2,
   },
 ];

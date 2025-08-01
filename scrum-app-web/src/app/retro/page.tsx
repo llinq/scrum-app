@@ -7,10 +7,13 @@ import { RetroBoard } from "../../types/retro";
 import Button from "../../components/Button";
 import Card from "../../components/Card";
 import Header from "@/components/Header";
+import CreateRetroModal from "../../components/CreateRetroModal";
 
 export default function RetroListPage() {
   const [boards, setBoards] = useState<RetroBoard[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
   const router = useRouter();
 
   // Mock data for development
@@ -19,8 +22,6 @@ export default function RetroListPage() {
       {
         id: "1",
         title: "Sprint 1 - Retrospectiva",
-        description: "Retrospectiva da primeira sprint do projeto",
-        isActive: true,
         createdBy: "user1",
         createdAt: new Date("2025-01-15"),
         settings: {
@@ -33,7 +34,6 @@ export default function RetroListPage() {
           {
             id: "col1",
             title: "O que foi bem?",
-            color: "bg-green-100 border-green-300",
             order: 0,
             cards: [
               {
@@ -52,8 +52,6 @@ export default function RetroListPage() {
       {
         id: "2",
         title: "Sprint 2 - Retrospectiva",
-        description: "Retrospectiva da segunda sprint",
-        isActive: false,
         createdBy: "user1",
         createdAt: new Date("2025-01-01"),
         settings: {
@@ -73,47 +71,61 @@ export default function RetroListPage() {
   }, []);
 
   const handleCreateBoard = () => {
-    // In a real app, this would open a modal or navigate to a create page
-    const newBoard: RetroBoard = {
-      id: `board_${Date.now()}`,
-      title: `Retrospectiva ${new Date().toLocaleDateString()}`,
-      description: "",
-      isActive: true,
-      createdBy: "current-user",
-      createdAt: new Date(),
-      settings: {
-        allowVoting: true,
-        maxVotesPerUser: 5,
-        showAuthor: true,
-        allowAnonymous: false,
-      },
-      columns: [
-        {
-          id: "col1",
-          title: "O que foi bem?",
-          color: "bg-green-100 border-green-300",
-          order: 0,
-          cards: [],
-        },
-        {
-          id: "col2",
-          title: "O que pode melhorar?",
-          color: "bg-yellow-100 border-yellow-300",
-          order: 1,
-          cards: [],
-        },
-        {
-          id: "col3",
-          title: "Ações para próxima sprint",
-          color: "bg-blue-100 border-blue-300",
-          order: 2,
-          cards: [],
-        },
-      ],
-    };
+    setShowCreateModal(true);
+  };
 
-    setBoards((prev) => [newBoard, ...prev]);
-    router.push(`/retro/${newBoard.id}`);
+  const handleCreateRetro = async (retroName: string) => {
+    setIsCreating(true);
+    
+    try {
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const newBoard: RetroBoard = {
+        id: `board_${Date.now()}`,
+        title: retroName,
+        createdBy: "current-user",
+        createdAt: new Date(),
+        settings: {
+          allowVoting: true,
+          maxVotesPerUser: 5,
+          showAuthor: true,
+          allowAnonymous: false,
+        },
+        columns: [
+          {
+            id: "col1",
+            title: "O que foi bem?",
+            order: 0,
+            cards: [],
+          },
+          {
+            id: "col2",
+            title: "O que pode melhorar?",
+            order: 1,
+            cards: [],
+          },
+          {
+            id: "col3",
+            title: "Ações para próxima sprint",
+            order: 2,
+            cards: [],
+          },
+        ],
+      };
+
+      setBoards((prev) => [newBoard, ...prev]);
+      setShowCreateModal(false);
+      
+      // Navigate to the new board
+      router.push(`/retro/${newBoard.id}`);
+    } catch (error) {
+      console.error('Erro ao criar retrospectiva:', error);
+      // In a real app, you would show a proper error message
+      alert('Erro ao criar retrospectiva. Tente novamente.');
+    } finally {
+      setIsCreating(false);
+    }
   };
 
   const getTotalCards = (board: RetroBoard) => {
@@ -192,23 +204,7 @@ export default function RetroListPage() {
                       <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
                         {board.title}
                       </h3>
-                      {board.description && (
-                        <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
-                          {board.description}
-                        </p>
-                      )}
                     </div>
-
-                    <div
-                      className={`
-                      w-3 h-3 rounded-full flex-shrink-0 ml-2
-                      ${
-                        board.isActive
-                          ? "bg-green-400"
-                          : "bg-gray-300 dark:bg-gray-600"
-                      }
-                    `}
-                    />
                   </div>
 
                   <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 mb-4">
@@ -236,18 +232,20 @@ export default function RetroListPage() {
 
                     <ArrowRight className="w-4 h-4 text-gray-400 dark:text-gray-500 group-hover:text-blue-500 transition-colors" />
                   </div>
-
-                  {!board.isActive && (
-                    <div className="mt-3 px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs rounded-md inline-block">
-                      Finalizada
-                    </div>
-                  )}
                 </Card>
               </div>
             ))}
           </div>
         )}
       </div>
+
+      {/* Modal para criação de retrospectiva */}
+      <CreateRetroModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onSubmit={handleCreateRetro}
+        loading={isCreating}
+      />
     </div>
   );
 }
