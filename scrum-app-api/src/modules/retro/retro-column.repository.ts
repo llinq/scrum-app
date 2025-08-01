@@ -16,12 +16,11 @@ export class RetroColumnRepository {
     // Se orderIndex não foi fornecido, pega o próximo índice disponível
     let orderIndex = createDto.orderIndex;
     if (orderIndex === undefined) {
-      const result = await this.repository
+      const result: { max?: number } | undefined = await this.repository
         .createQueryBuilder('column')
         .select('MAX(column.order_index)', 'max')
         .where('column.board_id = :boardId', { boardId })
         .getRawOne();
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       const maxOrder = Number(result?.max) || -1;
       orderIndex = maxOrder + 1;
     }
@@ -50,8 +49,24 @@ export class RetroColumnRepository {
   }
 
   async update(id: string, updateDto: UpdateRetroColumnDto): Promise<RetroColumn | null> {
-    // Se está atualizando order_index, precisamos usar transação para evitar conflitos
+    // Filtrar apenas os campos que foram fornecidos (não undefined)
+    const updateData: Partial<RetroColumn> = {};
+    
+    if (updateDto.title !== undefined) {
+      updateData.title = updateDto.title;
+    }
+    
     if (updateDto.orderIndex !== undefined) {
+      updateData.order_index = updateDto.orderIndex;
+    }
+
+    // Se não há campos para atualizar, retorna a coluna atual
+    if (Object.keys(updateData).length === 0) {
+      return this.findById(id);
+    }
+
+    // Se está atualizando order_index, precisamos usar transação para evitar conflitos
+    if (updateData.order_index !== undefined) {
       await this.repository.manager.transaction(async transactionalEntityManager => {
         // Primeiro buscar a coluna atual
         const currentColumn = await transactionalEntityManager.findOne(RetroColumn, { where: { id } });
@@ -60,7 +75,7 @@ export class RetroColumnRepository {
         }
 
         // Se o orderIndex mudou, usar um valor temporário primeiro
-        if (currentColumn.order_index !== updateDto.orderIndex) {
+        if (currentColumn.order_index !== updateData.order_index) {
           // Usar um valor temporário negativo único
           const tempIndex = -(Date.now() % 1000000);
           
@@ -74,19 +89,16 @@ export class RetroColumnRepository {
           await transactionalEntityManager.update(
             RetroColumn,
             { id },
-            { 
-              ...updateDto,
-              order_index: updateDto.orderIndex 
-            }
+            updateData
           );
         } else {
           // Se orderIndex não mudou, update normal
-          await transactionalEntityManager.update(RetroColumn, { id }, updateDto);
+          await transactionalEntityManager.update(RetroColumn, { id }, updateData);
         }
       });
     } else {
       // Update normal se não há orderIndex
-      await this.repository.update(id, updateDto);
+      await this.repository.update(id, updateData);
     }
     
     return this.findById(id);

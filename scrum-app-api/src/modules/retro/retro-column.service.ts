@@ -4,12 +4,14 @@ import { RetroBoardRepository } from './retro-board.repository';
 import { CreateRetroColumnDto } from './dto/create-retro-column.dto';
 import { UpdateRetroColumnDto } from './dto/update-retro-column.dto';
 import { RetroColumn } from '../../shared/database/entities/retro-column.entity';
+import { RetroWebSocketGateway } from './retro-websocket.gateway';
 
 @Injectable()
 export class RetroColumnService {
   constructor(
     private readonly columnRepository: RetroColumnRepository,
     private readonly boardRepository: RetroBoardRepository,
+    private readonly retroWebSocketGateway: RetroWebSocketGateway,
   ) {}
 
   async create(boardId: string, createDto: CreateRetroColumnDto, userId: string): Promise<RetroColumn> {
@@ -23,7 +25,12 @@ export class RetroColumnService {
       throw new ForbiddenException('You can only add columns to your own retro boards');
     }
 
-    return this.columnRepository.create(boardId, createDto);
+    const newColumn = await this.columnRepository.create(boardId, createDto);
+    
+    // Emitir evento WebSocket
+    this.retroWebSocketGateway.emitColumnCreated(boardId, newColumn);
+    
+    return newColumn;
   }
 
   async findByBoardId(boardId: string): Promise<RetroColumn[]> {
@@ -58,6 +65,9 @@ export class RetroColumnService {
       throw new NotFoundException('Retro column not found');
     }
     
+    // Emitir evento WebSocket
+    this.retroWebSocketGateway.emitColumnUpdated(updatedColumn.board_id, updatedColumn);
+    
     return updatedColumn;
   }
 
@@ -71,6 +81,9 @@ export class RetroColumnService {
     }
 
     await this.columnRepository.delete(id);
+    
+    // Emitir evento WebSocket
+    this.retroWebSocketGateway.emitColumnDeleted(column.board_id, id);
   }
 
   async reorderColumns(boardId: string, columnIds: string[], userId: string): Promise<RetroColumn[]> {
@@ -85,6 +98,11 @@ export class RetroColumnService {
     }
 
     await this.columnRepository.reorderColumns(boardId, columnIds);
-    return this.findByBoardId(boardId);
+    const reorderedColumns = await this.findByBoardId(boardId);
+    
+    // Emitir evento WebSocket
+    this.retroWebSocketGateway.emitColumnsReordered(boardId, reorderedColumns);
+    
+    return reorderedColumns;
   }
 }

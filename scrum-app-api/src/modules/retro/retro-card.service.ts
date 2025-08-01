@@ -6,6 +6,7 @@ import { CreateRetroCardDto } from './dto/create-retro-card.dto';
 import { UpdateRetroCardDto } from './dto/update-retro-card.dto';
 import { RetroCard } from '../../shared/database/entities/retro-card.entity';
 import { RetroCardVote } from '../../shared/database/entities/retro-card-vote.entity';
+import { RetroWebSocketGateway } from './retro-websocket.gateway';
 
 @Injectable()
 export class RetroCardService {
@@ -13,6 +14,7 @@ export class RetroCardService {
     private readonly cardRepository: RetroCardRepository,
     private readonly columnRepository: RetroColumnRepository,
     private readonly boardRepository: RetroBoardRepository,
+    private readonly retroWebSocketGateway: RetroWebSocketGateway,
   ) {}
 
   async create(columnId: string, createDto: CreateRetroCardDto, userId?: string): Promise<RetroCard> {
@@ -32,7 +34,12 @@ export class RetroCardService {
       throw new BadRequestException('Anonymous cards are not allowed in this board');
     }
 
-    return this.cardRepository.create(columnId, createDto, userId);
+    const newCard = await this.cardRepository.create(columnId, createDto, userId);
+    
+    // Emitir evento WebSocket
+    this.retroWebSocketGateway.emitCardCreated(board.id, newCard);
+    
+    return newCard;
   }
 
   async findByColumnId(columnId: string): Promise<RetroCard[]> {
@@ -69,6 +76,9 @@ export class RetroCardService {
       throw new NotFoundException('Retro card not found');
     }
     
+    // Emitir evento WebSocket
+    this.retroWebSocketGateway.emitCardUpdated(column!.board_id, updatedCard);
+    
     return updatedCard;
   }
 
@@ -84,6 +94,9 @@ export class RetroCardService {
     }
 
     await this.cardRepository.delete(id);
+    
+    // Emitir evento WebSocket
+    this.retroWebSocketGateway.emitCardDeleted(column!.board_id, id);
   }
 
   async addVote(cardId: string, userId: string): Promise<RetroCardVote> {
@@ -104,7 +117,15 @@ export class RetroCardService {
     }
 
     try {
-      return await this.cardRepository.addVote(cardId, userId);
+      const vote = await this.cardRepository.addVote(cardId, userId);
+      
+      // Buscar card atualizado para obter vote count
+      const updatedCard = await this.findById(cardId);
+      
+      // Emitir evento WebSocket
+      this.retroWebSocketGateway.emitCardVoted(board!.id, cardId, updatedCard.votes_count || 0);
+      
+      return vote;
     } catch (error) {
       if (error instanceof Error && error.message.includes('already voted')) {
         throw new BadRequestException('You have already voted on this card');
@@ -115,7 +136,7 @@ export class RetroCardService {
 
   async removeVote(cardId: string, userId: string): Promise<void> {
     // Verificar se o card existe
-    await this.findById(cardId);
+    const card = await this.findById(cardId);
     
     // Verificar se o usuário votou neste card
     const hasVoted = await this.cardRepository.hasUserVoted(cardId, userId);
@@ -124,6 +145,13 @@ export class RetroCardService {
     }
 
     await this.cardRepository.removeVote(cardId, userId);
+    
+    // Buscar card atualizado para obter vote count
+    const updatedCard = await this.findById(cardId);
+    const column = await this.columnRepository.findById(card.column_id);
+    
+    // Emitir evento WebSocket
+    this.retroWebSocketGateway.emitCardVoted(column!.board_id, cardId, updatedCard.votes_count || 0);
   }
 
   async getCardsByBoardId(boardId: string): Promise<RetroCard[]> {

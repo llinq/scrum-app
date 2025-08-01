@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Put,
+  Patch,
   Delete,
   Body,
   Param,
@@ -63,8 +64,8 @@ export class RetroColumnController {
     return this.columnService.findById(id);
   }
 
-  @Put(':id')
-  @ApiOperation({ summary: 'Atualizar coluna' })
+  @Patch(':id')
+  @ApiOperation({ summary: 'Atualizar coluna parcialmente' })
   @ApiParam({ name: 'id', description: 'ID da coluna' })
   @ApiResponse({ status: 200, description: 'Coluna atualizada com sucesso.', type: RetroColumnResponseDto })
   @ApiResponse({ status: 400, description: 'Dados inválidos.' })
