@@ -57,7 +57,7 @@ class RetroService {
   }
 
   async updateColumn(columnId: string, data: UpdateColumnData): Promise<RetroColumn> {
-    return await apiService.put<RetroColumn>(`/retro-columns/${columnId}`, data);
+    return await apiService.patch<RetroColumn>(`/retro-columns/${columnId}`, data);
   }
 
   async deleteColumn(columnId: string): Promise<void> {
