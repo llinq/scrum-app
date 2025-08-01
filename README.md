@@ -35,10 +35,16 @@ This platform provides essential tools for Scrum teams to conduct their ceremoni
 - **Persistent Sessions**: Cookie-based authentication for seamless user experience
 
 ### 📋 Retrospective Features
+- **Complete CRUD Operations**: Full management of boards, columns, and cards
+- **Voting System**: Vote on cards with configurable limits per user
 - **Anonymous Mode**: Enable honest feedback through anonymous participation
 - **Card Visibility Controls**: Show/hide cards during different phases
 - **Customizable Boards**: Configure column names and ordering to match team preferences
-- **Interactive Cards**: Create, edit, and organize feedback cards
+- **Interactive Cards**: Create, edit, and organize feedback cards with voting
+- **Board Archiving**: Archive completed retrospectives for historical reference
+- **Real-time Updates**: Live synchronization of votes and card changes
+- **Permission Controls**: Creator-based permissions for board management
+- **Swagger Documentation**: Complete API documentation available at `/api`
 
 ### 🎨 User Experience
 - **Responsive Design**: Mobile-first approach with Tailwind CSS
@@ -214,6 +220,33 @@ scrum-app/
 - `GET /users/:id` - Get user by ID
 - `PUT /users/:id` - Update user information
 - `DELETE /users/:id` - Delete user account
+
+#### Retro Boards
+- `POST /retro-boards` - Create new retrospective board
+- `GET /retro-boards` - List all active boards
+- `GET /retro-boards/my-boards` - List user's boards
+- `GET /retro-boards/:id` - Get board by ID with columns and cards
+- `PUT /retro-boards/:id` - Update board (creator only)
+- `DELETE /retro-boards/:id` - Delete board (creator only)
+- `PUT /retro-boards/:id/archive` - Archive board (creator only)
+
+#### Retro Columns
+- `POST /retro-columns/board/:boardId` - Create column in board
+- `GET /retro-columns/board/:boardId` - List board columns
+- `GET /retro-columns/:id` - Get column by ID
+- `PUT /retro-columns/:id` - Update column
+- `DELETE /retro-columns/:id` - Delete column
+- `PUT /retro-columns/board/:boardId/reorder` - Reorder board columns
+
+#### Retro Cards
+- `POST /retro-cards/column/:columnId` - Create card in column
+- `GET /retro-cards/column/:columnId` - List column cards
+- `GET /retro-cards/board/:boardId` - List board cards (sorted by votes)
+- `GET /retro-cards/:id` - Get card by ID
+- `PUT /retro-cards/:id` - Update card
+- `DELETE /retro-cards/:id` - Delete card
+- `POST /retro-cards/:id/vote` - Vote on card
+- `DELETE /retro-cards/:id/vote` - Remove vote from card
 
 ### 🔐 Authentication Flow
 
