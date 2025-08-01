@@ -1,18 +1,23 @@
 export interface RetroCard {
   id: string;
+  column_id: string;
   content: string;
-  author: string;
-  columnId: string;
-  createdAt: Date;
-  votes: number;
-  votedBy: string[];
+  author_id: string | null;
+  author_name: string | null;
+  is_anonymous: boolean;
+  votes_count: number;
+  created_at: Date;
+  updated_at: Date;
 }
 
 export interface RetroColumn {
   id: string;
+  board_id: string;
   title: string;
-  order: number;
-  cards: RetroCard[];
+  order_index: number;
+  created_at: Date;
+  updated_at: Date;
+  cards?: RetroCard[];
 }
 
 export interface ActiveUser {
@@ -26,66 +31,65 @@ export interface ActiveUser {
 export interface RetroBoard {
   id: string;
   title: string;
-  columns: RetroColumn[];
-  createdBy: string;
-  createdAt: Date;
+  created_by: string;
+  created_at: Date;
+  updated_at: Date;
+  allow_voting: boolean;
+  max_votes_per_user: number;
+  show_author: boolean;
+  allow_anonymous: boolean;
+  is_active: boolean;
+  archived_at: Date | null;
+  columns?: RetroColumn[];
   activeUsers?: ActiveUser[];
-  settings: {
-    allowVoting: boolean;
-    maxVotesPerUser: number;
-    showAuthor: boolean;
-    allowAnonymous: boolean;
-  };
 }
 
 export interface CreateRetroCardData {
   content: string;
-  columnId: string;
-  anonymous?: boolean;
+  author_name?: string;
+  isAnonymous?: boolean;
 }
 
 export interface CreateColumnData {
   title: string;
+  orderIndex?: number;
 }
 
 export interface UpdateColumnData {
-  id: string;
   title?: string;
-  color?: string;
-  order?: number;
+  orderIndex?: number;
+}
+
+export interface UpdateCardData {
+  content?: string;
+  author_name?: string;
+  is_anonymous?: boolean;
+}
+
+export interface UpdateBoardData {
+  title?: string;
+  allow_voting?: boolean;
+  max_votes_per_user?: number;
+  show_author?: boolean;
+  allow_anonymous?: boolean;
+  is_active?: boolean;
 }
 
 export interface ReorderColumnsData {
   columnIds: string[];
 }
 
-export interface VoteCardData {
-  cardId: string;
-  action: 'add' | 'remove';
+// Response types
+export interface MessageResponse {
+  message: string;
 }
 
-export const COLUMN_COLORS = [
-  { name: 'Azul', value: 'bg-blue-100 border-blue-300' },
-  { name: 'Verde', value: 'bg-green-100 border-green-300' },
-  { name: 'Amarelo', value: 'bg-yellow-100 border-yellow-300' },
-  { name: 'Vermelho', value: 'bg-red-100 border-red-300' },
-  { name: 'Roxo', value: 'bg-purple-100 border-purple-300' },
-  { name: 'Rosa', value: 'bg-pink-100 border-pink-300' },
-  { name: 'Cinza', value: 'bg-gray-100 border-gray-300' },
-  { name: 'Laranja', value: 'bg-orange-100 border-orange-300' },
-] as const;
-
-export const DEFAULT_RETRO_COLUMNS: Omit<RetroColumn, 'id' | 'cards'>[] = [
-  {
-    title: 'O que foi bem?',
-    order: 0,
-  },
-  {
-    title: 'O que pode melhorar?',
-    order: 1,
-  },
-  {
-    title: 'Ações para próxima sprint',
-    order: 2,
-  },
-];
+export interface VoteResponse {
+  message: string;
+  vote?: {
+    id: string;
+    card_id: string;
+    user_id: string;
+    created_at: Date;
+  };
+}

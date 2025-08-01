@@ -204,7 +204,7 @@ export default function RetroColumnComponent({
 
         {/* Cards List */}
         <div className="flex-1 p-4 space-y-3 overflow-y-auto">
-          {column.cards.map((card) => (
+          {(column.cards || []).map((card) => (
             <RetroCardComponent
               key={card.id}
               card={card}
@@ -214,12 +214,15 @@ export default function RetroColumnComponent({
             />
           ))}
 
-          {column.cards.length === 0 && (
+          {(column.cards?.length || 0) === 0 && (
             <div className="text-center text-gray-400 dark:text-gray-500 py-8">
               <p className="text-sm">Nenhum card ainda</p>
               <p className="text-xs">Digite no campo acima para começar</p>
             </div>
           )}
+          
+          {/* Espaço mínimo para dropdown não ser cortado */}
+          <div className="h-20"></div>
         </div>
       </div>
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Heart, MoreVertical, Edit2, Trash2, User } from 'lucide-react';
 import type { RetroCard } from '../../types/retro';
 
@@ -25,6 +25,30 @@ export default function RetroCardComponent({
   const [showDropdown, setShowDropdown] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(card.content);
+  const [dropdownPosition, setDropdownPosition] = useState<'bottom' | 'top'>('bottom');
+  const dropdownButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Calcular posição do dropdown baseado no espaço disponível
+  const calculateDropdownPosition = () => {
+    if (!dropdownButtonRef.current) return;
+    
+    const buttonRect = dropdownButtonRef.current.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    const dropdownHeight = 80; // Altura estimada do dropdown (2 items × 40px cada)
+    
+    // Se não há espaço suficiente embaixo, abrir para cima
+    if (buttonRect.bottom + dropdownHeight > windowHeight) {
+      setDropdownPosition('top');
+    } else {
+      setDropdownPosition('bottom');
+    }
+  };
+
+  useEffect(() => {
+    if (showDropdown) {
+      calculateDropdownPosition();
+    }
+  }, [showDropdown]);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -62,7 +86,7 @@ export default function RetroCardComponent({
   };
 
   const currentUserId = 'current-user'; // Replace with actual user ID
-  const hasVoted = card.votedBy.includes(currentUserId);
+  const hasVoted = false // TODO
 
   return (
     <div
@@ -89,7 +113,7 @@ export default function RetroCardComponent({
           {boardSettings.showAuthor && (
             <div className="flex items-center gap-1 mt-2 text-xs text-gray-500 dark:text-gray-400">
               <User className="w-3 h-3" />
-              <span>{boardSettings.allowAnonymous ? "Anônimo" : card.author}</span>
+              <span>{boardSettings.allowAnonymous ? "Anônimo" : card.author_name}</span>
             </div>
           )}
         </div>
@@ -105,14 +129,15 @@ export default function RetroCardComponent({
               }`}
             >
               <Heart className={`w-4 h-4 ${hasVoted ? 'fill-current' : ''}`} />
-              {card.votes > 0 && (
-                <span className="text-xs">{card.votes}</span>
+              {card.votes_count > 0 && (
+                <span className="text-xs">{card.votes_count}</span>
               )}
             </button>
           )}
 
           <div className="relative">
             <button
+              ref={dropdownButtonRef}
               onClick={() => setShowDropdown(!showDropdown)}
               className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
             >
@@ -120,7 +145,9 @@ export default function RetroCardComponent({
             </button>
 
             {showDropdown && (
-              <div className="absolute right-0 top-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-10 min-w-32">
+              <div className={`absolute right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-20 min-w-32 ${
+                dropdownPosition === 'top' ? 'bottom-6' : 'top-6'
+              }`}>
                 <button
                   onClick={handleEdit}
                   className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 text-gray-700 dark:text-gray-300 cursor-pointer"
