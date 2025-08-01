@@ -2,9 +2,11 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { User } from './entities/user.entity';
+import { RetroBoard } from './entities/retro-board.entity';
+import { RetroColumn } from './entities/retro-column.entity';
+import { RetroCard } from './entities/retro-card.entity';
+import { RetroCardVote } from './entities/retro-card-vote.entity';
 // import { Room } from './entities/room.entity';
-// import { RetroCard } from './entities/retro-card.entity';
-// import { RetroColumn } from './entities/retro-column.entity';
 
 @Module({
   imports: [
@@ -17,7 +19,7 @@ import { User } from './entities/user.entity';
         username: configService.get('DATABASE_USERNAME', 'scrum_user'),
         password: configService.get('DATABASE_PASSWORD', 'scrum_password'),
         database: configService.get('DATABASE_NAME', 'scrum-app'),
-        entities: [User],
+        entities: [User, RetroBoard, RetroColumn, RetroCard, RetroCardVote],
         synchronize: configService.get('NODE_ENV') === 'development',
         logging: configService.get('NODE_ENV') === 'development',
       }),

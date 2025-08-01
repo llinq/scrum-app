@@ -1,34 +1,71 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
-
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+# Scrum App API
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+NestJS-based backend API for the Scrum Management Platform. Provides comprehensive REST APIs for retrospectives, user management, and authentication with Google OAuth integration.
+
+## Key Features
+
+- **Authentication**: Google OAuth 2.0 + JWT tokens with guest user support
+- **Retrospectives**: Complete CRUD operations for boards, columns, cards, and voting system
+- **User Management**: User profiles and team management
+- **Database**: PostgreSQL with TypeORM for type-safe database operations
+- **Swagger Documentation**: Interactive API documentation at `/api`
+- **Validation**: Comprehensive input validation with class-validator
+- **Security**: JWT authentication, CORS protection, input sanitization
+
+## API Modules
+
+### Authentication Module (`/auth`)
+- Google OAuth integration
+- Guest user creation
+- JWT token management
+- User session handling
+
+### User Module (`/users`)
+- User profile management
+- User lookup and updates
+- Account deletion
+
+### Retrospective Module (`/retro-*`)
+- **Boards**: Create and manage retrospective sessions
+- **Columns**: Organize feedback categories
+- **Cards**: Individual feedback items with voting
+- **Voting System**: Democratic prioritization of feedback
 
 ## Project setup
 
 ```bash
 $ yarn install
+```
+
+## Environment Setup
+
+Copy the environment file and configure variables:
+
+```bash
+cp .env.example .env.local
+```
+
+Required environment variables:
+```env
+# Database
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+DATABASE_USER=scrum_user
+DATABASE_PASSWORD=scrum_password
+DATABASE_NAME=scrum-app
+
+# JWT
+JWT_SECRET=your-super-secret-jwt-key
+
+# Google OAuth
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+GOOGLE_CALLBACK_URL=http://localhost:3001/auth/google/callback
+
+# Frontend URL
+FRONTEND_URL=http://localhost:3000
 ```
 
 ## Compile and run the project
@@ -44,6 +81,72 @@ $ yarn run start:dev
 $ yarn run start:prod
 ```
 
+## API Documentation
+
+Once the server is running, access the interactive Swagger documentation at:
+```
+http://localhost:3001/api
+```
+
+This provides complete documentation for all endpoints including:
+- Authentication flows
+- Retrospective CRUD operations
+- Request/response schemas
+- Error handling examples
+
+## Database Setup
+
+The application uses PostgreSQL with TypeORM. Make sure to:
+
+1. **Install PostgreSQL** (or use Docker Compose)
+2. **Create the database** and user:
+   ```sql
+   CREATE DATABASE "scrum-app";
+   CREATE USER scrum_user WITH PASSWORD 'scrum_password';
+   GRANT ALL PRIVILEGES ON DATABASE "scrum-app" TO scrum_user;
+   ```
+3. **Run migrations**: TypeORM will auto-sync in development mode
+
+## Available Endpoints
+
+### Authentication (`/auth`)
+- `POST /auth/guest` - Create guest user session
+- `GET /auth/google` - Initiate Google OAuth flow
+- `GET /auth/google/callback` - Handle OAuth callback
+- `GET /auth/me` - Get current user info (requires JWT)
+
+### Users (`/users`)
+- `GET /users/:id` - Get user profile
+- `PUT /users/:id` - Update user information
+- `DELETE /users/:id` - Delete user account
+
+### Retrospective Boards (`/retro-boards`)
+- `POST /retro-boards` - Create new board
+- `GET /retro-boards` - List all active boards
+- `GET /retro-boards/my-boards` - List user's boards
+- `GET /retro-boards/:id` - Get board with columns and cards
+- `PUT /retro-boards/:id` - Update board (creator only)
+- `DELETE /retro-boards/:id` - Delete board (creator only)
+- `PUT /retro-boards/:id/archive` - Archive board
+
+### Retrospective Columns (`/retro-columns`)
+- `POST /retro-columns/board/:boardId` - Create column
+- `GET /retro-columns/board/:boardId` - List board columns
+- `GET /retro-columns/:id` - Get column details
+- `PUT /retro-columns/:id` - Update column
+- `DELETE /retro-columns/:id` - Delete column
+- `PUT /retro-columns/board/:boardId/reorder` - Reorder columns
+
+### Retrospective Cards (`/retro-cards`)
+- `POST /retro-cards/column/:columnId` - Create card
+- `GET /retro-cards/column/:columnId` - List column cards
+- `GET /retro-cards/board/:boardId` - List board cards (sorted by votes)
+- `GET /retro-cards/:id` - Get card details
+- `PUT /retro-cards/:id` - Update card
+- `DELETE /retro-cards/:id` - Delete card
+- `POST /retro-cards/:id/vote` - Vote on card
+- `DELETE /retro-cards/:id/vote` - Remove vote
+
 ## Run tests
 
 ```bash
@@ -57,37 +160,92 @@ $ yarn run test:e2e
 $ yarn run test:cov
 ```
 
-## Deployment
+## Authentication
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+All protected endpoints require JWT authentication. Include the token in the Authorization header:
 
 ```bash
-$ yarn install -g @nestjs/mau
-$ mau deploy
+Authorization: Bearer <your-jwt-token>
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Get a token by:
+1. **Google OAuth**: `GET /auth/google` → redirects to Google → callback provides token
+2. **Guest Mode**: `POST /auth/guest` with `{ name: "Guest Name" }`
 
-## Resources
+## Business Rules
 
-Check out a few resources that may come in handy when working with NestJS:
+### Retrospective Permissions
+- **Board Creator**: Can edit, delete, archive boards and manage columns
+- **Any User**: Can create cards, vote (within limits), view active boards
+- **Anonymous Cards**: Only allowed if board has `allowAnonymous: true`
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Voting System
+- One vote per user per card
+- Respects `maxVotesPerUser` limit set on board
+- Voting must be enabled on the board
+- Automatic vote count synchronization
+
+### Default Board Structure
+When creating a board, three default columns are automatically created:
+1. "O que foi bem?" (What went well?)
+2. "O que pode melhorar?" (What can be improved?)  
+3. "Ações para próxima sprint" (Actions for next sprint)
+
+## Error Handling
+
+The API returns structured error responses:
+
+```json
+{
+  "statusCode": 400,
+  "message": "You have reached the maximum number of votes (3)",
+  "error": "Bad Request"
+}
+```
+
+Common error codes:
+- `400` - Bad Request (validation errors, business rule violations)
+- `401` - Unauthorized (missing or invalid JWT token)
+- `403` - Forbidden (insufficient permissions)
+- `404` - Not Found (resource doesn't exist)
+
+## Development
+
+## Development
+
+### Hot Reload
+The development server supports hot reload for immediate feedback:
+```bash
+yarn run start:dev
+```
+
+### Database Sync
+In development mode, TypeORM automatically syncs entity changes to the database. For production, use proper migrations.
+
+### Debugging
+- API runs on `http://localhost:3001`
+- Swagger docs available at `http://localhost:3001/api`
+- Database logs are shown in console during development
+
+## Deployment
+
+### Docker Support
+The project includes Docker configuration. See `docker-compose.yml` in the root directory.
+
+### Production Considerations
+- Set `NODE_ENV=production`
+- Use proper PostgreSQL instance (not Docker in production)
+- Configure secure `JWT_SECRET`
+- Set up proper CORS origins
+- Enable HTTPS for OAuth callbacks
+- Use environment-specific database credentials
 
 ## Support
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
+For API-specific questions:
+- Check the Swagger documentation at `/api`
+- Review this README and the module-specific documentation
+- Create issues in the GitHub repository
 
 - Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
 - Website - [https://nestjs.com](https://nestjs.com/)

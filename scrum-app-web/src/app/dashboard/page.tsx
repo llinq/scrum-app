@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { useAuth } from '@/lib/auth-context';
-import { Header } from '@/components/Header';
-import { Card, CardHeader, CardContent } from '@/components/Card';
+import Header from '@/components/Header';
+import Card, { CardHeader, CardContent } from '@/components/Card';
 import { Users, Calendar, CheckSquare, BarChart3 } from 'lucide-react';
 
 export default function DashboardPage() {
