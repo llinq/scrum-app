@@ -203,8 +203,10 @@ jobs:
           echo "📦 Both API and Web applications are ready for deployment"
 
   enforce-checks:
-    name: 'Enforce Required Checks'
+    name: "Enforce Required Checks"
     runs-on: ubuntu-latest
+    needs: [security-audit, api-ci, web-ci, bundle-analysis]
+
     steps:
       - name: Check required status
         uses: actions/github-script@v7
