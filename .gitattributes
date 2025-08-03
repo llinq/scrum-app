@@ -1,6 +1,12 @@
 # Force LF line endings for all text files
 * text=auto eol=lf
 
+# Force bash scripts to have unix line endings
+*.sh text eol=lf
+
+# Force batch scripts to have windows line endings  
+*.bat text eol=crlf
+
 # Ensure these file types always use LF
 *.js text eol=lf
 *.ts text eol=lf
@@ -9,6 +15,11 @@
 *.yml text eol=lf
 *.yaml text eol=lf
 *.mjs text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+*.xml text eol=lf
+*.txt text eol=lf
 
 # Binary files
 *.png binary
@@ -17,3 +28,9 @@
 *.gif binary
 *.ico binary
 *.pdf binary
+
+# Ignore specific directories for exports
+node_modules/ export-ignore
+.next/ export-ignore
+dist/ export-ignore
+coverage/ export-ignore
