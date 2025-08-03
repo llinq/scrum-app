@@ -7,12 +7,18 @@ on:
     branches: [main, develop]
     types: [opened, synchronize]
 
+permissions:
+  contents: read
+  checks: read
+  pull-requests: read
+  statuses: read
+
 jobs:
   # Job para verificar dependências vulneráveis
   security-audit:
     name: Security Audit
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -20,14 +26,14 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'npm'
+          node-version: "22"
+          cache: "npm"
 
       - name: Audit API dependencies
         working-directory: ./scrum-app-api
         run: |
           yarn audit --audit-level=high
-          
+
       - name: Audit Web dependencies
         working-directory: ./scrum-app-web
         run: |
@@ -38,11 +44,11 @@ jobs:
     name: API CI
     runs-on: ubuntu-latest
     needs: security-audit
-    
+
     strategy:
       matrix:
         node-version: [22]
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -51,8 +57,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
-          cache-dependency-path: './scrum-app-api/yarn.lock'
+          cache: "yarn"
+          cache-dependency-path: "./scrum-app-api/yarn.lock"
 
       - name: Install dependencies
         working-directory: ./scrum-app-api
@@ -81,11 +87,11 @@ jobs:
     name: Web CI
     runs-on: ubuntu-latest
     needs: security-audit
-    
+
     strategy:
       matrix:
         node-version: [22]
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -94,8 +100,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-          cache-dependency-path: './scrum-app-web/package-lock.json'
+          cache: "npm"
+          cache-dependency-path: "./scrum-app-web/package-lock.json"
 
       - name: Install dependencies
         working-directory: ./scrum-app-web
@@ -126,7 +132,7 @@ jobs:
     name: Bundle Analysis
     runs-on: ubuntu-latest
     needs: web-ci
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -134,9 +140,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'npm'
-          cache-dependency-path: './scrum-app-web/package-lock.json'
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: "./scrum-app-web/package-lock.json"
 
       - name: Install dependencies
         working-directory: ./scrum-app-web
@@ -171,7 +177,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [security-audit, api-ci, web-ci, bundle-analysis]
     if: always()
-    
+
     steps:
       - name: Check all jobs success
         run: |
@@ -214,7 +220,7 @@ jobs:
               check => requiredChecks.includes(check.name) && 
                       check.conclusion !== 'success'
             );
-            
+
             if (failedChecks.length > 0) {
               core.setFailed('Required CI checks must pass before merge');
             }
