@@ -1,5 +1,5 @@
-import { IsString, IsInt, IsOptional, MaxLength, Min } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { IsString, IsInt, IsOptional, MaxLength, Min } from "class-validator";
+import { Transform } from "class-transformer";
 
 export class UpdateRetroColumnDto {
   @IsOptional()
@@ -8,8 +8,11 @@ export class UpdateRetroColumnDto {
   title?: string;
 
   @IsOptional()
-  @IsInt()
+  @IsInt({ always: false })
   @Min(0)
-  @Transform(({ value }) => typeof value === 'string' ? parseInt(value, 10) : Number(value))
+  @Transform(({ value }) => {
+    if (value === null || value === undefined || value === "") return undefined;
+    return typeof value === "string" ? parseInt(value, 10) : Number(value);
+  })
   orderIndex?: number;
 }

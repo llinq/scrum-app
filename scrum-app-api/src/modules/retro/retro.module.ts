@@ -22,6 +22,7 @@ import { RetroCardRepository } from "./retro-card.repository";
 import { JwtAuthGuard } from "src/common/guards";
 import { AuthModule } from "../auth/auth.module";
 import { UserModule } from "../user/user.module";
+import { RetroWebSocketGateway } from "./retro-websocket.gateway";
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { UserModule } from "../user/user.module";
     RetroBoardRepository,
     RetroColumnRepository,
     RetroCardRepository,
+    RetroWebSocketGateway,
   ],
   exports: [
     RetroBoardService,
@@ -55,6 +57,7 @@ import { UserModule } from "../user/user.module";
     RetroBoardRepository,
     RetroColumnRepository,
     RetroCardRepository,
+    RetroWebSocketGateway,
   ],
 })
 export class RetroModule {}
