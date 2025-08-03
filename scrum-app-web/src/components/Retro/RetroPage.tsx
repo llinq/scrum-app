@@ -695,8 +695,6 @@ export default function RetroPage({ boardId }: RetroPageProps) {
               order_index: index,
             }));
 
-            console.log("Reordered columns:", updatedColumns);
-
             return {
               ...prevBoard,
               columns: updatedColumns,
