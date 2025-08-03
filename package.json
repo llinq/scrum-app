@@ -5,7 +5,18 @@
     "start": "concurrently \"npm run start:api\" \"npm run start:web\"",
     "start:api": "cd scrum-app-api && yarn start",
     "start:web": "cd scrum-app-web && npm run dev",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "ci:local": "bash scripts/local-ci.sh",
+    "ci:local:windows": "scripts\\local-ci.bat",
+    "lint": "npm run lint:api && npm run lint:web",
+    "lint:api": "cd scrum-app-api && npm run lint",
+    "lint:web": "cd scrum-app-web && npm run lint",
+    "build": "npm run build:api && npm run build:web",
+    "build:api": "cd scrum-app-api && npm run build",
+    "build:web": "cd scrum-app-web && npm run build",
+    "audit": "npm run audit:api && npm run audit:web",
+    "audit:api": "cd scrum-app-api && npm audit",
+    "audit:web": "cd scrum-app-web && npm audit"
   },
   "repository": {
     "type": "git",

@@ -1,0 +1,197 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+    types: [opened, synchronize]
+
+jobs:
+  # Job para verificar dependências vulneráveis
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Audit API dependencies
+        working-directory: ./scrum-app-api
+        run: |
+          yarn audit --audit-level=high
+
+      - name: Audit Web dependencies
+        working-directory: ./scrum-app-web
+        run: |
+          npm audit --audit-level=high
+
+  # Job para API (NestJS)
+  api-ci:
+    name: API CI
+    runs-on: ubuntu-latest
+    needs: security-audit
+
+    strategy:
+      matrix:
+        node-version: [22]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn"
+          cache-dependency-path: "./scrum-app-api/yarn.lock"
+
+      - name: Install dependencies
+        working-directory: ./scrum-app-api
+        run: yarn install --frozen-lockfile
+
+      - name: Check for outdated dependencies
+        working-directory: ./scrum-app-api
+        run: |
+          echo "Checking for outdated dependencies..."
+          yarn outdated || true
+
+      - name: Lint code
+        working-directory: ./scrum-app-api
+        run: yarn lint
+
+      - name: Type check
+        working-directory: ./scrum-app-api
+        run: yarn tsc --noEmit
+
+      - name: Build application
+        working-directory: ./scrum-app-api
+        run: yarn build
+
+  # Job para Web (Next.js)
+  web-ci:
+    name: Web CI
+    runs-on: ubuntu-latest
+    needs: security-audit
+
+    strategy:
+      matrix:
+        node-version: [22]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: "./scrum-app-web/package-lock.json"
+
+      - name: Install dependencies
+        working-directory: ./scrum-app-web
+        run: npm ci
+
+      - name: Check for outdated dependencies
+        working-directory: ./scrum-app-web
+        run: |
+          echo "Checking for outdated dependencies..."
+          npm outdated || true
+
+      - name: Lint code
+        working-directory: ./scrum-app-web
+        run: npm run lint
+
+      - name: Type check
+        working-directory: ./scrum-app-web
+        run: npx tsc --noEmit
+
+      - name: Build application
+        working-directory: ./scrum-app-web
+        run: npm run build
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:3001
+
+  # Job para verificar bundle size (apenas para Web)
+  bundle-analysis:
+    name: Bundle Analysis
+    runs-on: ubuntu-latest
+    needs: web-ci
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: "./scrum-app-web/package-lock.json"
+
+      - name: Install dependencies
+        working-directory: ./scrum-app-web
+        run: npm ci
+
+      - name: Build and analyze bundle
+        working-directory: ./scrum-app-web
+        run: |
+          npm run build
+          npx next-bundle-analyzer || echo "Bundle analyzer not configured"
+
+      - name: Comment bundle size
+        uses: actions/github-script@v7
+        if: github.event_name == 'pull_request'
+        with:
+          script: |
+            const fs = require('fs');
+            const path = './scrum-app-web/.next/analyze/bundle-analysis.json';
+            if (fs.existsSync(path)) {
+              const analysis = JSON.parse(fs.readFileSync(path, 'utf8'));
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `📦 Bundle size analysis completed!`
+              });
+            }
+
+  # Job final de sucesso
+  ci-success:
+    name: CI Success
+    runs-on: ubuntu-latest
+    needs: [security-audit, api-ci, web-ci, bundle-analysis]
+    if: always()
+
+    steps:
+      - name: Check all jobs success
+        run: |
+          if [ "${{ needs.security-audit.result }}" == "success" ] && \
+             [ "${{ needs.api-ci.result }}" == "success" ] && \
+             [ "${{ needs.web-ci.result }}" == "success" ] && \
+             [ "${{ needs.bundle-analysis.result }}" == "success" ]; then
+            echo "✅ All CI jobs passed successfully!"
+            exit 0
+          else
+            echo "❌ Some CI jobs failed:"
+            echo "Security Audit: ${{ needs.security-audit.result }}"
+            echo "API CI: ${{ needs.api-ci.result }}"
+            echo "Web CI: ${{ needs.web-ci.result }}"
+            echo "Bundle Analysis: ${{ needs.bundle-analysis.result }}"
+            exit 1
+          fi
+
+      - name: Notify success
+        if: success()
+        run: |
+          echo "🎉 CI Pipeline completed successfully!"
+          echo "📦 Both API and Web applications are ready for deployment"
