@@ -19,7 +19,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
 
       - name: Audit API dependencies
@@ -40,7 +40,7 @@ jobs:
     
     strategy:
       matrix:
-        node-version: [18, 20]
+        node-version: [22]
     
     steps:
       - name: Checkout code
@@ -75,14 +75,6 @@ jobs:
         working-directory: ./scrum-app-api
         run: yarn build
 
-      - name: Upload coverage reports
-        uses: codecov/codecov-action@v4
-        with:
-          directory: ./scrum-app-api/coverage
-          flags: api
-          name: api-coverage
-        if: matrix.node-version == '20'
-
   # Job para Web (Next.js)
   web-ci:
     name: Web CI
@@ -91,7 +83,7 @@ jobs:
     
     strategy:
       matrix:
-        node-version: [18, 20]
+        node-version: [22]
     
     steps:
       - name: Checkout code
@@ -141,7 +133,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: './scrum-app-web/package-lock.json'
 
