@@ -17,7 +17,12 @@ import {
   horizontalListSortingStrategy,
   arrayMove,
 } from "@dnd-kit/sortable";
-import { RetroBoard, RetroColumn, RetroCard } from "../../types/retro";
+import {
+  RetroBoard,
+  RetroColumn,
+  RetroCard,
+  UpdateBoardData,
+} from "../../types/retro";
 import { retroService } from "../../services/retro";
 import RetroColumnComponent from "./RetroColumn";
 import ActiveUsers from "./ActiveUsers";
@@ -38,8 +43,7 @@ export default function RetroPage({ boardId }: RetroPageProps) {
   const [board, setBoard] = useState<RetroBoard | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [anonymousMode, setAnonymousMode] = useState(false);
-  
+
   // Track pending operations to avoid duplicate updates
   const pendingOperationsRef = useRef<Set<string>>(new Set());
 
@@ -59,261 +63,284 @@ export default function RetroPage({ boardId }: RetroPageProps) {
   }, []);
 
   // WebSocket event handlers (memoized to prevent reconnections)
-  const webSocketEvents = useMemo(() => ({
-    onCardCreated: (card: RetroCard) => {
-      const operationKey = `card-create-${card.column_id}`;
-      
-      // Skip if we have a pending operation for this action
-      if (isPendingOperation(operationKey)) {
-        console.log('Skipping card creation from WebSocket - operation pending');
-        removePendingOperation(operationKey);
-        return;
-      }
+  const webSocketEvents = useMemo(
+    () => ({
+      onCardCreated: (card: RetroCard) => {
+        const operationKey = `card-create-${card.column_id}`;
 
-      setBoard((prevBoard) => {
-        if (!prevBoard || !prevBoard.columns) return prevBoard;
-
-        // Check if card already exists to avoid duplicates
-        const cardExists = prevBoard.columns.some(col => 
-          col.cards?.some(c => c.id === card.id)
-        );
-        
-        if (cardExists) {
-          console.log('Card already exists, skipping WebSocket update');
-          return prevBoard;
+        // Skip if we have a pending operation for this action
+        if (isPendingOperation(operationKey)) {
+          console.log(
+            "Skipping card creation from WebSocket - operation pending"
+          );
+          removePendingOperation(operationKey);
+          return;
         }
 
-        const updatedColumns = prevBoard.columns.map((col) =>
-          col.id === card.column_id
-            ? { ...col, cards: [...(col.cards || []), card] }
-            : col
-        );
+        setBoard((prevBoard) => {
+          if (!prevBoard || !prevBoard.columns) return prevBoard;
 
-        return {
-          ...prevBoard,
-          columns: updatedColumns,
-        };
-      });
-    },
+          // Check if card already exists to avoid duplicates
+          const cardExists = prevBoard.columns.some((col) =>
+            col.cards?.some((c) => c.id === card.id)
+          );
 
-    onCardUpdated: (card: RetroCard) => {
-      const operationKey = `card-update-${card.id}`;
-      
-      // Skip if we have a pending operation for this card
-      if (isPendingOperation(operationKey)) {
-        console.log('Skipping card update from WebSocket - operation pending');
-        removePendingOperation(operationKey);
-        return;
-      }
+          if (cardExists) {
+            console.log("Card already exists, skipping WebSocket update");
+            return prevBoard;
+          }
 
-      setBoard((prevBoard) => {
-        if (!prevBoard || !prevBoard.columns) return prevBoard;
+          const updatedColumns = prevBoard.columns.map((col) =>
+            col.id === card.column_id
+              ? { ...col, cards: [...(col.cards || []), card] }
+              : col
+          );
 
-        const updatedColumns = prevBoard.columns.map((col) => ({
-          ...col,
-          cards: col.cards?.map((c) => (c.id === card.id ? card : c)) || [],
-        }));
-
-        return {
-          ...prevBoard,
-          columns: updatedColumns,
-        };
-      });
-    },
-
-    onCardDeleted: (cardId: string) => {
-      const operationKey = `card-delete-${cardId}`;
-      
-      // Skip if we have a pending operation for this card
-      if (isPendingOperation(operationKey)) {
-        console.log('Skipping card deletion from WebSocket - operation pending');
-        removePendingOperation(operationKey);
-        return;
-      }
-
-      setBoard((prevBoard) => {
-        if (!prevBoard || !prevBoard.columns) return prevBoard;
-
-        const updatedColumns = prevBoard.columns.map((col) => ({
-          ...col,
-          cards: col.cards?.filter((card) => card.id !== cardId) || [],
-        }));
-
-        return {
-          ...prevBoard,
-          columns: updatedColumns,
-        };
-      });
-    },
-
-    onCardVoted: (cardId: string, voteCount: number) => {
-      const operationKey = `card-vote-${cardId}`;
-      
-      // Skip if we have a pending operation for this card
-      if (isPendingOperation(operationKey)) {
-        console.log('Skipping card vote from WebSocket - operation pending');
-        removePendingOperation(operationKey);
-        return;
-      }
-
-      setBoard((prevBoard) => {
-        if (!prevBoard || !prevBoard.columns) return prevBoard;
-
-        const updatedColumns = prevBoard.columns.map((col) => ({
-          ...col,
-          cards: col.cards?.map((card) =>
-            card.id === cardId ? { ...card, votes_count: voteCount } : card
-          ) || [],
-        }));
-
-        return {
-          ...prevBoard,
-          columns: updatedColumns,
-        };
-      });
-    },
-
-    onColumnCreated: (column: RetroColumn) => {
-      const operationKey = `column-create-${column.board_id}`;
-      
-      console.log('-- columns created', operationKey);
-      
-      // Skip if we have a pending operation for this board
-      if (isPendingOperation(operationKey)) {
-        console.log('Skipping column creation from WebSocket - operation pending');
-        removePendingOperation(operationKey);
-        return;
-      }
-
-      setBoard((prevBoard) => {
-        if (!prevBoard) return prevBoard;
-
-        // Check if column already exists to avoid duplicates
-        const columnExists = prevBoard.columns?.some(col => col.id === column.id);
-        
-        if (columnExists) {
-          console.log('Column already exists, skipping WebSocket update');
-          return prevBoard;
-        }
-
-        const columnWithCards = { ...column, cards: [] };
-        const updatedColumns = [...(prevBoard.columns || []), columnWithCards];
-
-        // Sort by order_index
-        updatedColumns.sort((a, b) => a.order_index - b.order_index);
-
-        return {
-          ...prevBoard,
-          columns: updatedColumns,
-        };
-      });
-    },
-
-    onColumnUpdated: (column: RetroColumn) => {
-      const operationKey = `column-update-${column.id}`;
-      
-      // Skip if we have a pending operation for this column
-      if (isPendingOperation(operationKey)) {
-        console.log('Skipping column update from WebSocket - operation pending');
-        removePendingOperation(operationKey);
-        return;
-      }
-
-      setBoard((prevBoard) => {
-        if (!prevBoard || !prevBoard.columns) return prevBoard;
-
-        const updatedColumns = prevBoard.columns.map((col) =>
-          col.id === column.id ? { ...col, ...column } : col
-        );
-
-        return {
-          ...prevBoard,
-          columns: updatedColumns,
-        };
-      });
-    },
-
-    onColumnDeleted: (columnId: string) => {
-      const operationKey = `column-delete-${columnId}`;
-      
-      // Skip if we have a pending operation for this column
-      if (isPendingOperation(operationKey)) {
-        console.log('Skipping column deletion from WebSocket - operation pending');
-        removePendingOperation(operationKey);
-        return;
-      }
-
-      setBoard((prevBoard) => {
-        if (!prevBoard || !prevBoard.columns) return prevBoard;
-
-        const updatedColumns = prevBoard.columns
-          .filter((col) => col.id !== columnId)
-          .map((col, index) => ({ ...col, order_index: index }));
-
-        return {
-          ...prevBoard,
-          columns: updatedColumns,
-        };
-      });
-    },
-
-    onColumnsReordered: (columns: RetroColumn[]) => {
-      const operationKey = `columns-reorder-${boardId}`;
-
-      // Skip if we have a pending operation for this board
-      if (isPendingOperation(operationKey)) {
-        console.log('Skipping columns reorder from WebSocket - operation pending');
-        removePendingOperation(operationKey);
-        return;
-      }
-
-      setBoard((prevBoard) => {
-        if (!prevBoard) return prevBoard;
-
-        // Merge with existing cards data
-        const updatedColumns = columns.map((col) => {
-          const existingColumn = prevBoard.columns?.find((c) => c.id === col.id);
           return {
-            ...col,
-            cards: existingColumn?.cards || [],
+            ...prevBoard,
+            columns: updatedColumns,
           };
         });
+      },
 
-        return {
-          ...prevBoard,
-          columns: updatedColumns,
-        };
-      });
-    },
+      onCardUpdated: (card: RetroCard) => {
+        const operationKey = `card-update-${card.id}`;
 
-    onBoardUpdated: (updatedBoard: RetroBoard) => {
-      setBoard((prevBoard) => {
-        if (!prevBoard) return updatedBoard;
+        // Skip if we have a pending operation for this card
+        if (isPendingOperation(operationKey)) {
+          console.log(
+            "Skipping card update from WebSocket - operation pending"
+          );
+          removePendingOperation(operationKey);
+          return;
+        }
 
-        return {
-          ...updatedBoard,
-          columns: prevBoard.columns, // Keep existing columns data
-        };
-      });
-    },
+        setBoard((prevBoard) => {
+          if (!prevBoard || !prevBoard.columns) return prevBoard;
 
-    onActiveUsersUpdated: (userIds: string[]) => {
-      // TODO: Convert userIds to user objects
-      // For now, just update with mock data
-      setBoard((prevBoard) => {
-        if (!prevBoard) return prevBoard;
+          const updatedColumns = prevBoard.columns.map((col) => ({
+            ...col,
+            cards: col.cards?.map((c) => (c.id === card.id ? card : c)) || [],
+          }));
 
-        return {
-          ...prevBoard,
-          activeUsers: userIds.map((id) => ({
-            id,
-            name: `User ${id}`,
-            avatar: null,
-          })),
-        };
-      });
-    },
-  }), [boardId, isPendingOperation, removePendingOperation]); // Include necessary dependencies
+          return {
+            ...prevBoard,
+            columns: updatedColumns,
+          };
+        });
+      },
+
+      onCardDeleted: (cardId: string) => {
+        const operationKey = `card-delete-${cardId}`;
+
+        // Skip if we have a pending operation for this card
+        if (isPendingOperation(operationKey)) {
+          console.log(
+            "Skipping card deletion from WebSocket - operation pending"
+          );
+          removePendingOperation(operationKey);
+          return;
+        }
+
+        setBoard((prevBoard) => {
+          if (!prevBoard || !prevBoard.columns) return prevBoard;
+
+          const updatedColumns = prevBoard.columns.map((col) => ({
+            ...col,
+            cards: col.cards?.filter((card) => card.id !== cardId) || [],
+          }));
+
+          return {
+            ...prevBoard,
+            columns: updatedColumns,
+          };
+        });
+      },
+
+      onCardVoted: (cardId: string, voteCount: number) => {
+        const operationKey = `card-vote-${cardId}`;
+
+        // Skip if we have a pending operation for this card
+        if (isPendingOperation(operationKey)) {
+          console.log("Skipping card vote from WebSocket - operation pending");
+          removePendingOperation(operationKey);
+          return;
+        }
+
+        setBoard((prevBoard) => {
+          if (!prevBoard || !prevBoard.columns) return prevBoard;
+
+          const updatedColumns = prevBoard.columns.map((col) => ({
+            ...col,
+            cards:
+              col.cards?.map((card) =>
+                card.id === cardId ? { ...card, votes_count: voteCount } : card
+              ) || [],
+          }));
+
+          return {
+            ...prevBoard,
+            columns: updatedColumns,
+          };
+        });
+      },
+
+      onColumnCreated: (column: RetroColumn) => {
+        const operationKey = `column-create-${column.board_id}`;
+
+        // Skip if we have a pending operation for this board
+        if (isPendingOperation(operationKey)) {
+          console.log(
+            "Skipping column creation from WebSocket - operation pending"
+          );
+          removePendingOperation(operationKey);
+          return;
+        }
+
+        setBoard((prevBoard) => {
+          if (!prevBoard) return prevBoard;
+
+          // Check if column already exists to avoid duplicates
+          const columnExists = prevBoard.columns?.some(
+            (col) => col.id === column.id
+          );
+
+          if (columnExists) {
+            console.log("Column already exists, skipping WebSocket update");
+            return prevBoard;
+          }
+
+          const columnWithCards = { ...column, cards: [] };
+          const updatedColumns = [
+            ...(prevBoard.columns || []),
+            columnWithCards,
+          ];
+
+          // Sort by order_index
+          updatedColumns.sort((a, b) => a.order_index - b.order_index);
+
+          return {
+            ...prevBoard,
+            columns: updatedColumns,
+          };
+        });
+      },
+
+      onColumnUpdated: (column: RetroColumn) => {
+        const operationKey = `column-update-${column.id}`;
+
+        // Skip if we have a pending operation for this column
+        if (isPendingOperation(operationKey)) {
+          console.log(
+            "Skipping column update from WebSocket - operation pending"
+          );
+          removePendingOperation(operationKey);
+          return;
+        }
+
+        setBoard((prevBoard) => {
+          if (!prevBoard || !prevBoard.columns) return prevBoard;
+
+          const updatedColumns = prevBoard.columns.map((col) =>
+            col.id === column.id ? { ...col, ...column } : col
+          );
+
+          return {
+            ...prevBoard,
+            columns: updatedColumns,
+          };
+        });
+      },
+
+      onColumnDeleted: (columnId: string) => {
+        const operationKey = `column-delete-${columnId}`;
+
+        // Skip if we have a pending operation for this column
+        if (isPendingOperation(operationKey)) {
+          console.log(
+            "Skipping column deletion from WebSocket - operation pending"
+          );
+          removePendingOperation(operationKey);
+          return;
+        }
+
+        setBoard((prevBoard) => {
+          if (!prevBoard || !prevBoard.columns) return prevBoard;
+
+          const updatedColumns = prevBoard.columns
+            .filter((col) => col.id !== columnId)
+            .map((col, index) => ({ ...col, order_index: index }));
+
+          return {
+            ...prevBoard,
+            columns: updatedColumns,
+          };
+        });
+      },
+
+      onColumnsReordered: (columns: RetroColumn[]) => {
+        const operationKey = `columns-reorder-${boardId}`;
+
+        // Skip if we have a pending operation for this board
+        if (isPendingOperation(operationKey)) {
+          console.log(
+            "Skipping columns reorder from WebSocket - operation pending"
+          );
+          removePendingOperation(operationKey);
+          return;
+        }
+
+        setBoard((prevBoard) => {
+          if (!prevBoard) return prevBoard;
+
+          // Merge with existing cards data
+          const updatedColumns = columns.map((col) => {
+            const existingColumn = prevBoard.columns?.find(
+              (c) => c.id === col.id
+            );
+            return {
+              ...col,
+              cards: existingColumn?.cards || [],
+            };
+          });
+
+          return {
+            ...prevBoard,
+            columns: updatedColumns,
+          };
+        });
+      },
+
+      onBoardUpdated: (updatedBoard: RetroBoard) => {
+        setBoard((prevBoard) => {
+          if (!prevBoard) return updatedBoard;
+
+          return {
+            ...updatedBoard,
+            columns: prevBoard.columns, // Keep existing columns data
+          };
+        });
+      },
+
+      // onActiveUsersUpdated: (userIds: string[]) => {
+      //   // TODO: Convert userIds to user objects
+      //   // For now, just update with mock data
+      //   setBoard((prevBoard) => {
+      //     if (!prevBoard) return prevBoard;
+
+      //     return {
+      //       ...prevBoard,
+      //       activeUsers: userIds.map((id) => ({
+      //         id,
+      //         name: `User ${id}`,
+      //         avatar: null,
+      //       })),
+      //     };
+      //   });
+      // },
+    }),
+    [boardId, isPendingOperation, removePendingOperation]
+  ); // Include necessary dependencies
 
   // WebSocket integration
   useRetroWebSocket(boardId, webSocketEvents);
@@ -424,7 +451,7 @@ export default function RetroPage({ boardId }: RetroPageProps) {
       setBoard((prevBoard) => {
         if (!prevBoard || !prevBoard.columns) return prevBoard;
 
-        const updatedColumns = prevBoard.columns.map(col =>
+        const updatedColumns = prevBoard.columns.map((col) =>
           col.id === tempColumn.id ? { ...newColumn, cards: [] } : col
         );
 
@@ -438,22 +465,24 @@ export default function RetroPage({ boardId }: RetroPageProps) {
       setTimeout(() => removePendingOperation(operationId), 1000);
     } catch (error) {
       console.error("Erro ao criar coluna:", error);
-      
+
       // Remove from pending operations immediately on error
       removePendingOperation(operationId);
-      
+
       // Remove temporary column on API error
       setBoard((prevBoard) => {
         if (!prevBoard || !prevBoard.columns) return prevBoard;
 
-        const revertedColumns = prevBoard.columns.filter(col => col.id !== tempColumn.id);
+        const revertedColumns = prevBoard.columns.filter(
+          (col) => col.id !== tempColumn.id
+        );
 
         return {
           ...prevBoard,
           columns: revertedColumns,
         };
       });
-      
+
       // TODO: Show error message to user
       alert("Erro ao criar coluna. Tente novamente.");
     }
@@ -464,8 +493,8 @@ export default function RetroPage({ boardId }: RetroPageProps) {
 
     // Store original columns for potential rollback
     const originalColumns = [...(board.columns || [])];
-    const columnToDelete = originalColumns.find(col => col.id === columnId);
-    
+    const columnToDelete = originalColumns.find((col) => col.id === columnId);
+
     if (!columnToDelete) return;
 
     try {
@@ -486,7 +515,7 @@ export default function RetroPage({ boardId }: RetroPageProps) {
       await retroService.deleteColumn(columnId);
     } catch (error) {
       console.error("Erro ao deletar coluna:", error);
-      
+
       // Revert to original state on API error
       setBoard((prevBoard) => {
         if (!prevBoard) return prevBoard;
@@ -495,7 +524,7 @@ export default function RetroPage({ boardId }: RetroPageProps) {
           columns: originalColumns,
         };
       });
-      
+
       // TODO: Show error message to user
       alert("Erro ao deletar coluna. Tente novamente.");
     }
@@ -508,7 +537,7 @@ export default function RetroPage({ boardId }: RetroPageProps) {
     if (!board) return;
 
     // Store original column data for potential rollback
-    const originalColumn = board.columns?.find(col => col.id === columnId);
+    const originalColumn = board.columns?.find((col) => col.id === columnId);
     if (!originalColumn) return;
 
     try {
@@ -551,7 +580,7 @@ export default function RetroPage({ boardId }: RetroPageProps) {
       });
     } catch (error) {
       console.error("Erro ao atualizar coluna:", error);
-      
+
       // Revert to original state on API error
       setBoard((prevBoard) => {
         if (!prevBoard || !prevBoard.columns) return prevBoard;
@@ -565,7 +594,7 @@ export default function RetroPage({ boardId }: RetroPageProps) {
           columns: revertedColumns,
         };
       });
-      
+
       // TODO: Show error message to user
       alert("Erro ao atualizar coluna. Tente novamente.");
     }
@@ -577,7 +606,7 @@ export default function RetroPage({ boardId }: RetroPageProps) {
     try {
       const cardData = {
         content,
-        author_name: user?.name ?? 'Anônimo',
+        author_name: user?.name ?? "Anônimo",
       };
 
       // Mark this operation as pending to prevent duplicate updates
@@ -586,7 +615,7 @@ export default function RetroPage({ boardId }: RetroPageProps) {
 
       // Just call the API - WebSocket will handle the UI update
       await retroService.createCard(columnId, cardData);
-      
+
       // Remove from pending after a delay to ensure WebSocket event is processed
       setTimeout(() => removePendingOperation(operationId), 1000);
     } catch (error) {
@@ -603,7 +632,7 @@ export default function RetroPage({ boardId }: RetroPageProps) {
 
       // Just call the API - WebSocket will handle the UI update
       await retroService.deleteCard(cardId);
-      
+
       // Remove from pending after a delay to ensure WebSocket event is processed
       setTimeout(() => removePendingOperation(operationId), 1000);
     } catch (error) {
@@ -620,7 +649,7 @@ export default function RetroPage({ boardId }: RetroPageProps) {
 
       // Just call the API - WebSocket will handle the UI update
       await retroService.addVote(cardId);
-      
+
       // Remove from pending after a delay to ensure WebSocket event is processed
       setTimeout(() => removePendingOperation(operationId), 1000);
     } catch (error) {
@@ -647,15 +676,19 @@ export default function RetroPage({ boardId }: RetroPageProps) {
       if (activeIndex !== overIndex) {
         // Store original columns for potential rollback
         const originalColumns = [...board.columns];
-        
+
         // Calculate reordered columns
-        const reorderedColumns = arrayMove(board.columns, activeIndex, overIndex);
+        const reorderedColumns = arrayMove(
+          board.columns,
+          activeIndex,
+          overIndex
+        );
 
         try {
           // Update local state immediately for optimistic UI
           setBoard((prevBoard) => {
             if (!prevBoard || !prevBoard.columns) return prevBoard;
-            
+
             // Update order_index for each column to match new positions
             const updatedColumns = reorderedColumns.map((col, index) => ({
               ...col,
@@ -677,7 +710,7 @@ export default function RetroPage({ boardId }: RetroPageProps) {
           await retroService.reorderColumns(board.id, { columnIds });
         } catch (error) {
           console.error("Erro ao reordenar colunas:", error);
-          
+
           // Revert to original state on API error
           setBoard((prevBoard) => {
             if (!prevBoard) return prevBoard;
@@ -686,7 +719,7 @@ export default function RetroPage({ boardId }: RetroPageProps) {
               columns: originalColumns,
             };
           });
-          
+
           // TODO: Show error message to user
           alert("Erro ao reordenar colunas. Tente novamente.");
         }
@@ -750,31 +783,39 @@ export default function RetroPage({ boardId }: RetroPageProps) {
     });
   };
 
-  const handleAnonymousModeToggle = () => {
-    const newValue = !anonymousMode;
+  const handleShowAuthorToggle = async () => {
+    const newValue = !board.show_author;
 
-    if (newValue) {
-      // Ativando modo anônimo
-      if (
-        window.confirm(
-          "Tem certeza que deseja ativar o modo anônimo? Todos os novos cards serão criados como anônimos."
-        )
-      ) {
-        setAnonymousMode(true);
+    const updateBoardData: UpdateBoardData = {
+      show_author: newValue,
+    };
+
+    try {
+      if (newValue) {
+        // Ativando modo anônimo
+        if (
+          window.confirm(
+            "Tem certeza que deseja desativar o modo anônimo? Todos os novos cards mostrarão o autor."
+          )
+        ) {
+          await retroService.updateBoard(board.id, updateBoardData);
+        }
+      } else {
+        // Desativando modo anônimo
+        if (
+          window.confirm(
+            "Tem certeza que deseja ativar o modo anônimo? Todos os novos cards serão criados como anônimos."
+          )
+        ) {
+          await retroService.updateBoard(board.id, updateBoardData);
+        }
       }
-    } else {
-      // Desativando modo anônimo
-      if (
-        window.confirm(
-          "Tem certeza que deseja desativar o modo anônimo? Todos os novos cards mostrarão o autor."
-        )
-      ) {
-        setAnonymousMode(false);
-      }
+    } catch (error) {
+      console.error("Erro ao atualizar configurações do board:", error);
+      alert("Erro ao atualizar configurações do board. Tente novamente.");
+      return;
     }
   };
-
-  console.log('-- columns length', board.columns?.length);
 
   const gridColsClass = clsx({
     "grid-cols-1": (board.columns?.length || 0) === 1,
@@ -803,16 +844,16 @@ export default function RetroPage({ boardId }: RetroPageProps) {
 
             <div className="flex items-center gap-3">
               <Button
-                variant={anonymousMode ? "secondary" : "outline"}
+                variant={board.show_author ? "outline" : "secondary"}
                 size="sm"
-                onClick={handleAnonymousModeToggle}
+                onClick={handleShowAuthorToggle}
                 className={`rounded-full w-10 h-10 p-0 transition-all duration-200 cursor-pointer ${
-                  anonymousMode
-                    ? "bg-orange-500 hover:bg-orange-600 text-white border-orange-500 shadow-lg shadow-orange-200 dark:shadow-orange-900/20"
-                    : "hover:bg-gray-50 dark:hover:bg-gray-700"
+                  board.show_author
+                    ? "hover:bg-gray-50 dark:hover:bg-gray-700"
+                    : "bg-orange-500 hover:bg-orange-600 text-white border-orange-500 shadow-lg shadow-orange-200 dark:shadow-orange-900/20"
                 }`}
                 title={
-                  anonymousMode
+                  board.show_author
                     ? "Desabilitar modo anônimo"
                     : "Habilitar modo anônimo"
                 }
@@ -890,7 +931,7 @@ export default function RetroPage({ boardId }: RetroPageProps) {
                         allowVoting: board.allow_voting,
                         maxVotesPerUser: board.max_votes_per_user,
                         showAuthor: board.show_author,
-                        allowAnonymous: anonymousMode || board.allow_anonymous,
+                        allowAnonymous: board.allow_anonymous,
                       }}
                     />
                   ))}

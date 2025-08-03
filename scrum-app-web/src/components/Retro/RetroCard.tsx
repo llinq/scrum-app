@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState, useRef, useEffect } from 'react';
-import { Heart, MoreVertical, Edit2, Trash2, User } from 'lucide-react';
-import type { RetroCard } from '../../types/retro';
+import { useState, useRef, useEffect } from "react";
+import { Heart, MoreVertical, Edit2, Trash2, User } from "lucide-react";
+import type { RetroCard } from "../../types/retro";
 
 interface RetroCardProps {
   card: RetroCard;
@@ -25,22 +25,24 @@ export default function RetroCardComponent({
   const [showDropdown, setShowDropdown] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(card.content);
-  const [dropdownPosition, setDropdownPosition] = useState<'bottom' | 'top'>('bottom');
+  const [dropdownPosition, setDropdownPosition] = useState<"bottom" | "top">(
+    "bottom"
+  );
   const dropdownButtonRef = useRef<HTMLButtonElement>(null);
 
   // Calcular posição do dropdown baseado no espaço disponível
   const calculateDropdownPosition = () => {
     if (!dropdownButtonRef.current) return;
-    
+
     const buttonRect = dropdownButtonRef.current.getBoundingClientRect();
     const windowHeight = window.innerHeight;
     const dropdownHeight = 80; // Altura estimada do dropdown (2 items × 40px cada)
-    
+
     // Se não há espaço suficiente embaixo, abrir para cima
     if (buttonRect.bottom + dropdownHeight > windowHeight) {
-      setDropdownPosition('top');
+      setDropdownPosition("top");
     } else {
-      setDropdownPosition('bottom');
+      setDropdownPosition("bottom");
     }
   };
 
@@ -67,15 +69,15 @@ export default function RetroCardComponent({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
       handleSaveEdit();
-    } else if (e.key === 'Escape') {
+    } else if (e.key === "Escape") {
       handleCancelEdit();
     }
   };
 
   const handleDelete = () => {
-    if (window.confirm('Tem certeza que deseja excluir este card?')) {
+    if (window.confirm("Tem certeza que deseja excluir este card?")) {
       onDelete(card.id);
     }
     setShowDropdown(false);
@@ -85,13 +87,11 @@ export default function RetroCardComponent({
     onVote(card.id);
   };
 
-  const currentUserId = 'current-user'; // Replace with actual user ID
-  const hasVoted = false // TODO
+  const currentUserId = "current-user"; // Replace with actual user ID
+  const hasVoted = false; // TODO
 
   return (
-    <div
-      className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow"
-    >
+    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex flex-col">
         <div className="flex-1 min-w-0">
           {isEditing ? (
@@ -110,12 +110,10 @@ export default function RetroCardComponent({
             </p>
           )}
 
-          {boardSettings.showAuthor && (
-            <div className="flex items-center gap-1 mt-2 text-xs text-gray-500 dark:text-gray-400">
-              <User className="w-3 h-3" />
-              <span>{boardSettings.allowAnonymous ? "Anônimo" : card.author_name}</span>
-            </div>
-          )}
+          <div className="flex items-center gap-1 mt-2 text-xs text-gray-500 dark:text-gray-400">
+            <User className="w-3 h-3" />
+            <span>{boardSettings.showAuthor ? card.author_name : "~"}</span>
+          </div>
         </div>
 
         <div className="flex items-center justify-end gap-1 mt-2">
@@ -124,11 +122,11 @@ export default function RetroCardComponent({
               onClick={handleVote}
               className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-1 cursor-pointer ${
                 hasVoted
-                  ? 'text-red-500 hover:text-red-600'
-                  : 'text-gray-400 hover:text-red-500'
+                  ? "text-red-500 hover:text-red-600"
+                  : "text-gray-400 hover:text-red-500"
               }`}
             >
-              <Heart className={`w-4 h-4 ${hasVoted ? 'fill-current' : ''}`} />
+              <Heart className={`w-4 h-4 ${hasVoted ? "fill-current" : ""}`} />
               {card.votes_count > 0 && (
                 <span className="text-xs">{card.votes_count}</span>
               )}
@@ -145,9 +143,11 @@ export default function RetroCardComponent({
             </button>
 
             {showDropdown && (
-              <div className={`absolute right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-20 min-w-32 ${
-                dropdownPosition === 'top' ? 'bottom-6' : 'top-6'
-              }`}>
+              <div
+                className={`absolute right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-20 min-w-32 ${
+                  dropdownPosition === "top" ? "bottom-6" : "top-6"
+                }`}
+              >
                 <button
                   onClick={handleEdit}
                   className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 text-gray-700 dark:text-gray-300 cursor-pointer"

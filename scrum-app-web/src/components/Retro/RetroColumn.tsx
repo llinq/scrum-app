@@ -204,7 +204,7 @@ export default function RetroColumnComponent({
 
         {/* Cards List */}
         <div className="flex-1 p-4 space-y-3 overflow-y-auto">
-          {(column.cards || []).map((card) => (
+          {(column.cards || []).toReversed().map((card) => (
             <RetroCardComponent
               key={card.id}
               card={card}

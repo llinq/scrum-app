@@ -32,7 +32,7 @@ class RetroService {
   }
 
   async updateBoard(id: string, data: UpdateBoardData): Promise<RetroBoard> {
-    return await apiService.put<RetroBoard>(`/retro-boards/${id}`, data);
+    return await apiService.patch<RetroBoard>(`/retro-boards/${id}`, data);
   }
 
   async deleteBoard(id: string): Promise<void> {

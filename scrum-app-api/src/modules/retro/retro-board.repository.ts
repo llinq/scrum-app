@@ -1,18 +1,23 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindManyOptions } from 'typeorm';
-import { RetroBoard } from '../../shared/database/entities/retro-board.entity';
-import { CreateRetroBoardDto } from './dto/create-retro-board.dto';
-import { UpdateRetroBoardDto } from './dto/update-retro-board.dto';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository, FindManyOptions } from "typeorm";
+import { RetroBoard } from "../../shared/database/entities/retro-board.entity";
+import { CreateRetroBoardDto } from "./dto/create-retro-board.dto";
+import { UpdateRetroBoardDto } from "./dto/update-retro-board.dto";
+import { RetroWebSocketGateway } from "./retro-websocket.gateway";
 
 @Injectable()
 export class RetroBoardRepository {
   constructor(
     @InjectRepository(RetroBoard)
     private readonly repository: Repository<RetroBoard>,
+    private readonly retroWebSocketGateway: RetroWebSocketGateway
   ) {}
 
-  async create(createDto: CreateRetroBoardDto, createdBy: string): Promise<RetroBoard> {
+  async create(
+    createDto: CreateRetroBoardDto,
+    createdBy: string
+  ): Promise<RetroBoard> {
     const board = this.repository.create({
       ...createDto,
       created_by: createdBy,
@@ -23,28 +28,71 @@ export class RetroBoardRepository {
   async findAll(options?: FindManyOptions<RetroBoard>): Promise<RetroBoard[]> {
     return this.repository.find({
       ...options,
-      relations: ['creator', 'columns', 'columns.cards'],
-      order: { created_at: 'DESC' },
+      relations: ["creator", "columns", "columns.cards"],
+      order: { created_at: "DESC" },
     });
   }
 
   async findById(id: string): Promise<RetroBoard | null> {
     return this.repository.findOne({
       where: { id },
-      relations: ['creator', 'columns', 'columns.cards', 'columns.cards.author', 'columns.cards.votes'],
+      relations: [
+        "creator",
+        "columns",
+        "columns.cards",
+        "columns.cards.author",
+        "columns.cards.votes",
+      ],
     });
   }
 
   async findByCreator(createdBy: string): Promise<RetroBoard[]> {
     return this.repository.find({
       where: { created_by: createdBy, is_active: true },
-      relations: ['creator', 'columns'],
-      order: { created_at: 'DESC' },
+      relations: ["creator", "columns"],
+      order: { created_at: "DESC" },
     });
   }
 
-  async update(id: string, updateDto: UpdateRetroBoardDto): Promise<RetroBoard | null> {
-    await this.repository.update(id, updateDto);
+  async update(
+    id: string,
+    updateDto: UpdateRetroBoardDto
+  ): Promise<RetroBoard | null> {
+    const updateData: Partial<RetroBoard> = {};
+
+    if (updateDto.title !== undefined) {
+      updateData.title = updateDto.title;
+    }
+
+    if (updateDto.allow_anonymous !== undefined) {
+      updateData.allow_anonymous = updateDto.allow_anonymous;
+    }
+
+    if (updateDto.allow_voting !== undefined) {
+      updateData.allow_voting = updateDto.allow_voting;
+    }
+
+    if (updateDto.max_votes_per_user !== undefined) {
+      updateData.max_votes_per_user = updateDto.max_votes_per_user;
+    }
+
+    if (updateDto.show_author !== undefined) {
+      updateData.show_author = updateDto.show_author;
+    }
+
+    if (updateDto.is_active !== undefined) {
+      updateData.is_active = updateDto.is_active;
+    }
+
+    await this.repository.update(id, updateData);
+
+    const updatedBoard = await this.findById(id);
+    if (!updatedBoard) {
+      throw new NotFoundException("Retro board not found");
+    }
+
+    this.retroWebSocketGateway.emitBoardUpdated(updatedBoard.id, updatedBoard);
+
     return this.findById(id);
   }
 

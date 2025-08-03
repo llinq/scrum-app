@@ -6,10 +6,13 @@ import {
   SubscribeMessage,
   MessageBody,
   ConnectedSocket,
-} from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
-import { Injectable, Logger } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+} from "@nestjs/websockets";
+import { Server, Socket } from "socket.io";
+import { Injectable, Logger } from "@nestjs/common";
+import { RetroBoard } from "src/shared/database/entities/retro-board.entity";
+import { AuthService } from "../auth/auth.service";
+import { RetroCardResponseDto } from "./dto/retro-card-response.dto";
+import { RetroColumnResponseDto } from "./dto/retro-column-response.dto";
 
 interface AuthenticatedSocket extends Socket {
   userId?: string;
@@ -19,27 +22,31 @@ interface AuthenticatedSocket extends Socket {
 @Injectable()
 @WebSocketGateway({
   cors: {
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: process.env.FRONTEND_URL || "http://localhost:3000",
     credentials: true,
   },
-  namespace: '/retro',
+  namespace: "/retro",
 })
-export class RetroWebSocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class RetroWebSocketGateway
+  implements OnGatewayConnection, OnGatewayDisconnect
+{
   @WebSocketServer()
   server: Server;
 
   private readonly logger = new Logger(RetroWebSocketGateway.name);
   private connectedUsers = new Map<string, Set<string>>(); // boardId -> Set of userIds
 
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(private readonly authService: AuthService) {}
 
   async handleConnection(client: AuthenticatedSocket) {
     try {
-      // Extrair token do handshake
-      const token = client.handshake.auth.token || client.handshake.headers.authorization?.replace('Bearer ', '');
-      
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const token: string =
+        client.handshake.auth.token ||
+        client.handshake.headers.authorization?.replace("Bearer ", "");
+
       this.logger.log(`Connection attempt from ${client.id}`);
-      
+
       if (!token) {
         this.logger.warn(`No token provided for client ${client.id}`);
         client.disconnect();
@@ -47,12 +54,23 @@ export class RetroWebSocketGateway implements OnGatewayConnection, OnGatewayDisc
       }
 
       // Verificar token JWT
-      const payload = await this.jwtService.verifyAsync(token);
+      const payload = await this.authService.validateToken(token);
       client.userId = payload.sub;
 
       this.logger.log(`User ${client.userId} connected successfully`);
     } catch (error) {
-      this.logger.error(`Authentication failed for client ${client.id}:`, error.message);
+      if (error instanceof Error) {
+        this.logger.error(
+          `Authentication failed for client ${client.id}:`,
+          error.message
+        );
+      } else {
+        this.logger.error(
+          `Authentication failed for client ${client.id}`,
+          error
+        );
+      }
+
       client.disconnect();
     }
   }
@@ -65,10 +83,10 @@ export class RetroWebSocketGateway implements OnGatewayConnection, OnGatewayDisc
     this.logger.log(`User ${client.userId} disconnected`);
   }
 
-  @SubscribeMessage('join-board')
+  @SubscribeMessage("join-board")
   async handleJoinBoard(
     @MessageBody() data: { boardId: string },
-    @ConnectedSocket() client: AuthenticatedSocket,
+    @ConnectedSocket() client: AuthenticatedSocket
   ) {
     const { boardId } = data;
     const userId = client.userId;
@@ -83,17 +101,17 @@ export class RetroWebSocketGateway implements OnGatewayConnection, OnGatewayDisc
     // Join new board
     client.boardId = boardId;
     await client.join(`board:${boardId}`);
-    
+
     this.joinBoard(boardId, userId);
     this.emitActiveUsers(boardId);
 
     this.logger.log(`User ${userId} joined board ${boardId}`);
   }
 
-  @SubscribeMessage('leave-board')
+  @SubscribeMessage("leave-board")
   async handleLeaveBoard(
     @MessageBody() data: { boardId: string },
-    @ConnectedSocket() client: AuthenticatedSocket,
+    @ConnectedSocket() client: AuthenticatedSocket
   ) {
     const { boardId } = data;
     const userId = client.userId;
@@ -109,40 +127,42 @@ export class RetroWebSocketGateway implements OnGatewayConnection, OnGatewayDisc
   }
 
   // Métodos para emitir eventos do backend
-  emitCardCreated(boardId: string, card: any) {
-    this.server.to(`board:${boardId}`).emit('card-created', { card });
+  emitCardCreated(boardId: string, card: RetroCardResponseDto) {
+    this.server.to(`board:${boardId}`).emit("card-created", { card });
   }
 
-  emitCardUpdated(boardId: string, card: any) {
-    this.server.to(`board:${boardId}`).emit('card-updated', { card });
+  emitCardUpdated(boardId: string, card: RetroCardResponseDto) {
+    this.server.to(`board:${boardId}`).emit("card-updated", { card });
   }
 
   emitCardDeleted(boardId: string, cardId: string) {
-    this.server.to(`board:${boardId}`).emit('card-deleted', { cardId });
+    this.server.to(`board:${boardId}`).emit("card-deleted", { cardId });
   }
 
   emitCardVoted(boardId: string, cardId: string, voteCount: number) {
-    this.server.to(`board:${boardId}`).emit('card-voted', { cardId, voteCount });
+    this.server
+      .to(`board:${boardId}`)
+      .emit("card-voted", { cardId, voteCount });
   }
 
-  emitColumnCreated(boardId: string, column: any) {
-    this.server.to(`board:${boardId}`).emit('column-created', { column });
+  emitColumnCreated(boardId: string, column: RetroColumnResponseDto) {
+    this.server.to(`board:${boardId}`).emit("column-created", { column });
   }
 
-  emitColumnUpdated(boardId: string, column: any) {
-    this.server.to(`board:${boardId}`).emit('column-updated', { column });
+  emitColumnUpdated(boardId: string, column: RetroColumnResponseDto) {
+    this.server.to(`board:${boardId}`).emit("column-updated", { column });
   }
 
   emitColumnDeleted(boardId: string, columnId: string) {
-    this.server.to(`board:${boardId}`).emit('column-deleted', { columnId });
+    this.server.to(`board:${boardId}`).emit("column-deleted", { columnId });
   }
 
   emitColumnsReordered(boardId: string, columns: any[]) {
-    this.server.to(`board:${boardId}`).emit('columns-reordered', { columns });
+    this.server.to(`board:${boardId}`).emit("columns-reordered", { columns });
   }
 
-  emitBoardUpdated(boardId: string, board: any) {
-    this.server.to(`board:${boardId}`).emit('board-updated', { board });
+  emitBoardUpdated(boardId: string, board: RetroBoard) {
+    this.server.to(`board:${boardId}`).emit("board-updated", { board });
   }
 
   private joinBoard(boardId: string, userId: string) {
@@ -164,6 +184,8 @@ export class RetroWebSocketGateway implements OnGatewayConnection, OnGatewayDisc
 
   private emitActiveUsers(boardId: string) {
     const userIds = Array.from(this.connectedUsers.get(boardId) || []);
-    this.server.to(`board:${boardId}`).emit('active-users-updated', { userIds });
+    this.server
+      .to(`board:${boardId}`)
+      .emit("active-users-updated", { userIds });
   }
 }
