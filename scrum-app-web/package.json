@@ -19,8 +19,8 @@
     "lucide-react": "^0.534.0",
     "next": "15.4.4",
     "next-auth": "^4.24.11",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
     "react-hook-form": "^7.61.1",
     "socket.io-client": "^4.8.1",
     "zod": "^4.0.10"
