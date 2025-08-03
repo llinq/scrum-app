@@ -203,6 +203,7 @@ jobs:
           echo "📦 Both API and Web applications are ready for deployment"
 
   enforce-checks:
+    name: 'Enforce Required Checks'
     runs-on: ubuntu-latest
     steps:
       - name: Check required status
