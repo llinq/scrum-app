@@ -8,11 +8,16 @@ updates:
       day: "monday"
       time: "09:00"
     open-pull-requests-limit: 5
-    reviewers:
-      - "llinq"
     labels:
       - "dependencies"
       - "root"
+    groups:
+      root:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
   # Dependências da API (NestJS)
   - package-ecosystem: "npm"
@@ -22,12 +27,9 @@ updates:
       day: "monday"
       time: "09:00"
     open-pull-requests-limit: 10
-    reviewers:
-      - "llinq"
     labels:
       - "dependencies"
       - "api"
-      - "nestjs"
     ignore:
       # Ignorar updates de major versions para dependências críticas
       - dependency-name: "@nestjs/*"
@@ -35,15 +37,12 @@ updates:
       - dependency-name: "typeorm"
         update-types: ["version-update:semver-major"]
     groups:
-      nestjs:
+      api:
         patterns:
-          - "@nestjs/*"
-      testing:
-        patterns:
-          - "jest"
-          - "@types/jest"
-          - "supertest"
-          - "@types/supertest"
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
   # Dependências do Web (Next.js)
   - package-ecosystem: "npm"
@@ -53,12 +52,9 @@ updates:
       day: "monday"
       time: "09:00"
     open-pull-requests-limit: 10
-    reviewers:
-      - "llinq"
     labels:
       - "dependencies"
       - "web"
-      - "nextjs"
     ignore:
       # Ignorar updates de major versions para dependências críticas
       - dependency-name: "next"
@@ -68,24 +64,9 @@ updates:
       - dependency-name: "react-dom"
         update-types: ["version-update:semver-major"]
     groups:
-      react:
+      web:
         patterns:
-          - "react"
-          - "react-dom"
-          - "@types/react"
-          - "@types/react-dom"
-      nextjs:
-        patterns:
-          - "next"
-          - "next-*"
-      ui-components:
-        patterns:
-          - "lucide-react"
-          - "@dnd-kit/*"
-          - "clsx"
-      dev-tools:
-        patterns:
-          - "eslint"
-          - "eslint-*"
-          - "tailwindcss"
-          - "typescript"
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
