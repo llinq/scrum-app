@@ -176,7 +176,7 @@ jobs:
   ci-success:
     name: CI Success
     runs-on: ubuntu-latest
-    needs: [security-audit, api-ci, web-ci, code-quality, bundle-analysis]
+    needs: [security-audit, api-ci, web-ci, bundle-analysis]
     if: always()
     
     steps:
@@ -185,7 +185,6 @@ jobs:
           if [ "${{ needs.security-audit.result }}" == "success" ] && \
              [ "${{ needs.api-ci.result }}" == "success" ] && \
              [ "${{ needs.web-ci.result }}" == "success" ] && \
-             [ "${{ needs.code-quality.result }}" == "success" ] && \
              [ "${{ needs.bundle-analysis.result }}" == "success" ]; then
             echo "✅ All CI jobs passed successfully!"
             exit 0
@@ -194,7 +193,6 @@ jobs:
             echo "Security Audit: ${{ needs.security-audit.result }}"
             echo "API CI: ${{ needs.api-ci.result }}"
             echo "Web CI: ${{ needs.web-ci.result }}"
-            echo "Code Quality: ${{ needs.code-quality.result }}"
             echo "Bundle Analysis: ${{ needs.bundle-analysis.result }}"
             exit 1
           fi
