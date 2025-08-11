@@ -3,23 +3,14 @@
 import { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import {
-  Plus,
-  MoreVertical,
-  Edit2,
-  Trash2,
-  GripVertical,
-} from "lucide-react";
+import { Plus, MoreVertical, Edit2, Trash2, GripVertical } from "lucide-react";
 import { RetroColumn } from "../../types/retro";
 import RetroCardComponent from "./RetroCard";
 import Button from "../Button";
 
 interface RetroColumnProps {
   column: RetroColumn;
-  onCreateCard: (
-    columnId: string,
-    content: string
-  ) => void;
+  onCreateCard: (columnId: string, content: string) => void;
   onDeleteCard: (cardId: string) => void;
   onVoteCard: (cardId: string) => void;
   onDeleteColumn: (columnId: string) => void;
@@ -29,6 +20,9 @@ interface RetroColumnProps {
     maxVotesPerUser: number;
     showAuthor: boolean;
     allowAnonymous: boolean;
+  };
+  boardPermissions: {
+    canEdit: boolean;
   };
 }
 
@@ -40,24 +34,30 @@ export default function RetroColumnComponent({
   onDeleteColumn,
   onUpdateColumn,
   boardSettings,
+  boardPermissions,
 }: RetroColumnProps) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(column.title);
   const [newCardContent, setNewCardContent] = useState("");
 
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({
-      id: column.id,
-      data: {
-        type: "column",
-        column,
-      },
-    });
+  const {
+    attributes: sortableAttributes,
+    listeners: sortableListeners,
+    setNodeRef: setSortableNodeRef,
+    transform: sortableTransform,
+    transition: sortableTransition,
+  } = useSortable({
+    id: column.id,
+    data: {
+      type: "column",
+      column,
+    },
+  });
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
+  const sortableStyle = {
+    transform: CSS.Transform.toString(sortableTransform),
+    transition: sortableTransition,
   };
 
   const handleEditTitle = () => {
@@ -112,21 +112,23 @@ export default function RetroColumnComponent({
 
   return (
     <div
-      ref={setNodeRef}
-      style={style}
+      ref={setSortableNodeRef}
+      style={sortableStyle}
       className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border-2 border-gray-200 dark:border-gray-700 min-w-40 flex flex-col"
     >
       {/* Column Header */}
       <div className="p-4 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 flex-1 min-w-0">
-            <div
-              {...attributes}
-              {...listeners}
-              className="cursor-grab hover:cursor-grabbing p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 shrink-0"
-            >
-              <GripVertical className="w-4 h-4 text-gray-400 dark:text-gray-500" />
-            </div>
+            {boardPermissions.canEdit && (
+              <div
+                {...sortableAttributes}
+                {...sortableListeners}
+                className="cursor-grab hover:cursor-grabbing p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 shrink-0"
+              >
+                <GripVertical className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+              </div>
+            )}
 
             {isEditing ? (
               <input
@@ -145,33 +147,35 @@ export default function RetroColumnComponent({
             )}
           </div>
 
-          <div className="relative">
-            <button
-              onClick={() => setShowDropdown(!showDropdown)}
-              className="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
-            >
-              <MoreVertical className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-            </button>
+          {boardPermissions.canEdit && (
+            <div className="relative">
+              <button
+                onClick={() => setShowDropdown(!showDropdown)}
+                className="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+              >
+                <MoreVertical className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+              </button>
 
-            {showDropdown && (
-              <div className="absolute right-0 top-8 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-10 min-w-40">
-                <button
-                  onClick={handleEditTitle}
-                  className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 text-gray-700 dark:text-gray-300 cursor-pointer"
-                >
-                  <Edit2 className="w-4 h-4" />
-                  Editar nome
-                </button>
-                <button
-                  onClick={handleDeleteColumn}
-                  className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 flex items-center gap-2 cursor-pointer"
-                >
-                  <Trash2 className="w-4 h-4" />
-                  Excluir coluna
-                </button>
-              </div>
-            )}
-          </div>
+              {showDropdown && (
+                <div className="absolute right-0 top-8 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-10 min-w-40">
+                  <button
+                    onClick={handleEditTitle}
+                    className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 text-gray-700 dark:text-gray-300 cursor-pointer"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                    Editar nome
+                  </button>
+                  <button
+                    onClick={handleDeleteColumn}
+                    className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 flex items-center gap-2 cursor-pointer"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    Excluir coluna
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
@@ -220,7 +224,7 @@ export default function RetroColumnComponent({
               <p className="text-xs">Digite no campo acima para começar</p>
             </div>
           )}
-          
+
           {/* Espaço mínimo para dropdown não ser cortado */}
           <div className="h-20"></div>
         </div>

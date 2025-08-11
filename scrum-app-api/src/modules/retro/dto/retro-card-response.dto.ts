@@ -64,9 +64,22 @@ export class RetroCardResponseDto {
   })
   votes_count: number;
 
+  @ApiProperty({
+    description: "Indica se o usuário atual pode editar o card",
+    example: true,
+  })
+  can_edit: boolean;
+
   static fromEntity(
     entity: RetroCard,
-    { includeAuthor = true }: { includeAuthor?: boolean }
+    currentUserId: string,
+    options: {
+      includeAuthor?: boolean;
+      checkPermissions?: boolean;
+    } = {
+      includeAuthor: true,
+      checkPermissions: false,
+    }
   ): RetroCardResponseDto {
     const instance = new RetroCardResponseDto();
     instance.id = entity.id;
@@ -77,7 +90,13 @@ export class RetroCardResponseDto {
     instance.created_at = entity.created_at;
     instance.updated_at = entity.updated_at;
 
-    if (includeAuthor) {
+    if (options.checkPermissions && currentUserId) {
+      instance.can_edit = entity.author_id === currentUserId;
+    } else {
+      instance.can_edit = false;
+    }
+
+    if (options.includeAuthor) {
       instance.author_id = entity.author_id;
       instance.author_name = entity.author_name;
     } else {
@@ -90,10 +109,14 @@ export class RetroCardResponseDto {
 
   static fromEntities(
     entities: RetroCard[],
-    options: { includeAuthor?: boolean } = { includeAuthor: true }
+    currentUserId: string,
+    options: { includeAuthor?: boolean; checkPermissions?: boolean } = {
+      includeAuthor: true,
+      checkPermissions: false,
+    }
   ): RetroCardResponseDto[] {
     return entities.map((entity) =>
-      RetroCardResponseDto.fromEntity(entity, options)
+      RetroCardResponseDto.fromEntity(entity, currentUserId, options)
     );
   }
 }

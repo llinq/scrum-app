@@ -25,7 +25,6 @@ import {
 } from "../../types/retro";
 import { retroService } from "../../services/retro";
 import RetroColumnComponent from "./RetroColumn";
-import ActiveUsers from "./ActiveUsers";
 import Button from "../Button";
 import Card from "../Card";
 import Header from "../Header";
@@ -68,6 +67,8 @@ export default function RetroPage({ boardId }: RetroPageProps) {
       onCardCreated: (card: RetroCard) => {
         const operationKey = `card-create-${card.column_id}`;
 
+        console.log("-- ispendingoepration,", isPendingOperation(operationKey));
+
         // Skip if we have a pending operation for this action
         if (isPendingOperation(operationKey)) {
           console.log(
@@ -95,6 +96,8 @@ export default function RetroPage({ boardId }: RetroPageProps) {
               ? { ...col, cards: [...(col.cards || []), card] }
               : col
           );
+
+          console.log("-- updated columns", updatedColumns, card);
 
           return {
             ...prevBoard,
@@ -827,10 +830,10 @@ export default function RetroPage({ boardId }: RetroPageProps) {
       <Header />
 
       {/* Usuários ativos flutuando */}
-      <ActiveUsers
+      {/* <ActiveUsers
         activeUsers={board.activeUsers || []}
         currentUserId="user1"
-      />
+      /> */}
 
       {/* Compact Header */}
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
@@ -910,6 +913,7 @@ export default function RetroPage({ boardId }: RetroPageProps) {
             <SortableContext
               items={board.columns?.map((col) => col.id) || []}
               strategy={horizontalListSortingStrategy}
+              disabled={!board.can_edit}
             >
               <div className={`gap-6 pb-6 grid ${gridColsClass}`}>
                 {(board.columns || [])
@@ -930,6 +934,9 @@ export default function RetroPage({ boardId }: RetroPageProps) {
                         maxVotesPerUser: board.max_votes_per_user,
                         showAuthor: board.show_author,
                         allowAnonymous: board.allow_anonymous,
+                      }}
+                      boardPermissions={{
+                        canEdit: board.can_edit,
                       }}
                     />
                   ))}

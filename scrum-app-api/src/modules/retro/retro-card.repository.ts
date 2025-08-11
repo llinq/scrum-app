@@ -15,7 +15,7 @@ export class RetroCardRepository {
     private readonly voteRepository: Repository<RetroCardVote>,
   ) {}
 
-  async create(columnId: string, createDto: CreateRetroCardDto, authorId?: string): Promise<RetroCard> {
+  async create(columnId: string, createDto: CreateRetroCardDto, authorId: string): Promise<RetroCard> {
     const card = this.cardRepository.create({
       ...createDto,
       column_id: columnId,
@@ -35,7 +35,7 @@ export class RetroCardRepository {
   async findById(id: string): Promise<RetroCard | null> {
     return this.cardRepository.findOne({
       where: { id },
-      relations: ['column', 'author', 'votes', 'votes.user'],
+      relations: ['column', 'column.board', 'author', 'votes', 'votes.user'],
     });
   }
 

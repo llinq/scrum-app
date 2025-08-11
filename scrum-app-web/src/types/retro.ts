@@ -8,6 +8,7 @@ export interface RetroCard {
   votes_count: number;
   created_at: Date;
   updated_at: Date;
+  can_edit: boolean;
 }
 
 export interface RetroColumn {
@@ -42,6 +43,7 @@ export interface RetroBoard {
   archived_at: Date | null;
   columns?: RetroColumn[];
   activeUsers?: ActiveUser[];
+  can_edit: boolean;
 }
 
 export interface CreateRetroCardData {

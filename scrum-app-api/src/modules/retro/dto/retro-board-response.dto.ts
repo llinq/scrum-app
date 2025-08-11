@@ -35,6 +35,9 @@ export class RetroBoardResponseDto {
   @ApiProperty({ example: null, nullable: true })
   archived_at: Date | null;
 
+  @ApiProperty({ example: false })
+  can_edit: boolean;
+
   static fromEntity(entity: RetroBoard): RetroBoardResponseDto {
     const dto = new RetroBoardResponseDto();
     dto.id = entity.id;
@@ -48,7 +51,7 @@ export class RetroBoardResponseDto {
     dto.allow_anonymous = entity.allow_anonymous;
     dto.is_active = entity.is_active;
     dto.archived_at = entity.archived_at;
-
+    dto.can_edit = false;
     return dto;
   }
 
