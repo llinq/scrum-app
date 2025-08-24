@@ -5,10 +5,7 @@ import {
 } from "@nestjs/common";
 import { RetroBoardRepository } from "./retro-board.repository";
 import { RetroColumnRepository } from "./retro-column.repository";
-import { CreateRetroBoardDto } from "./dto/create-retro-board.dto";
-import { UpdateRetroBoardDto } from "./dto/update-retro-board.dto";
-import { RetroBoard } from "../../shared/database/entities/retro-board.entity";
-import { RetroBoardResponseDto } from "./dto/retro-board-response.dto";
+import { CreateRetroBoardDto, UpdateRetroBoardDto, RetroBoardResponseDto } from "./dto";
 
 @Injectable()
 export class RetroBoardService {
@@ -31,9 +28,8 @@ export class RetroBoardService {
   }
 
   async findAll(): Promise<RetroBoardResponseDto[]> {
-    return this.boardRepository.findAll({
-      where: { is_active: true },
-    });
+    const boards = await this.boardRepository.findAll();
+    return RetroBoardResponseDto.fromEntities(boards);
   }
 
   async findById(id: string): Promise<RetroBoardResponseDto> {
@@ -66,7 +62,9 @@ export class RetroBoardService {
       throw new NotFoundException("Retro board not found");
     }
 
-    return updatedBoard;
+    const updatedBoardDto = RetroBoardResponseDto.fromEntity(updatedBoard);
+
+    return updatedBoardDto;
   }
 
   async delete(id: string, userId: string): Promise<void> {
@@ -80,7 +78,7 @@ export class RetroBoardService {
     await this.boardRepository.delete(id);
   }
 
-  async archive(id: string, userId: string): Promise<RetroBoard> {
+  async archive(id: string, userId: string): Promise<RetroBoardResponseDto> {
     const board = await this.findById(id);
 
     // Verificar se o usuário tem permissão para arquivar
@@ -95,6 +93,8 @@ export class RetroBoardService {
       throw new NotFoundException("Retro board not found");
     }
 
-    return archivedBoard;
+    const archivedBoardDto = RetroBoardResponseDto.fromEntity(archivedBoard);
+
+    return archivedBoardDto;
   }
 }

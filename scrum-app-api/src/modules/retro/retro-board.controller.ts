@@ -22,9 +22,7 @@ import { JwtAuthGuard } from "../../common/guards/jwt-auth.guard";
 import { CurrentUser } from "../../common/decorators/user.decorator";
 import { MessageResponseDto } from "../../shared/dto/message-response.dto";
 import { RetroBoardService } from "./retro-board.service";
-import { CreateRetroBoardDto } from "./dto/create-retro-board.dto";
-import { UpdateRetroBoardDto } from "./dto/update-retro-board.dto";
-import { RetroBoardResponseDto } from "./dto/retro-board-response.dto";
+import { CreateRetroBoardDto, UpdateRetroBoardDto, RetroBoardResponseDto } from "./dto";
 
 @ApiTags("Retro Boards")
 @ApiBearerAuth()
@@ -84,8 +82,10 @@ export class RetroBoardController {
   })
   @ApiResponse({ status: 404, description: "Board não encontrado." })
   @ApiResponse({ status: 401, description: "Não autorizado." })
-  async findById(@Param("id") id: string) {
-    return this.boardService.findById(id);
+  async findById(@CurrentUser('id') userId: string, @Param("id") id: string) {
+    const board = await this.boardService.findById(id);
+    board.can_edit = board.created_by === userId;
+    return board;
   }
 
   @Patch(":id")

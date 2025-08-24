@@ -2,8 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, FindManyOptions } from "typeorm";
 import { RetroBoard } from "../../shared/database/entities/retro-board.entity";
-import { CreateRetroBoardDto } from "./dto/create-retro-board.dto";
-import { UpdateRetroBoardDto } from "./dto/update-retro-board.dto";
+import { CreateRetroBoardDto, UpdateRetroBoardDto } from "./dto";
 import { RetroWebSocketGateway } from "./retro-websocket.gateway";
 
 @Injectable()

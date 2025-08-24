@@ -15,9 +15,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@ne
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/user.decorator';
 import { RetroColumnService } from './retro-column.service';
-import { CreateRetroColumnDto } from './dto/create-retro-column.dto';
-import { UpdateRetroColumnDto } from './dto/update-retro-column.dto';
-import { RetroColumnResponseDto } from './dto/retro-column-response.dto';
+import { CreateRetroColumnDto, UpdateRetroColumnDto, RetroColumnResponseDto } from './dto';
 import { MessageResponseDto } from '../../shared/dto/message-response.dto';
 
 @ApiTags('Retro Columns')

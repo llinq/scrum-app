@@ -87,7 +87,6 @@ export default function RetroCardComponent({
     onVote(card.id);
   };
 
-  const currentUserId = "current-user"; // Replace with actual user ID
   const hasVoted = false; // TODO
 
   return (
@@ -133,38 +132,40 @@ export default function RetroCardComponent({
             </button>
           )}
 
-          <div className="relative">
-            <button
-              ref={dropdownButtonRef}
-              onClick={() => setShowDropdown(!showDropdown)}
-              className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
-            >
-              <MoreVertical className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-            </button>
-
-            {showDropdown && (
-              <div
-                className={`absolute right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-20 min-w-32 ${
-                  dropdownPosition === "top" ? "bottom-6" : "top-6"
-                }`}
+          {card.can_edit && (
+            <div className="relative">
+              <button
+                ref={dropdownButtonRef}
+                onClick={() => setShowDropdown(!showDropdown)}
+                className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
               >
-                <button
-                  onClick={handleEdit}
-                  className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 text-gray-700 dark:text-gray-300 cursor-pointer"
+                <MoreVertical className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+              </button>
+
+              {showDropdown && (
+                <div
+                  className={`absolute right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-20 min-w-32 ${
+                    dropdownPosition === "top" ? "bottom-6" : "top-6"
+                  }`}
                 >
-                  <Edit2 className="w-3 h-3" />
-                  Editar
-                </button>
-                <button
-                  onClick={handleDelete}
-                  className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 flex items-center gap-2 cursor-pointer"
-                >
-                  <Trash2 className="w-3 h-3" />
-                  Excluir
-                </button>
-              </div>
-            )}
-          </div>
+                  <button
+                    onClick={handleEdit}
+                    className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 text-gray-700 dark:text-gray-300 cursor-pointer"
+                  >
+                    <Edit2 className="w-3 h-3" />
+                    Editar
+                  </button>
+                  <button
+                    onClick={handleDelete}
+                    className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 flex items-center gap-2 cursor-pointer"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                    Excluir
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
 

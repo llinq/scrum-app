@@ -25,7 +25,6 @@ import {
 } from "../../types/retro";
 import { retroService } from "../../services/retro";
 import RetroColumnComponent from "./RetroColumn";
-import ActiveUsers from "./ActiveUsers";
 import Button from "../Button";
 import Card from "../Card";
 import Header from "../Header";
@@ -68,6 +67,8 @@ export default function RetroPage({ boardId }: RetroPageProps) {
       onCardCreated: (card: RetroCard) => {
         const operationKey = `card-create-${card.column_id}`;
 
+        console.log("-- ispendingoepration,", isPendingOperation(operationKey));
+
         // Skip if we have a pending operation for this action
         if (isPendingOperation(operationKey)) {
           console.log(
@@ -95,6 +96,8 @@ export default function RetroPage({ boardId }: RetroPageProps) {
               ? { ...col, cards: [...(col.cards || []), card] }
               : col
           );
+
+          console.log("-- updated columns", updatedColumns, card);
 
           return {
             ...prevBoard,
@@ -827,10 +830,10 @@ export default function RetroPage({ boardId }: RetroPageProps) {
       <Header />
 
       {/* Usuários ativos flutuando */}
-      <ActiveUsers
+      {/* <ActiveUsers
         activeUsers={board.activeUsers || []}
         currentUserId="user1"
-      />
+      /> */}
 
       {/* Compact Header */}
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
@@ -842,24 +845,6 @@ export default function RetroPage({ boardId }: RetroPageProps) {
 
             <div className="flex items-center gap-3">
               <Button
-                variant={board.show_author ? "outline" : "secondary"}
-                size="sm"
-                onClick={handleShowAuthorToggle}
-                className={`rounded-full w-10 h-10 p-0 transition-all duration-200 cursor-pointer ${
-                  board.show_author
-                    ? "hover:bg-gray-50 dark:hover:bg-gray-700"
-                    : "bg-orange-500 hover:bg-orange-600 text-white border-orange-500 shadow-lg shadow-orange-200 dark:shadow-orange-900/20"
-                }`}
-                title={
-                  board.show_author
-                    ? "Desabilitar modo anônimo"
-                    : "Habilitar modo anônimo"
-                }
-              >
-                <HatGlasses className="w-4 h-4" />
-              </Button>
-
-              <Button
                 variant="outline"
                 size="sm"
                 onClick={handleShareBoard}
@@ -869,31 +854,53 @@ export default function RetroPage({ boardId }: RetroPageProps) {
                 <Share2 className="w-4 h-4" />
               </Button>
 
-              <Button
-                size="sm"
-                onClick={() => {
-                  if ((board.columns?.length || 0) >= MAX_COLUMNS) {
-                    alert(
-                      `Você pode adicionar no máximo ${MAX_COLUMNS} colunas por board.`
-                    );
-                    return;
-                  }
-                  handleCreateColumn();
-                }}
-                disabled={(board.columns?.length || 0) >= MAX_COLUMNS}
-                title={
-                  (board.columns?.length || 0) >= MAX_COLUMNS
-                    ? `Máximo de ${MAX_COLUMNS} colunas permitidas`
-                    : "Adicionar coluna"
-                }
-                className={`rounded-full w-10 h-10 p-0 ${
-                  (board.columns?.length || 0) >= MAX_COLUMNS
-                    ? "cursor-not-allowed"
-                    : "cursor-pointer"
-                }`}
-              >
-                <Plus className="w-4 h-4" />
-              </Button>
+              {board.can_edit && (
+                <>
+                  <Button
+                    variant={board.show_author ? "outline" : "secondary"}
+                    size="sm"
+                    onClick={handleShowAuthorToggle}
+                    className={`rounded-full w-10 h-10 p-0 transition-all duration-200 cursor-pointer ${
+                      board.show_author
+                        ? "hover:bg-gray-50 dark:hover:bg-gray-700"
+                        : "bg-orange-500 hover:bg-orange-600 text-white border-orange-500 shadow-lg shadow-orange-200 dark:shadow-orange-900/20"
+                    }`}
+                    title={
+                      board.show_author
+                        ? "Desabilitar modo anônimo"
+                        : "Habilitar modo anônimo"
+                    }
+                  >
+                    <HatGlasses className="w-4 h-4" />
+                  </Button>
+
+                  <Button
+                    size="sm"
+                    onClick={() => {
+                      if ((board.columns?.length || 0) >= MAX_COLUMNS) {
+                        alert(
+                          `Você pode adicionar no máximo ${MAX_COLUMNS} colunas por board.`
+                        );
+                        return;
+                      }
+                      handleCreateColumn();
+                    }}
+                    disabled={(board.columns?.length || 0) >= MAX_COLUMNS}
+                    title={
+                      (board.columns?.length || 0) >= MAX_COLUMNS
+                        ? `Máximo de ${MAX_COLUMNS} colunas permitidas`
+                        : "Adicionar coluna"
+                    }
+                    className={`rounded-full w-10 h-10 p-0 ${
+                      (board.columns?.length || 0) >= MAX_COLUMNS
+                        ? "cursor-not-allowed"
+                        : "cursor-pointer"
+                    }`}
+                  >
+                    <Plus className="w-4 h-4" />
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -910,6 +917,7 @@ export default function RetroPage({ boardId }: RetroPageProps) {
             <SortableContext
               items={board.columns?.map((col) => col.id) || []}
               strategy={horizontalListSortingStrategy}
+              disabled={!board.can_edit}
             >
               <div className={`gap-6 pb-6 grid ${gridColsClass}`}>
                 {(board.columns || [])
@@ -930,6 +938,9 @@ export default function RetroPage({ boardId }: RetroPageProps) {
                         maxVotesPerUser: board.max_votes_per_user,
                         showAuthor: board.show_author,
                         allowAnonymous: board.allow_anonymous,
+                      }}
+                      boardPermissions={{
+                        canEdit: board.can_edit,
                       }}
                     />
                   ))}

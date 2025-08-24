@@ -3,8 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RetroCard } from '../../shared/database/entities/retro-card.entity';
 import { RetroCardVote } from '../../shared/database/entities/retro-card-vote.entity';
-import { CreateRetroCardDto } from './dto/create-retro-card.dto';
-import { UpdateRetroCardDto } from './dto/update-retro-card.dto';
+import { CreateRetroCardDto, UpdateRetroCardDto } from './dto';
 
 @Injectable()
 export class RetroCardRepository {
@@ -15,7 +14,7 @@ export class RetroCardRepository {
     private readonly voteRepository: Repository<RetroCardVote>,
   ) {}
 
-  async create(columnId: string, createDto: CreateRetroCardDto, authorId?: string): Promise<RetroCard> {
+  async create(columnId: string, createDto: CreateRetroCardDto, authorId: string): Promise<RetroCard> {
     const card = this.cardRepository.create({
       ...createDto,
       column_id: columnId,
@@ -35,7 +34,7 @@ export class RetroCardRepository {
   async findById(id: string): Promise<RetroCard | null> {
     return this.cardRepository.findOne({
       where: { id },
-      relations: ['column', 'author', 'votes', 'votes.user'],
+      relations: ['column', 'column.board', 'author', 'votes', 'votes.user'],
     });
   }
 

@@ -2,8 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RetroColumn } from '../../shared/database/entities/retro-column.entity';
-import { CreateRetroColumnDto } from './dto/create-retro-column.dto';
-import { UpdateRetroColumnDto } from './dto/update-retro-column.dto';
+import { CreateRetroColumnDto, UpdateRetroColumnDto } from './dto';
 
 @Injectable()
 export class RetroColumnRepository {

@@ -64,9 +64,22 @@ export class RetroCardResponseDto {
   })
   votes_count: number;
 
+  @ApiProperty({
+    description: "Indica se o usuário atual pode editar o card",
+    example: true,
+  })
+  can_edit: boolean;
+
   static fromEntity(
     entity: RetroCard,
-    { includeAuthor = true }: { includeAuthor?: boolean }
+    currentUserId: string,
+    options: {
+      includeAuthor?: boolean;
+      checkPermissions?: boolean;
+    } = {
+      includeAuthor: true,
+      checkPermissions: false,
+    }
   ): RetroCardResponseDto {
     const instance = new RetroCardResponseDto();
     instance.id = entity.id;
@@ -77,12 +90,27 @@ export class RetroCardResponseDto {
     instance.created_at = entity.created_at;
     instance.updated_at = entity.updated_at;
 
-    if (includeAuthor) {
+    if (options.checkPermissions && currentUserId) {
+      instance.can_edit = entity.author_id === currentUserId;
+    } else {
+      instance.can_edit = false;
+    }
+
+    if (options.includeAuthor) {
       instance.author_id = entity.author_id;
       instance.author_name = entity.author_name;
     } else {
-      instance.author_id = null;
       instance.author_name = null;
+      // Intencional: não anular o author_id aqui.
+      // Motivo: na tela de board (web) a permissão de edição do card pode ser calculada no cliente
+      // quando checkPermissions = false (padrão nestas respostas). O front compara o author_id com o
+      // usuário logado para determinar can_edit sem expor o author_name.
+      // Somente defina author_id = null quando uma destas condições for atendida:
+      // 1) a API passar a sempre preencher can_edit (checkPermissions = true em todas as respostas);
+      // 2) o front deixar de depender de author_id para calcular permissões.
+      // Ao mudar este comportamento, revisar o scrum-app-web (serviços e componentes do board) para alinhar a lógica.
+      // Se/Quando as condições acima forem verdadeiras, descomente a linha abaixo:
+      // instance.author_id = null;
     }
 
     return instance;
@@ -90,10 +118,14 @@ export class RetroCardResponseDto {
 
   static fromEntities(
     entities: RetroCard[],
-    options: { includeAuthor?: boolean } = { includeAuthor: true }
+    currentUserId: string,
+    options: { includeAuthor?: boolean; checkPermissions?: boolean } = {
+      includeAuthor: true,
+      checkPermissions: false,
+    }
   ): RetroCardResponseDto[] {
     return entities.map((entity) =>
-      RetroCardResponseDto.fromEntity(entity, options)
+      RetroCardResponseDto.fromEntity(entity, currentUserId, options)
     );
   }
 }
