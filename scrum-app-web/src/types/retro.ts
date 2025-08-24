@@ -2,6 +2,9 @@ export interface RetroCard {
   id: string;
   column_id: string;
   content: string;
+  // Nota: author_id pode permanecer disponível mesmo quando author_name estiver oculto.
+  // Isso permite ao front derivar can_edit enquanto a API não garante este campo sempre calculado.
+  // Ver TODO em RetroColumn.tsx para quando remover essa dependência.
   author_id: string | null;
   author_name: string | null;
   is_anonymous: boolean;

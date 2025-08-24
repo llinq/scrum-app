@@ -100,8 +100,17 @@ export class RetroCardResponseDto {
       instance.author_id = entity.author_id;
       instance.author_name = entity.author_name;
     } else {
-      instance.author_id = null;
       instance.author_name = null;
+      // Intencional: não anular o author_id aqui.
+      // Motivo: na tela de board (web) a permissão de edição do card pode ser calculada no cliente
+      // quando checkPermissions = false (padrão nestas respostas). O front compara o author_id com o
+      // usuário logado para determinar can_edit sem expor o author_name.
+      // Somente defina author_id = null quando uma destas condições for atendida:
+      // 1) a API passar a sempre preencher can_edit (checkPermissions = true em todas as respostas);
+      // 2) o front deixar de depender de author_id para calcular permissões.
+      // Ao mudar este comportamento, revisar o scrum-app-web (serviços e componentes do board) para alinhar a lógica.
+      // Se/Quando as condições acima forem verdadeiras, descomente a linha abaixo:
+      // instance.author_id = null;
     }
 
     return instance;

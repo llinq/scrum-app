@@ -87,7 +87,6 @@ export default function RetroCardComponent({
     onVote(card.id);
   };
 
-  const currentUserId = "current-user"; // Replace with actual user ID
   const hasVoted = false; // TODO
 
   return (
