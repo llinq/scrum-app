@@ -845,24 +845,6 @@ export default function RetroPage({ boardId }: RetroPageProps) {
 
             <div className="flex items-center gap-3">
               <Button
-                variant={board.show_author ? "outline" : "secondary"}
-                size="sm"
-                onClick={handleShowAuthorToggle}
-                className={`rounded-full w-10 h-10 p-0 transition-all duration-200 cursor-pointer ${
-                  board.show_author
-                    ? "hover:bg-gray-50 dark:hover:bg-gray-700"
-                    : "bg-orange-500 hover:bg-orange-600 text-white border-orange-500 shadow-lg shadow-orange-200 dark:shadow-orange-900/20"
-                }`}
-                title={
-                  board.show_author
-                    ? "Desabilitar modo anônimo"
-                    : "Habilitar modo anônimo"
-                }
-              >
-                <HatGlasses className="w-4 h-4" />
-              </Button>
-
-              <Button
                 variant="outline"
                 size="sm"
                 onClick={handleShareBoard}
@@ -872,31 +854,53 @@ export default function RetroPage({ boardId }: RetroPageProps) {
                 <Share2 className="w-4 h-4" />
               </Button>
 
-              <Button
-                size="sm"
-                onClick={() => {
-                  if ((board.columns?.length || 0) >= MAX_COLUMNS) {
-                    alert(
-                      `Você pode adicionar no máximo ${MAX_COLUMNS} colunas por board.`
-                    );
-                    return;
-                  }
-                  handleCreateColumn();
-                }}
-                disabled={(board.columns?.length || 0) >= MAX_COLUMNS}
-                title={
-                  (board.columns?.length || 0) >= MAX_COLUMNS
-                    ? `Máximo de ${MAX_COLUMNS} colunas permitidas`
-                    : "Adicionar coluna"
-                }
-                className={`rounded-full w-10 h-10 p-0 ${
-                  (board.columns?.length || 0) >= MAX_COLUMNS
-                    ? "cursor-not-allowed"
-                    : "cursor-pointer"
-                }`}
-              >
-                <Plus className="w-4 h-4" />
-              </Button>
+              {board.can_edit && (
+                <>
+                  <Button
+                    variant={board.show_author ? "outline" : "secondary"}
+                    size="sm"
+                    onClick={handleShowAuthorToggle}
+                    className={`rounded-full w-10 h-10 p-0 transition-all duration-200 cursor-pointer ${
+                      board.show_author
+                        ? "hover:bg-gray-50 dark:hover:bg-gray-700"
+                        : "bg-orange-500 hover:bg-orange-600 text-white border-orange-500 shadow-lg shadow-orange-200 dark:shadow-orange-900/20"
+                    }`}
+                    title={
+                      board.show_author
+                        ? "Desabilitar modo anônimo"
+                        : "Habilitar modo anônimo"
+                    }
+                  >
+                    <HatGlasses className="w-4 h-4" />
+                  </Button>
+
+                  <Button
+                    size="sm"
+                    onClick={() => {
+                      if ((board.columns?.length || 0) >= MAX_COLUMNS) {
+                        alert(
+                          `Você pode adicionar no máximo ${MAX_COLUMNS} colunas por board.`
+                        );
+                        return;
+                      }
+                      handleCreateColumn();
+                    }}
+                    disabled={(board.columns?.length || 0) >= MAX_COLUMNS}
+                    title={
+                      (board.columns?.length || 0) >= MAX_COLUMNS
+                        ? `Máximo de ${MAX_COLUMNS} colunas permitidas`
+                        : "Adicionar coluna"
+                    }
+                    className={`rounded-full w-10 h-10 p-0 ${
+                      (board.columns?.length || 0) >= MAX_COLUMNS
+                        ? "cursor-not-allowed"
+                        : "cursor-pointer"
+                    }`}
+                  >
+                    <Plus className="w-4 h-4" />
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
