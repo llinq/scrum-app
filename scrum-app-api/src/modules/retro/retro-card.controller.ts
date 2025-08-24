@@ -21,9 +21,7 @@ import {
 import { JwtAuthGuard } from "../../common/guards/jwt-auth.guard";
 import { CurrentUser } from "../../common/decorators/user.decorator";
 import { RetroCardService } from "./retro-card.service";
-import { CreateRetroCardDto } from "./dto/create-retro-card.dto";
-import { UpdateRetroCardDto } from "./dto/update-retro-card.dto";
-import { RetroCardResponseDto } from "./dto/retro-card-response.dto";
+import { CreateRetroCardDto, UpdateRetroCardDto, RetroCardResponseDto } from "./dto";
 import { MessageResponseDto } from "../../shared/dto/message-response.dto";
 
 @ApiTags("Retro Cards")

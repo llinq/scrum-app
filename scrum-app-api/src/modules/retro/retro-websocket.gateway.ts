@@ -11,8 +11,7 @@ import { Server, Socket } from "socket.io";
 import { Injectable, Logger } from "@nestjs/common";
 import { RetroBoard } from "src/shared/database/entities/retro-board.entity";
 import { AuthService } from "../auth/auth.service";
-import { RetroCardResponseDto } from "./dto/retro-card-response.dto";
-import { RetroColumnResponseDto } from "./dto/retro-column-response.dto";
+import { RetroCardResponseDto, RetroColumnResponseDto } from "./dto";
 
 interface AuthenticatedSocket extends Socket {
   userId?: string;

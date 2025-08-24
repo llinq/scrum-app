@@ -5,9 +5,7 @@ import {
 } from "@nestjs/common";
 import { RetroBoardRepository } from "./retro-board.repository";
 import { RetroColumnRepository } from "./retro-column.repository";
-import { CreateRetroBoardDto } from "./dto/create-retro-board.dto";
-import { UpdateRetroBoardDto } from "./dto/update-retro-board.dto";
-import { RetroBoardResponseDto } from "./dto/retro-board-response.dto";
+import { CreateRetroBoardDto, UpdateRetroBoardDto, RetroBoardResponseDto } from "./dto";
 
 @Injectable()
 export class RetroBoardService {

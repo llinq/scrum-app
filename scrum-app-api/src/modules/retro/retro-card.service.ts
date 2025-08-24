@@ -7,12 +7,11 @@ import {
 import { RetroCardRepository } from "./retro-card.repository";
 import { RetroColumnRepository } from "./retro-column.repository";
 import { RetroBoardRepository } from "./retro-board.repository";
-import { CreateRetroCardDto } from "./dto/create-retro-card.dto";
-import { UpdateRetroCardDto } from "./dto/update-retro-card.dto";
+import { CreateRetroCardDto, UpdateRetroCardDto } from "./dto";
 import { RetroCard } from "../../shared/database/entities/retro-card.entity";
 import { RetroCardVote } from "../../shared/database/entities/retro-card-vote.entity";
 import { RetroWebSocketGateway } from "./retro-websocket.gateway";
-import { RetroCardResponseDto } from "./dto/retro-card-response.dto";
+import { RetroCardResponseDto } from "./dto";
 
 @Injectable()
 export class RetroCardService {

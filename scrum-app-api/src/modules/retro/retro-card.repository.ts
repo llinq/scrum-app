@@ -3,8 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RetroCard } from '../../shared/database/entities/retro-card.entity';
 import { RetroCardVote } from '../../shared/database/entities/retro-card-vote.entity';
-import { CreateRetroCardDto } from './dto/create-retro-card.dto';
-import { UpdateRetroCardDto } from './dto/update-retro-card.dto';
+import { CreateRetroCardDto, UpdateRetroCardDto } from './dto';
 
 @Injectable()
 export class RetroCardRepository {

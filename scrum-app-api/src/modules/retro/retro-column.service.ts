@@ -1,10 +1,9 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { RetroColumnRepository } from './retro-column.repository';
 import { RetroBoardRepository } from './retro-board.repository';
-import { CreateRetroColumnDto } from './dto/create-retro-column.dto';
-import { UpdateRetroColumnDto } from './dto/update-retro-column.dto';
+import { CreateRetroColumnDto, UpdateRetroColumnDto } from './dto';
 import { RetroWebSocketGateway } from './retro-websocket.gateway';
-import { RetroColumnResponseDto } from './dto/retro-column-response.dto';
+import { RetroColumnResponseDto } from './dto';
 
 @Injectable()
 export class RetroColumnService {
