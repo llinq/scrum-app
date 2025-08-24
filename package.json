@@ -15,7 +15,7 @@
     "build:api": "cd scrum-app-api && npm run build",
     "build:web": "cd scrum-app-web && npm run build",
     "audit": "npm run audit:api && npm run audit:web",
-    "audit:api": "cd scrum-app-api && npm audit",
+    "audit:api": "cd scrum-app-api && yarn audit",
     "audit:web": "cd scrum-app-web && npm audit"
   },
   "repository": {
