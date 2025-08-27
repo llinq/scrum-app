@@ -26,29 +26,29 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "yarn"
-          cache-dependency-path: "./scrum-app-api/yarn.lock"
+          cache-dependency-path: "./yarn.lock"
 
       - name: Install dependencies
-        working-directory: ./scrum-app-api
+        working-directory: .
         run: yarn install --frozen-lockfile
 
       - name: Check for outdated dependencies
-        working-directory: ./scrum-app-api
+        working-directory: .
         run: |
           echo "Checking for outdated dependencies..."
           yarn outdated || true
 
       - name: Lint code
-        working-directory: ./scrum-app-api
-        run: yarn lint
+        working-directory: .
+        run: yarn workspace scrum-app-api lint
 
       - name: Type check
-        working-directory: ./scrum-app-api
-        run: yarn tsc --noEmit
+        working-directory: .
+        run: yarn tsc -p scrum-app-api/tsconfig.json --noEmit
 
       - name: Build application
-        working-directory: ./scrum-app-api
-        run: yarn build
+        working-directory: .
+        run: yarn workspace scrum-app-api build
 
   # Job para Web (Next.js)
   web-ci:
@@ -68,29 +68,29 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "yarn"
-          cache-dependency-path: "./scrum-app-web/yarn.lock"
+          cache-dependency-path: "./yarn.lock"
 
       - name: Install dependencies
-        working-directory: ./scrum-app-web
+        working-directory: .
         run: yarn install --frozen-lockfile
 
       - name: Check for outdated dependencies
-        working-directory: ./scrum-app-web
+        working-directory: .
         run: |
           echo "Checking for outdated dependencies..."
           yarn outdated || true
 
       - name: Lint code
-        working-directory: ./scrum-app-web
-        run: yarn lint
+        working-directory: .
+        run: yarn workspace scrum-app-web lint
 
       - name: Type check
-        working-directory: ./scrum-app-web
-        run: yarn tsc --noEmit
+        working-directory: .
+        run: yarn tsc -p scrum-app-web/tsconfig.json --noEmit
 
       - name: Build application
-        working-directory: ./scrum-app-web
-        run: yarn build
+        working-directory: .
+        run: yarn workspace scrum-app-web build
         env:
           NEXT_PUBLIC_API_URL: http://localhost:3001
 
@@ -109,16 +109,17 @@ jobs:
         with:
           node-version: "22"
           cache: "yarn"
-          cache-dependency-path: "./scrum-app-web/yarn.lock"
+          cache-dependency-path: "./yarn.lock"
 
       - name: Install dependencies
-        working-directory: ./scrum-app-web
+        working-directory: .
         run: yarn install --frozen-lockfile
 
       - name: Build and analyze bundle
-        working-directory: ./scrum-app-web
+        working-directory: .
         run: |
-          yarn build
+          yarn workspace scrum-app-web build
+          cd scrum-app-web
           npx next-bundle-analyzer || echo "Bundle analyzer not configured"
 
       - name: Comment bundle size
