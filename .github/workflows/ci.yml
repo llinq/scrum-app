@@ -52,7 +52,7 @@ jobs:
 
       - name: Build application
         working-directory: .
-        run: yarn workspace scrum-app-api build
+        run: yarn build:api
 
   # Job para Web (Next.js)
   web-ci:
@@ -98,7 +98,7 @@ jobs:
 
       - name: Build application
         working-directory: .
-        run: yarn workspace scrum-app-web build
+        run: yarn build:web
         env:
           NEXT_PUBLIC_API_URL: http://localhost:3001
 
@@ -130,7 +130,7 @@ jobs:
       - name: Build and analyze bundle
         working-directory: .
         run: |
-          yarn workspace scrum-app-web build
+          yarn build:web
           cd scrum-app-web
           npx next-bundle-analyzer || echo "Bundle analyzer not configured"
 
