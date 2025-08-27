@@ -67,30 +67,30 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "npm"
-          cache-dependency-path: "./scrum-app-web/package-lock.json"
+          cache: "yarn"
+          cache-dependency-path: "./scrum-app-web/yarn.lock"
 
       - name: Install dependencies
         working-directory: ./scrum-app-web
-        run: npm ci
+        run: yarn install --frozen-lockfile
 
       - name: Check for outdated dependencies
         working-directory: ./scrum-app-web
         run: |
           echo "Checking for outdated dependencies..."
-          npm outdated || true
+          yarn outdated || true
 
       - name: Lint code
         working-directory: ./scrum-app-web
-        run: npm run lint
+        run: yarn lint
 
       - name: Type check
         working-directory: ./scrum-app-web
-        run: npx tsc --noEmit
+        run: yarn tsc --noEmit
 
       - name: Build application
         working-directory: ./scrum-app-web
-        run: npm run build
+        run: yarn build
         env:
           NEXT_PUBLIC_API_URL: http://localhost:3001
 
@@ -108,17 +108,17 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          cache: "npm"
-          cache-dependency-path: "./scrum-app-web/package-lock.json"
+          cache: "yarn"
+          cache-dependency-path: "./scrum-app-web/yarn.lock"
 
       - name: Install dependencies
         working-directory: ./scrum-app-web
-        run: npm ci
+        run: yarn install --frozen-lockfile
 
       - name: Build and analyze bundle
         working-directory: ./scrum-app-web
         run: |
-          npm run build
+          yarn build
           npx next-bundle-analyzer || echo "Bundle analyzer not configured"
 
       - name: Comment bundle size

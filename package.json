@@ -1,22 +1,23 @@
 {
   "name": "scrum-app",
   "version": "0.0.1",
+  "packageManager": "yarn@1.22.22",
   "scripts": {
-    "start": "concurrently \"npm run start:api\" \"npm run start:web\"",
+    "start": "concurrently \"yarn start:api\" \"yarn start:web\"",
     "start:api": "cd scrum-app-api && yarn start",
-    "start:web": "cd scrum-app-web && npm run dev",
+    "start:web": "cd scrum-app-web && yarn dev",
     "test": "echo \"Error: no test specified\" && exit 1",
     "ci:local": "bash scripts/local-ci.sh",
     "ci:local:windows": "scripts\\local-ci.bat",
-    "lint": "npm run lint:api && npm run lint:web",
-    "lint:api": "cd scrum-app-api && npm run lint",
-    "lint:web": "cd scrum-app-web && npm run lint",
-    "build": "npm run build:api && npm run build:web",
-    "build:api": "cd scrum-app-api && npm run build",
-    "build:web": "cd scrum-app-web && npm run build",
-    "audit": "npm run audit:api && npm run audit:web",
+    "lint": "yarn lint:api && yarn lint:web",
+    "lint:api": "cd scrum-app-api && yarn lint",
+    "lint:web": "cd scrum-app-web && yarn lint",
+    "build": "yarn build:api && yarn build:web",
+    "build:api": "cd scrum-app-api && yarn build",
+    "build:web": "cd scrum-app-web && yarn build",
+    "audit": "yarn audit:api && yarn audit:web",
     "audit:api": "cd scrum-app-api && yarn audit",
-    "audit:web": "cd scrum-app-web && npm audit"
+    "audit:web": "cd scrum-app-web && yarn audit"
   },
   "repository": {
     "type": "git",

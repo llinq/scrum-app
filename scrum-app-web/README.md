@@ -62,7 +62,7 @@ src/
 
 1. **Instalar dependências**:
    ```bash
-   npm install
+   yarn install
    ```
 
 2. **Configurar variáveis de ambiente**:
@@ -77,13 +77,13 @@ src/
 
 3. **Executar em desenvolvimento**:
    ```bash
-   npm run dev
+   yarn dev
    ```
 
 4. **Build para produção**:
    ```bash
-   npm run build
-   npm start
+   yarn build
+   yarn start
    ```
 
 ## Integração com API
@@ -106,10 +106,10 @@ A aplicação está configurada para integrar com a API `scrum-app-api` rodando 
 
 ## Scripts Disponíveis
 
-- `npm run dev` - Executa em modo desenvolvimento
-- `npm run build` - Build para produção
-- `npm start` - Executa a versão de produção
-- `npm run lint` - Executa o linter
+- `yarn dev` - Executa em modo desenvolvimento
+- `yarn build` - Build para produção
+- `yarn start` - Executa a versão de produção
+- `yarn lint` - Executa o linter
 
 ## Tecnologias
 
