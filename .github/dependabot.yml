@@ -1,72 +1,97 @@
 version: 2
 updates:
-  # Dependências do projeto raiz
+  # Monorepo centralizado: todas as dependências estão no package.json do root
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
       time: "09:00"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 20
     labels:
       - "dependencies"
-      - "root"
-    groups:
-      root:
-        patterns:
-          - "*"
-        update-types:
-          - "minor"
-          - "patch"
-
-  # Dependências da API (NestJS)
-  - package-ecosystem: "npm"
-    directory: "/scrum-app-api"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-    open-pull-requests-limit: 10
-    labels:
-      - "dependencies"
-      - "api"
+      - "monorepo"
     ignore:
-      # Ignorar updates de major versions para dependências críticas
+      # Evitar majors automáticos dos frameworks principais
       - dependency-name: "@nestjs/*"
         update-types: ["version-update:semver-major"]
-      - dependency-name: "typeorm"
-        update-types: ["version-update:semver-major"]
-    groups:
-      api:
-        patterns:
-          - "*"
-        update-types:
-          - "minor"
-          - "patch"
-
-  # Dependências do Web (Next.js)
-  - package-ecosystem: "npm"
-    directory: "/scrum-app-web"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-    open-pull-requests-limit: 10
-    labels:
-      - "dependencies"
-      - "web"
-    ignore:
-      # Ignorar updates de major versions para dependências críticas
       - dependency-name: "next"
         update-types: ["version-update:semver-major"]
       - dependency-name: "react"
         update-types: ["version-update:semver-major"]
       - dependency-name: "react-dom"
         update-types: ["version-update:semver-major"]
+      - dependency-name: "typeorm"
+        update-types: ["version-update:semver-major"]
     groups:
-      web:
+      frontend-next:
         patterns:
-          - "*"
-        update-types:
-          - "minor"
-          - "patch"
+          - "next"
+          - "react"
+          - "react-dom"
+          - "next-auth"
+          - "eslint-config-next"
+          - "lucide-react"
+          - "tailwindcss"
+          - "@tailwindcss/postcss"
+        update-types: ["minor", "patch"]
+      frontend-dnd:
+        patterns:
+          - "@dnd-kit/*"
+        update-types: ["minor", "patch"]
+      frontend-forms:
+        patterns:
+          - "react-hook-form"
+          - "@hookform/resolvers"
+          - "zod"
+        update-types: ["minor", "patch"]
+      backend-nest:
+        patterns:
+          - "@nestjs/*"
+          - "rxjs"
+          - "reflect-metadata"
+        update-types: ["minor", "patch"]
+      backend-db:
+        patterns:
+          - "typeorm"
+          - "pg"
+        update-types: ["minor", "patch"]
+      backend-auth:
+        patterns:
+          - "passport"
+          - "passport-jwt"
+          - "passport-google-oauth20"
+        update-types: ["minor", "patch"]
+      realtime:
+        patterns:
+          - "socket.io"
+          - "socket.io-client"
+          - "@nestjs/platform-socket.io"
+        update-types: ["minor", "patch"]
+      lint-types:
+        patterns:
+          - "eslint"
+          - "@eslint/*"
+          - "typescript"
+          - "typescript-eslint"
+          - "typescript-eslint/*"
+          - "@types/*"
+        update-types: ["minor", "patch"]
+      testing:
+        patterns:
+          - "jest"
+          - "ts-jest"
+          - "supertest"
+          - "@types/jest"
+          - "@types/supertest"
+          - "@nestjs/testing"
+        update-types: ["minor", "patch"]
+      build-tools:
+        patterns:
+          - "ts-node"
+          - "ts-loader"
+          - "tsconfig-paths"
+          - "@swc/*"
+          - "source-map-support"
+          - "concurrently"
+        update-types: ["minor", "patch"]

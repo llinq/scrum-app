@@ -25,30 +25,34 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "yarn"
-          cache-dependency-path: "./scrum-app-api/yarn.lock"
+
+      - name: Enable Corepack (required for yarn v4)
+        run: corepack enable
+
+      - name: Setup Yarn v4
+        run: corepack prepare yarn@4.9.4 --activate
 
       - name: Install dependencies
-        working-directory: ./scrum-app-api
-        run: yarn install --frozen-lockfile
+        working-directory: .
+        run: yarn install --immutable
 
       - name: Check for outdated dependencies
-        working-directory: ./scrum-app-api
+        working-directory: .
         run: |
           echo "Checking for outdated dependencies..."
           yarn outdated || true
 
       - name: Lint code
-        working-directory: ./scrum-app-api
-        run: yarn lint
+        working-directory: .
+        run: yarn lint:api
 
       - name: Type check
-        working-directory: ./scrum-app-api
-        run: yarn tsc --noEmit
+        working-directory: .
+        run: yarn tsc -p scrum-app-api/tsconfig.json --noEmit
 
       - name: Build application
-        working-directory: ./scrum-app-api
-        run: yarn build
+        working-directory: .
+        run: yarn build:api
 
   # Job para Web (Next.js)
   web-ci:
@@ -67,30 +71,34 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "npm"
-          cache-dependency-path: "./scrum-app-web/package-lock.json"
+
+      - name: Enable Corepack (required for yarn v4)
+        run: corepack enable
+
+      - name: Setup Yarn v4
+        run: corepack prepare yarn@4.9.4 --activate
 
       - name: Install dependencies
-        working-directory: ./scrum-app-web
-        run: npm ci
+        working-directory: .
+        run: yarn install --immutable
 
       - name: Check for outdated dependencies
-        working-directory: ./scrum-app-web
+        working-directory: .
         run: |
           echo "Checking for outdated dependencies..."
-          npm outdated || true
+          yarn outdated || true
 
       - name: Lint code
-        working-directory: ./scrum-app-web
-        run: npm run lint
+        working-directory: .
+        run: yarn lint:web
 
       - name: Type check
-        working-directory: ./scrum-app-web
-        run: npx tsc --noEmit
+        working-directory: .
+        run: yarn tsc -p scrum-app-web/tsconfig.json --noEmit
 
       - name: Build application
-        working-directory: ./scrum-app-web
-        run: npm run build
+        working-directory: .
+        run: yarn build:web
         env:
           NEXT_PUBLIC_API_URL: http://localhost:3001
 
@@ -108,17 +116,22 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          cache: "npm"
-          cache-dependency-path: "./scrum-app-web/package-lock.json"
+
+      - name: Enable Corepack (required for yarn v4)
+        run: corepack enable
+
+      - name: Setup Yarn v4
+        run: corepack prepare yarn@4.9.4 --activate
 
       - name: Install dependencies
-        working-directory: ./scrum-app-web
-        run: npm ci
+        working-directory: .
+        run: yarn install --immutable
 
       - name: Build and analyze bundle
-        working-directory: ./scrum-app-web
+        working-directory: .
         run: |
-          npm run build
+          yarn build:web
+          cd scrum-app-web
           npx next-bundle-analyzer || echo "Bundle analyzer not configured"
 
       - name: Comment bundle size

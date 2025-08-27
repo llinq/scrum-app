@@ -82,7 +82,7 @@ docker-compose up -d
 
 2. **Install dependencies**:
    ```bash
-   npm install
+   yarn install
    ```
 
 3. **Configure environment variables**:
@@ -113,7 +113,7 @@ docker-compose up -d
 
 4. **Start the API server**:
    ```bash
-   npm run start:dev
+   yarn start:dev
    ```
 
 #### Frontend Setup (Web)
@@ -125,7 +125,7 @@ docker-compose up -d
 
 2. **Install dependencies**:
    ```bash
-   npm install
+   yarn install
    ```
 
 3. **Configure environment variables**:
@@ -140,7 +140,7 @@ docker-compose up -d
 
 4. **Start the development server**:
    ```bash
-   npm run dev
+   yarn dev
    ```
 
 ### 🔑 Google OAuth Setup
@@ -274,20 +274,20 @@ scrum-app/
 
 #### Backend (scrum-app-api)
 ```bash
-npm run start:dev    # Start development server with hot reload
-npm run build        # Build for production
-npm run start:prod   # Start production server
-npm run lint         # Run ESLint
-npm run test         # Run unit tests
-npm run test:e2e     # Run end-to-end tests
+yarn start:dev    # Start development server with hot reload
+yarn build        # Build for production
+yarn start:prod   # Start production server
+yarn lint         # Run ESLint
+yarn test         # Run unit tests
+yarn test:e2e     # Run end-to-end tests
 ```
 
 #### Frontend (scrum-app-web)
 ```bash
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run start        # Start production server
-npm run lint         # Run ESLint
+yarn dev          # Start development server
+yarn build        # Build for production
+yarn start        # Start production server
+yarn lint         # Run ESLint
 ```
 
 ### 🔧 Development Tools
@@ -328,15 +328,15 @@ docker-compose down
 1. **Build Backend**:
    ```bash
    cd scrum-app-api
-   npm run build
-   npm run start:prod
+   yarn build
+   yarn start:prod
    ```
 
 2. **Build Frontend**:
    ```bash
    cd scrum-app-web
-   npm run build
-   npm run start
+   yarn build
+   yarn start
    ```
 
 ### 🌍 Environment Variables
