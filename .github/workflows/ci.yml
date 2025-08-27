@@ -44,7 +44,7 @@ jobs:
 
       - name: Lint code
         working-directory: .
-        run: yarn workspace scrum-app-api lint
+        run: yarn lint:api
 
       - name: Type check
         working-directory: .
@@ -90,7 +90,7 @@ jobs:
 
       - name: Lint code
         working-directory: .
-        run: yarn workspace scrum-app-web lint
+        run: yarn lint:web
 
       - name: Type check
         working-directory: .
