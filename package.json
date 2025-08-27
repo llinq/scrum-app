@@ -29,6 +29,6 @@
   },
   "homepage": "https://github.com/llinq/scrum-app#readme",
   "devDependencies": {
-    "concurrently": "^9.2.0"
+    "concurrently": "^9.2.1"
   }
 }
