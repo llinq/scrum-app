@@ -51,24 +51,17 @@ export class RetroCardService {
       userId
     );
 
-    const newCardDto = RetroCardResponseDto.fromEntity(newCard, userId, {
-      includeAuthor: board.show_author,
-      checkPermissions: true,
-    });
+    const newCardDto = RetroCardResponseDto.fromEntity(newCard);
 
     // Emitir evento WebSocket
     this.retroWebSocketGateway.emitCardCreated(board.id, {
       ...newCardDto,
-      can_edit: false,
     });
 
     return newCardDto;
   }
 
-  async findByColumnId(
-    columnId: string,
-    userId: string
-  ): Promise<RetroCardResponseDto[]> {
+  async findByColumnId(columnId: string): Promise<RetroCardResponseDto[]> {
     // Verificar se a coluna existe
     const column = await this.columnRepository.findById(columnId);
     if (!column) {
@@ -76,25 +69,17 @@ export class RetroCardService {
     }
 
     const cardsByColumnId = await this.cardRepository.findByColumnId(columnId);
-    
-    console.log('userid', userId);
 
-    return RetroCardResponseDto.fromEntities(cardsByColumnId, userId, {
-      includeAuthor: column.board.show_author,
-      checkPermissions: true,
-    });
+    return RetroCardResponseDto.fromEntities(cardsByColumnId);
   }
 
-  async findById(id: string, userId: string): Promise<RetroCardResponseDto> {
+  async findById(id: string): Promise<RetroCardResponseDto> {
     const card = await this.cardRepository.findById(id);
     if (!card) {
       throw new NotFoundException("Retro card not found");
     }
     console.log(card);
-    return RetroCardResponseDto.fromEntity(card, userId, {
-      includeAuthor: card.column.board.show_author,
-      checkPermissions: true,
-    });
+    return RetroCardResponseDto.fromEntity(card);
   }
 
   async update(
@@ -102,7 +87,7 @@ export class RetroCardService {
     updateDto: UpdateRetroCardDto,
     userId: string
   ): Promise<RetroCardResponseDto> {
-    const card = await this.findById(id, userId);
+    const card = await this.findById(id);
 
     // Verificar se o usuário tem permissão para editar (autor do card ou dono do board)
     const column = await this.columnRepository.findById(card.column_id);
@@ -123,26 +108,18 @@ export class RetroCardService {
       throw new NotFoundException("Retro card not found");
     }
 
-    const updatedCardDto = RetroCardResponseDto.fromEntity(
-      updatedCard,
-      userId,
-      {
-        includeAuthor: board.show_author,
-        checkPermissions: true,
-      }
-    );
+    const updatedCardDto = RetroCardResponseDto.fromEntity(updatedCard);
 
     // Emitir evento WebSocket
     this.retroWebSocketGateway.emitCardUpdated(column!.board_id, {
       ...updatedCardDto,
-      can_edit: true,
     });
 
     return updatedCardDto;
   }
 
   async delete(id: string, userId: string): Promise<void> {
-    const card = await this.findById(id, userId);
+    const card = await this.findById(id);
 
     // Verificar se o usuário tem permissão para deletar (autor do card ou dono do board)
     const column = await this.columnRepository.findById(card.column_id);
@@ -161,7 +138,7 @@ export class RetroCardService {
   }
 
   async addVote(cardId: string, userId: string): Promise<RetroCardVote> {
-    const card = await this.findById(cardId, userId);
+    const card = await this.findById(cardId);
 
     // Verificar se o board permite votação
     const column = await this.columnRepository.findById(card.column_id);
@@ -188,7 +165,7 @@ export class RetroCardService {
       const vote = await this.cardRepository.addVote(cardId, userId);
 
       // Buscar card atualizado para obter vote count
-      const updatedCard = await this.findById(cardId, userId);
+      const updatedCard = await this.findById(cardId);
 
       // Emitir evento WebSocket
       this.retroWebSocketGateway.emitCardVoted(
@@ -208,7 +185,7 @@ export class RetroCardService {
 
   async removeVote(cardId: string, userId: string): Promise<void> {
     // Verificar se o card existe
-    const card = await this.findById(cardId, userId);
+    const card = await this.findById(cardId);
 
     // Verificar se o usuário votou neste card
     const hasVoted = await this.cardRepository.hasUserVoted(cardId, userId);
@@ -219,7 +196,7 @@ export class RetroCardService {
     await this.cardRepository.removeVote(cardId, userId);
 
     // Buscar card atualizado para obter vote count
-    const updatedCard = await this.findById(cardId, userId);
+    const updatedCard = await this.findById(cardId);
     const column = await this.columnRepository.findById(card.column_id);
 
     // Emitir evento WebSocket

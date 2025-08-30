@@ -57,4 +57,15 @@ export class CreateRetroBoardDto {
   @IsBoolean()
   @Transform(({ value }) => value === 'true' || value === true)
   allow_anonymous?: boolean;
+
+  @ApiProperty({
+    description: 'Ativa o modo de desfoque nos cards',
+    example: false,
+    required: false,
+    default: false
+  })
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ value }) => value === 'true' || value === true)
+  blur_mode?: boolean;
 }

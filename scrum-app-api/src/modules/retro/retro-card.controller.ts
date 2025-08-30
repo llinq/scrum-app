@@ -21,7 +21,11 @@ import {
 import { JwtAuthGuard } from "../../common/guards/jwt-auth.guard";
 import { CurrentUser } from "../../common/decorators/user.decorator";
 import { RetroCardService } from "./retro-card.service";
-import { CreateRetroCardDto, UpdateRetroCardDto, RetroCardResponseDto } from "./dto";
+import {
+  CreateRetroCardDto,
+  UpdateRetroCardDto,
+  RetroCardResponseDto,
+} from "./dto";
 import { MessageResponseDto } from "../../shared/dto/message-response.dto";
 
 @ApiTags("Retro Cards")
@@ -57,8 +61,6 @@ export class RetroCardController {
       throw new BadRequestException("Failed to create retro card");
     }
 
-    card.can_edit = true;
-
     return card;
   }
 
@@ -72,11 +74,8 @@ export class RetroCardController {
   })
   @ApiResponse({ status: 404, description: "Coluna não encontrada." })
   @ApiResponse({ status: 401, description: "Não autorizado." })
-  async findByColumnId(
-    @CurrentUser("id") userId: string,
-    @Param("columnId") columnId: string
-  ) {
-    const cards = await this.cardService.findByColumnId(columnId, userId);
+  async findByColumnId(@Param("columnId") columnId: string) {
+    const cards = await this.cardService.findByColumnId(columnId);
     return cards;
   }
 
@@ -104,8 +103,8 @@ export class RetroCardController {
   })
   @ApiResponse({ status: 404, description: "Card não encontrado." })
   @ApiResponse({ status: 401, description: "Não autorizado." })
-  async findById(@CurrentUser("id") userId: string, @Param("id") id: string) {
-    return this.cardService.findById(id, userId);
+  async findById(@Param("id") id: string) {
+    return this.cardService.findById(id);
   }
 
   @Put(":id")

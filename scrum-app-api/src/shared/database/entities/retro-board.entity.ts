@@ -31,6 +31,9 @@ export class RetroBoard {
   @Column({ type: 'boolean', default: false })
   allow_anonymous: boolean;
 
+  @Column({ type: 'boolean', default: false })
+  blur_mode: boolean;
+
   // Metadados
   @Column({ type: 'boolean', default: true })
   is_active: boolean;

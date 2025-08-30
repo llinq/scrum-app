@@ -38,6 +38,7 @@ This platform provides essential tools for Scrum teams to conduct their ceremoni
 - **Complete CRUD Operations**: Full management of boards, columns, and cards
 - **Voting System**: Vote on cards with configurable limits per user
 - **Anonymous Mode**: Enable honest feedback through anonymous participation
+- **Blur Mode**: Blur card content to prevent bias during writing phase
 - **Card Visibility Controls**: Show/hide cards during different phases
 - **Customizable Boards**: Configure column names and ordering to match team preferences
 - **Interactive Cards**: Create, edit, and organize feedback cards with voting
@@ -73,6 +74,11 @@ docker-compose up -d
 
 ### 🚀 Manual Setup
 
+#### First install dependencies
+```bash
+yarn install
+```
+
 #### Backend Setup (API)
 
 1. **Navigate to API directory**:
@@ -80,12 +86,7 @@ docker-compose up -d
    cd scrum-app-api
    ```
 
-2. **Install dependencies**:
-   ```bash
-   yarn install
-   ```
-
-3. **Configure environment variables**:
+2. **Configure environment variables**:
    ```bash
    cp .env.example .env.local
    ```
@@ -111,7 +112,7 @@ docker-compose up -d
    FRONTEND_URL=http://localhost:3000
    ```
 
-4. **Start the API server**:
+3. **Start the API server**:
    ```bash
    yarn start:dev
    ```
@@ -123,12 +124,7 @@ docker-compose up -d
    cd scrum-app-web
    ```
 
-2. **Install dependencies**:
-   ```bash
-   yarn install
-   ```
-
-3. **Configure environment variables**:
+2. **Configure environment variables**:
    ```bash
    cp .env.example .env.local
    ```
@@ -138,7 +134,7 @@ docker-compose up -d
    NEXT_PUBLIC_API_URL=http://localhost:3001
    ```
 
-4. **Start the development server**:
+3. **Start the development server**:
    ```bash
    yarn dev
    ```

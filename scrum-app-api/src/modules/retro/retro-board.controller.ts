@@ -82,9 +82,8 @@ export class RetroBoardController {
   })
   @ApiResponse({ status: 404, description: "Board não encontrado." })
   @ApiResponse({ status: 401, description: "Não autorizado." })
-  async findById(@CurrentUser('id') userId: string, @Param("id") id: string) {
+  async findById(@Param("id") id: string) {
     const board = await this.boardService.findById(id);
-    board.can_edit = board.created_by === userId;
     return board;
   }
 

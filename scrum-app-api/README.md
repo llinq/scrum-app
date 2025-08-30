@@ -32,11 +32,18 @@ NestJS-based backend API for the Scrum Management Platform. Provides comprehensi
 - **Columns**: Organize feedback categories
 - **Cards**: Individual feedback items with voting
 - **Voting System**: Democratic prioritization of feedback
+- **Blur Mode**: Blur card content to prevent bias during writing phase
 
 ## Project setup
 
+⚠️ **Important**: Run the installation command from the root of the repository:
+
 ```bash
-$ yarn install
+# Go to the root directory of the repository
+cd ../
+
+# Install dependencies for all projects
+yarn install
 ```
 
 ## Environment Setup
@@ -187,9 +194,16 @@ Get a token by:
 
 ### Default Board Structure
 When creating a board, three default columns are automatically created:
-1. "O que foi bem?" (What went well?)
-2. "O que pode melhorar?" (What can be improved?)  
-3. "Ações para próxima sprint" (Actions for next sprint)
+1. "What went well?" (O que foi bem?)
+2. "What can be improved?" (O que pode melhorar?)  
+3. "Actions for next sprint" (Ações para próxima sprint)
+
+### Blur Mode
+- **Purpose**: Prevents bias during the card writing phase by blurring card content
+- **Activation**: Can be toggled by board creators at any time
+- **Behavior**: When enabled, card content appears blurred to all users
+- **Reveal**: Content becomes visible on hover for easy reading when needed
+- **Use Case**: Ideal for ensuring unbiased feedback collection before group discussion
 
 ## Error Handling
 
