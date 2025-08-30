@@ -1,39 +1,75 @@
 # Scrum App Web
 
-Aplicação frontend em Next.js com React 19 para o sistema de gerenciamento Scrum.
+Next.js frontend application with React 19 for the Scrum management system.
 
-## Características
+## Features
 
-- **Framework**: Next.js 15 com App Router
+- **Framework**: Next.js 15 with App Router
 - **UI**: React 19 + TypeScript + Tailwind CSS
-- **Autenticação**: Sistema customizado com suporte a login e acesso de convidado
-- **Estado**: Context API para gerenciamento de autenticação
-- **HTTP Client**: Axios com interceptors para tratamento de tokens
-- **Formulários**: React Hook Form + Zod para validação
-- **Ícones**: Lucide React
+- **Authentication**: Custom system with login and guest access support
+- **State**: Context API for authentication management
+- **HTTP Client**: Axios with interceptors for token handling
+- **Forms**: React Hook Form + Zod for validation
+- **Icons**: Lucide React
 
-## Estrutura do Projeto
+## Project Structure
 
 ```
 src/
-├── app/                    # Pages do Next.js (App Router)
-│   ├── dashboard/         # Área logada principal
-│   ├── login/            # Página de login
-│   └── layout.tsx        # Layout principal
-├── components/           # Componentes reutilizáveis
-│   ├── Button.tsx       # Componente de botão
-│   ├── Card.tsx         # Componentes de card
-│   ├── Header.tsx       # Header da aplicação
-│   ├── Input.tsx        # Input customizado
-│   └── LoginForm.tsx    # Formulário de login
-├── lib/                 # Utilitários e configurações
-│   └── auth-context.tsx # Context de autenticação
-├── services/           # Serviços de API
-│   ├── api.ts         # Cliente HTTP base
-│   └── auth.ts        # Serviços de autenticação
-└── types/             # Definições TypeScript
-    └── auth.ts        # Tipos relacionados à autenticação
+├── app/                    # Next.js Pages (App Router)
+│   ├── dashboard/          # Main logged area
+│   ├── login/              # Login page
+│   └── layout.tsx          # Main layout
+├── components/             # Reusable components
+│   ├── Button.tsx          # Button component
+│   ├── Card.tsx            # Card components
+│   ├── Header.tsx          # Application header
+│   ├── Input.tsx           # Custom input
+│   └── LoginForm.tsx       # Login form
+├── lib/                    # Utilities and configurations
+│   └── auth-context.tsx    # Authentication context
+├── services/               # API services
+│   ├── api.ts              # Base HTTP client
+│   └── auth.ts             # Authentication services
+└── types/                  # TypeScript definitions
+    └── auth.ts             # Authentication related types
 ```
+
+## Features
+
+### Authentication
+- Email/password login
+- Guest access (name only)
+- Route protection with middleware
+- Logout with token cleanup
+- Session persistence via cookies
+
+### Dashboard
+- Logged area with user information
+- Statistics cards
+- Current sprint and progress
+- Recent activities
+- Header with user information and logout
+
+### Retrospectives
+- **Boards**: Creation and management of retrospective sessions
+- **Columns**: Organization of feedback categories
+- **Cards**: Individual feedback items with voting system
+- **Blur Mode**: 
+  - Automatically blurs card content
+  - Prevents bias during writing phase
+  - Content becomes visible on hover
+  - Can be enabled/disabled by board creator
+  - Ideal for unbiased feedback collection
+- **Voting**: Democratic feedback prioritization system
+- **Anonymous Mode**: Allows honest feedback through anonymous participation
+
+### UI/UX
+- Responsive design with Tailwind CSS
+- Reusable components
+- Loading states
+- Error handling
+- Visual indicators for guest users
 
 ## Funcionalidades
 
@@ -58,60 +94,67 @@ src/
 - Tratamento de erros
 - Indicadores visuais para usuários convidados
 
-## Configuração
+## Configuration
 
-1. **Instalar dependências**:
+1. **Install dependencies**:
+   
+   ⚠️ **Important**: Run the installation command from the root of the repository:
+   
    ```bash
+   # Go to the root directory of the repository
+   cd ../
+   
+   # Install dependencies for all projects
    yarn install
    ```
 
-2. **Configurar variáveis de ambiente**:
+2. **Configure environment variables**:
    ```bash
    cp .env.example .env.local
    ```
    
-   Edite o arquivo `.env.local` com as configurações:
+   Edit the `.env.local` file with the settings:
    ```
    NEXT_PUBLIC_API_URL=http://localhost:3001
    ```
 
-3. **Executar em desenvolvimento**:
+3. **Run in development**:
    ```bash
    yarn dev
    ```
 
-4. **Build para produção**:
+4. **Build for production**:
    ```bash
    yarn build
    yarn start
    ```
 
-## Integração com API
+## API Integration
 
-A aplicação está configurada para integrar com a API `scrum-app-api` rodando na porta 3001.
+The application is configured to integrate with the `scrum-app-api` API running on port 3001.
 
-### Endpoints utilizados:
-- `POST /auth/guest` - Criar usuário convidado
-- `GET /auth/google` - Iniciar autenticação com Google
-- `GET /auth/google/callback` - Callback do Google OAuth
-- `GET /auth/me` - Obter usuário atual
+### Used endpoints:
+- `POST /auth/guest` - Create guest user
+- `GET /auth/google` - Start Google authentication
+- `GET /auth/google/callback` - Google OAuth callback
+- `GET /auth/me` - Get current user
 
-### Autenticação
-- **Google OAuth**: Login seguro com conta Google via botão "Continuar com Google"
-- **Acesso como Convidado**: Login rápido apenas com nome
-- **Tokens JWT**: Armazenados em cookies com expiração de 24 horas
-- **Interceptors**: Axios adiciona automaticamente o token nos headers
-- **Redirecionamento**: Automático para login em caso de token expirado
-- **Middleware**: Proteção de rotas e redirecionamento baseado em autenticação
+### Authentication
+- **Google OAuth**: Secure login with Google account via "Continue with Google" button
+- **Guest Access**: Quick login with name only
+- **JWT Tokens**: Stored in cookies with 24-hour expiration
+- **Interceptors**: Axios automatically adds token to headers
+- **Redirect**: Automatic redirect to login on token expiration
+- **Middleware**: Route protection and authentication-based redirection
 
-## Scripts Disponíveis
+## Available Scripts
 
-- `yarn dev` - Executa em modo desenvolvimento
-- `yarn build` - Build para produção
-- `yarn start` - Executa a versão de produção
-- `yarn lint` - Executa o linter
+- `yarn dev` - Run in development mode
+- `yarn build` - Build for production
+- `yarn start` - Run production version
+- `yarn lint` - Run linter
 
-## Tecnologias
+## Technologies
 
 - Next.js 15
 - React 19
@@ -123,26 +166,18 @@ A aplicação está configurada para integrar com a API `scrum-app-api` rodando 
 - Lucide React
 - js-cookie
 
-## Fluxo de Autenticação
+## Authentication Flow
 
-1. **Usuário acessa a aplicação**
-2. **Middleware verifica se há token válido**
-3. **Se não autenticado**: redireciona para `/login`
-4. **Na tela de login**: usuário pode escolher entre:
-   - **Google OAuth**: Login com conta Google
-   - **Acesso como convidado**: Login apenas com nome
-5. **Autenticação Google**:
-   - Redirecionamento para Google OAuth
-   - Callback em `/login/callback` com token
-   - Processamento automático do token
-6. **Após autenticação**: redireciona para `/dashboard`
-7. **Token é persistido**: em cookies para manter sessão entre reloads
-8. **Expiração**: Tokens têm duração de 24 horas
-
-## Próximos Passos
-
-- Implementar páginas de equipes e sprints
-- Adicionar funcionalidades de retrospectiva
-- Implementar sistema de notificações
-- Adicionar testes unitários e de integração
-- Configurar CI/CD
+1. **User accesses the application**
+2. **Middleware checks for valid token**
+3. **If not authenticated**: redirects to `/login`
+4. **On login screen**: user can choose between:
+   - **Google OAuth**: Login with Google account
+   - **Guest Access**: Login with name only
+5. **Google Authentication**:
+   - Redirect to Google OAuth
+   - Callback at `/login/callback` with token
+   - Automatic token processing
+6. **After authentication**: redirects to `/dashboard`
+7. **Token is persisted**: in cookies to maintain session between reloads
+8. **Expiration**: Tokens have 24-hour duration

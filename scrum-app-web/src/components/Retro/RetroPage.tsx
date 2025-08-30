@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
-import { Plus, Share2, HatGlasses } from "lucide-react";
+import { Plus, Share2, HatGlasses, EyeOff } from "lucide-react";
 import {
   DndContext,
   closestCenter,
@@ -818,12 +818,48 @@ export default function RetroPage({ boardId }: RetroPageProps) {
     }
   };
 
+  const handleBlurModeToggle = async () => {
+    const newValue = !board.blur_mode;
+
+    const updateBoardData: UpdateBoardData = {
+      blur_mode: newValue,
+    };
+
+    try {
+      if (newValue) {
+        // Ativando modo de desfoque
+        if (
+          window.confirm(
+            "Tem certeza que deseja ativar o modo de desfoque? O conteúdo dos cards ficará borrado até que sejam revelados."
+          )
+        ) {
+          await retroService.updateBoard(board.id, updateBoardData);
+        }
+      } else {
+        // Desativando modo de desfoque
+        if (
+          window.confirm(
+            "Tem certeza que deseja desativar o modo de desfoque? O conteúdo de todos os cards será visível."
+          )
+        ) {
+          await retroService.updateBoard(board.id, updateBoardData);
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao atualizar configurações do board:", error);
+      alert("Erro ao atualizar configurações do board. Tente novamente.");
+      return;
+    }
+  };
+
   const gridColsClass = clsx({
     "grid-cols-1": (board.columns?.length || 0) === 1,
     "grid-cols-2": (board.columns?.length || 0) === 2,
     "grid-cols-3": (board.columns?.length || 0) === 3,
     "grid-cols-4": (board.columns?.length || 0) === 4,
   });
+
+  const canEdit = board.created_by === user?.id;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -854,7 +890,7 @@ export default function RetroPage({ boardId }: RetroPageProps) {
                 <Share2 className="w-4 h-4" />
               </Button>
 
-              {board.can_edit && (
+              {canEdit && (
                 <>
                   <Button
                     variant={board.show_author ? "outline" : "secondary"}
@@ -872,6 +908,24 @@ export default function RetroPage({ boardId }: RetroPageProps) {
                     }
                   >
                     <HatGlasses className="w-4 h-4" />
+                  </Button>
+
+                  <Button
+                    variant={board.blur_mode ? "secondary" : "outline"}
+                    size="sm"
+                    onClick={handleBlurModeToggle}
+                    className={`rounded-full w-10 h-10 p-0 transition-all duration-200 cursor-pointer ${
+                      board.blur_mode
+                        ? "bg-purple-500 hover:bg-purple-600 text-white border-purple-500 shadow-lg shadow-purple-200 dark:shadow-purple-900/20"
+                        : "hover:bg-gray-50 dark:hover:bg-gray-700"
+                    }`}
+                    title={
+                      board.blur_mode
+                        ? "Desabilitar modo de desfoque"
+                        : "Habilitar modo de desfoque"
+                    }
+                  >
+                    <EyeOff className="w-4 h-4" />
                   </Button>
 
                   <Button
@@ -917,7 +971,7 @@ export default function RetroPage({ boardId }: RetroPageProps) {
             <SortableContext
               items={board.columns?.map((col) => col.id) || []}
               strategy={horizontalListSortingStrategy}
-              disabled={!board.can_edit}
+              disabled={!canEdit}
             >
               <div className={`gap-6 pb-6 grid ${gridColsClass}`}>
                 {(board.columns || [])
@@ -938,9 +992,10 @@ export default function RetroPage({ boardId }: RetroPageProps) {
                         maxVotesPerUser: board.max_votes_per_user,
                         showAuthor: board.show_author,
                         allowAnonymous: board.allow_anonymous,
+                        blurMode: board.blur_mode,
                       }}
                       boardPermissions={{
-                        canEdit: board.can_edit,
+                        canEdit: canEdit,
                       }}
                     />
                   ))}

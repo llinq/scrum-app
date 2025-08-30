@@ -21,6 +21,7 @@ interface RetroColumnProps {
     maxVotesPerUser: number;
     showAuthor: boolean;
     allowAnonymous: boolean;
+    blurMode: boolean;
   };
   boardPermissions: {
     canEdit: boolean;
@@ -214,19 +215,7 @@ export default function RetroColumnComponent({
           {(column.cards || []).toReversed().map((card) => (
             <RetroCardComponent
               key={card.id}
-              card={{
-                ...card,
-                // TODO(front-permissions): enquanto a API puder retornar can_edit = false
-                // quando checkPermissions=false, derivamos can_edit no cliente comparando
-                // o usuário logado (user.id) com o author_id do card.
-                // Não anular/remover author_id no DTO do backend até que:
-                // 1) a API sempre preencha can_edit corretamente (checkPermissions=true em todas as respostas); OU
-                // 2) o front deixe de depender de author_id para esta verificação.
-                // Quando uma das condições for atendida, remover esta derivação e usar apenas card.can_edit.
-                can_edit: Boolean(
-                  card.can_edit || (user?.id && user.id === card.author_id)
-                ),
-              }}
+              card={card}
               onDelete={onDeleteCard}
               onVote={onVoteCard}
               boardSettings={boardSettings}

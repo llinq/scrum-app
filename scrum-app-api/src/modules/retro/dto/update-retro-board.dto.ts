@@ -40,6 +40,11 @@ export class UpdateRetroBoardDto {
 
   @IsOptional()
   @IsBoolean({ always: false })
+  @Transform(({ value }) => value === "true" || value === true)
+  blur_mode?: boolean;
+
+  @IsOptional()
+  @IsBoolean({ always: false })
   @Transform(({ value }) => {
     if (value === null || value === undefined || value === "") return undefined;
     return typeof value === "boolean" ? value : Boolean(value);

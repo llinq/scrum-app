@@ -29,14 +29,14 @@ export class RetroBoardResponseDto {
   @ApiProperty({ example: false })
   allow_anonymous: boolean;
 
+  @ApiProperty({ example: false })
+  blur_mode: boolean;
+
   @ApiProperty({ example: true })
   is_active: boolean;
 
   @ApiProperty({ example: null, nullable: true })
   archived_at: Date | null;
-
-  @ApiProperty({ example: false })
-  can_edit: boolean;
 
   static fromEntity(entity: RetroBoard): RetroBoardResponseDto {
     const dto = new RetroBoardResponseDto();
@@ -49,9 +49,9 @@ export class RetroBoardResponseDto {
     dto.max_votes_per_user = entity.max_votes_per_user;
     dto.show_author = entity.show_author;
     dto.allow_anonymous = entity.allow_anonymous;
+    dto.blur_mode = entity.blur_mode;
     dto.is_active = entity.is_active;
     dto.archived_at = entity.archived_at;
-    dto.can_edit = false;
     return dto;
   }
 

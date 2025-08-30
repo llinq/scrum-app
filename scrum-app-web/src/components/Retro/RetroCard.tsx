@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { Heart, MoreVertical, Edit2, Trash2, User } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Heart, Edit2, Trash2, User } from "lucide-react";
 import type { RetroCard } from "../../types/retro";
+import { useAuth } from "@/lib/auth-context";
+import { retroService } from "../../services/retro";
 
 interface RetroCardProps {
   card: RetroCard;
@@ -13,6 +15,7 @@ interface RetroCardProps {
     maxVotesPerUser: number;
     showAuthor: boolean;
     allowAnonymous: boolean;
+    blurMode: boolean;
   };
 }
 
@@ -22,45 +25,56 @@ export default function RetroCardComponent({
   onVote,
   boardSettings,
 }: RetroCardProps) {
-  const [showDropdown, setShowDropdown] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(card.content);
-  const [dropdownPosition, setDropdownPosition] = useState<"bottom" | "top">(
-    "bottom"
-  );
-  const dropdownButtonRef = useRef<HTMLButtonElement>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Calcular posição do dropdown baseado no espaço disponível
-  const calculateDropdownPosition = () => {
-    if (!dropdownButtonRef.current) return;
+  const { user } = useAuth();
 
-    const buttonRect = dropdownButtonRef.current.getBoundingClientRect();
-    const windowHeight = window.innerHeight;
-    const dropdownHeight = 80; // Altura estimada do dropdown (2 items × 40px cada)
-
-    // Se não há espaço suficiente embaixo, abrir para cima
-    if (buttonRect.bottom + dropdownHeight > windowHeight) {
-      setDropdownPosition("top");
-    } else {
-      setDropdownPosition("bottom");
-    }
-  };
-
+  // Posicionar cursor no final do texto quando entrar no modo de edição
   useEffect(() => {
-    if (showDropdown) {
-      calculateDropdownPosition();
+    if (isEditing && textareaRef.current) {
+      const textarea = textareaRef.current;
+      // Aguardar o próximo frame para garantir que o elemento esteja renderizado
+      setTimeout(() => {
+        textarea.focus();
+        // Posicionar cursor no final do texto
+        const length = textarea.value.length;
+        textarea.setSelectionRange(length, length);
+      }, 0);
     }
-  }, [showDropdown]);
+  }, [isEditing]);
 
   const handleEdit = () => {
     setIsEditing(true);
-    setShowDropdown(false);
   };
 
-  const handleSaveEdit = () => {
-    // In a real app, you would call an API to update the card
-    // For now, we'll just close the edit mode
-    setIsEditing(false);
+  const handleSaveEdit = async () => {
+    // Não salvar se o conteúdo estiver vazio ou não tiver mudado
+    if (!editContent.trim() || editContent.trim() === card.content) {
+      setIsEditing(false);
+      setEditContent(card.content);
+      return;
+    }
+
+    try {
+      setIsUpdating(true);
+      
+      // Chama a API para atualizar o card
+      await retroService.updateCard(card.id, { 
+        content: editContent.trim() 
+      });
+
+      // Fechar o modo de edição após sucesso
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Erro ao atualizar card:", error);
+      alert("Erro ao atualizar card. Tente novamente.");
+      // Em caso de erro, mantém o modo de edição
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   const handleCancelEdit = () => {
@@ -80,7 +94,6 @@ export default function RetroCardComponent({
     if (window.confirm("Tem certeza que deseja excluir este card?")) {
       onDelete(card.id);
     }
-    setShowDropdown(false);
   };
 
   const handleVote = () => {
@@ -88,6 +101,7 @@ export default function RetroCardComponent({
   };
 
   const hasVoted = false; // TODO
+  const canEdit = card.author_id === user?.id;
 
   return (
     <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow">
@@ -95,23 +109,31 @@ export default function RetroCardComponent({
         <div className="flex-1 min-w-0">
           {isEditing ? (
             <textarea
+              ref={textareaRef}
               value={editContent}
               onChange={(e) => setEditContent(e.target.value)}
               onBlur={handleSaveEdit}
               onKeyDown={handleKeyDown}
-              className="w-full text-sm text-gray-800 dark:text-gray-200 bg-transparent border border-gray-300 dark:border-gray-600 rounded px-2 py-1 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-text"
-              autoFocus
+              disabled={isUpdating}
+              className="w-full text-sm text-gray-800 dark:text-gray-200 bg-transparent border border-gray-300 dark:border-gray-600 rounded px-2 py-1 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-text disabled:opacity-50 disabled:cursor-not-allowed"
               rows={3}
+              placeholder={isUpdating ? "Salvando..." : "Digite o conteúdo do card"}
             />
           ) : (
-            <p className="text-sm text-gray-800 dark:text-gray-200 leading-relaxed break-words overflow-hidden cursor-default">
+            <p
+              className={`text-sm text-gray-800 dark:text-gray-200 leading-relaxed break-words overflow-hidden transition-all duration-300 ${
+                boardSettings.blurMode
+                  ? "blur-sm select-none"
+                  : ""
+              }`}
+            >
               {card.content}
             </p>
           )}
 
           <div className="flex items-center gap-1 mt-2 text-xs text-gray-500 dark:text-gray-400">
             <User className="w-3 h-3" />
-            <span>{boardSettings.showAuthor ? card.author_name : "~"}</span>
+            <span>{boardSettings.showAuthor ? card.author_name : ""}</span>
           </div>
         </div>
 
@@ -119,11 +141,12 @@ export default function RetroCardComponent({
           {boardSettings.allowVoting && (
             <button
               onClick={handleVote}
-              className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-1 cursor-pointer ${
+              className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-1 cursor-pointer transition-colors ${
                 hasVoted
                   ? "text-red-500 hover:text-red-600"
                   : "text-gray-400 hover:text-red-500"
               }`}
+              title="Votar neste card"
             >
               <Heart className={`w-4 h-4 ${hasVoted ? "fill-current" : ""}`} />
               {card.votes_count > 0 && (
@@ -132,55 +155,34 @@ export default function RetroCardComponent({
             </button>
           )}
 
-          {card.can_edit && (
-            <div className="relative">
+          {canEdit && (
+            <>
               <button
-                ref={dropdownButtonRef}
-                onClick={() => setShowDropdown(!showDropdown)}
-                className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                onClick={handleEdit}
+                className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 cursor-pointer transition-colors"
+                title="Editar card"
               >
-                <MoreVertical className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                <Edit2 className="w-4 h-4" />
               </button>
-
-              {showDropdown && (
-                <div
-                  className={`absolute right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-20 min-w-32 ${
-                    dropdownPosition === "top" ? "bottom-6" : "top-6"
-                  }`}
-                >
-                  <button
-                    onClick={handleEdit}
-                    className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 text-gray-700 dark:text-gray-300 cursor-pointer"
-                  >
-                    <Edit2 className="w-3 h-3" />
-                    Editar
-                  </button>
-                  <button
-                    onClick={handleDelete}
-                    className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 flex items-center gap-2 cursor-pointer"
-                  >
-                    <Trash2 className="w-3 h-3" />
-                    Excluir
-                  </button>
-                </div>
-              )}
-            </div>
+              <button
+                onClick={handleDelete}
+                className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 cursor-pointer transition-colors"
+                title="Excluir card"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            </>
           )}
         </div>
       </div>
 
       {isEditing && (
         <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-          Pressione Ctrl+Enter para salvar ou Esc para cancelar
+          {isUpdating 
+            ? "Salvando alterações..." 
+            : "Pressione Ctrl+Enter para salvar ou Esc para cancelar"
+          }
         </div>
-      )}
-
-      {/* Backdrop to close dropdown */}
-      {showDropdown && (
-        <div
-          className="fixed inset-0 z-5"
-          onClick={() => setShowDropdown(false)}
-        />
       )}
     </div>
   );
