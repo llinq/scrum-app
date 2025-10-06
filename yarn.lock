@@ -41,6 +41,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@angular-devkit/core@npm:19.2.17":
+  version: 19.2.17
+  resolution: "@angular-devkit/core@npm:19.2.17"
+  dependencies:
+    ajv: "npm:8.17.1"
+    ajv-formats: "npm:3.0.1"
+    jsonc-parser: "npm:3.3.1"
+    picomatch: "npm:4.0.2"
+    rxjs: "npm:7.8.1"
+    source-map: "npm:0.7.4"
+  peerDependencies:
+    chokidar: ^4.0.0
+  peerDependenciesMeta:
+    chokidar:
+      optional: true
+  checksum: 10c0/721c34da992e7060156c1e523703f754b64524d0212efbbdf9a88ef794ef3c9ebb8e8994743f013c3b99c0a9201362ed2a8ecc2979a1bb72a02b2a6cd4887699
+  languageName: node
+  linkType: hard
+
 "@angular-devkit/schematics-cli@npm:19.2.15":
   version: 19.2.15
   resolution: "@angular-devkit/schematics-cli@npm:19.2.15"
@@ -67,6 +86,19 @@ __metadata:
     ora: "npm:5.4.1"
     rxjs: "npm:7.8.1"
   checksum: 10c0/363ae06957c1e05a00351c283f00da113d71a9e621f9233146601db936a329f95772867ca09c7693d7db4eec8c6c1756048984e6a299515e7f164f874ea8d3a4
+  languageName: node
+  linkType: hard
+
+"@angular-devkit/schematics@npm:19.2.17":
+  version: 19.2.17
+  resolution: "@angular-devkit/schematics@npm:19.2.17"
+  dependencies:
+    "@angular-devkit/core": "npm:19.2.17"
+    jsonc-parser: "npm:3.3.1"
+    magic-string: "npm:0.30.17"
+    ora: "npm:5.4.1"
+    rxjs: "npm:7.8.1"
+  checksum: 10c0/393d2148f2a75efdeeadad7cb47bb55cf490c56928cec5f9acb18cd8098aa7a8de48e6e8f5063431a6fd7df569e0fb75bb0cfeb8a9a6e7924e6be625e1779b6f
   languageName: node
   linkType: hard
 
@@ -1916,7 +1948,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/schematics@npm:^11.0.1, @nestjs/schematics@npm:^11.0.7":
+"@nestjs/schematics@npm:^11.0.1":
   version: 11.0.7
   resolution: "@nestjs/schematics@npm:11.0.7"
   dependencies:
@@ -1928,6 +1960,21 @@ __metadata:
   peerDependencies:
     typescript: ">=4.8.2"
   checksum: 10c0/fb40b4cb7c39a82a1dcc2936b1d05ed30897184e77de89a05e25448e5d718d212f96f4a56c09550f13d404ce54e760b83aad6b8b049fa791de937bbbf3b979f9
+  languageName: node
+  linkType: hard
+
+"@nestjs/schematics@npm:^11.0.8":
+  version: 11.0.8
+  resolution: "@nestjs/schematics@npm:11.0.8"
+  dependencies:
+    "@angular-devkit/core": "npm:19.2.17"
+    "@angular-devkit/schematics": "npm:19.2.17"
+    comment-json: "npm:4.4.1"
+    jsonc-parser: "npm:3.3.1"
+    pluralize: "npm:8.0.0"
+  peerDependencies:
+    typescript: ">=4.8.2"
+  checksum: 10c0/c7ee6e9f6048bb1a9c003fca9c237bf71895e25c98e4903f76037a7d5468cc6865ccbb22b4210dabec1eeb08695e336515721f4aeb801f0c5b91ac29ac5f2509
   languageName: node
   linkType: hard
 
@@ -4671,6 +4718,17 @@ __metadata:
     has-own-prop: "npm:^2.0.0"
     repeat-string: "npm:^1.6.1"
   checksum: 10c0/e22f13f18fcc484ac33c8bc02a3d69c3f9467ae5063fdfb3df7735f83a8d9a2cab6a32b7d4a0c53123413a9577de8e17c8cc88369c433326799558febb34ef9c
+  languageName: node
+  linkType: hard
+
+"comment-json@npm:4.4.1":
+  version: 4.4.1
+  resolution: "comment-json@npm:4.4.1"
+  dependencies:
+    array-timsort: "npm:^1.0.3"
+    core-util-is: "npm:^1.0.3"
+    esprima: "npm:^4.0.1"
+  checksum: 10c0/be6a197132543a3c286c725af412d582882c1eaf450cb124e4148e7542449f216aa717e7be81989f8b8cfe3e38a6f9bc06d209351b8ea82514cafc8feec11a2d
   languageName: node
   linkType: hard
 
@@ -9812,7 +9870,7 @@ __metadata:
     "@nestjs/passport": "npm:^11.0.5"
     "@nestjs/platform-express": "npm:^11.1.6"
     "@nestjs/platform-socket.io": "npm:^11.1.6"
-    "@nestjs/schematics": "npm:^11.0.7"
+    "@nestjs/schematics": "npm:^11.0.8"
     "@nestjs/swagger": "npm:^11.2.0"
     "@nestjs/testing": "npm:^11.1.6"
     "@nestjs/typeorm": "npm:^11.0.0"
