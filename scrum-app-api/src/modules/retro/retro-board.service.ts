@@ -5,13 +5,15 @@ import {
 } from "@nestjs/common";
 import { RetroBoardRepository } from "./retro-board.repository";
 import { RetroColumnRepository } from "./retro-column.repository";
+import { RetroWebSocketGateway } from "./retro-websocket.gateway";
 import { CreateRetroBoardDto, UpdateRetroBoardDto, RetroBoardResponseDto } from "./dto";
 
 @Injectable()
 export class RetroBoardService {
   constructor(
     private readonly boardRepository: RetroBoardRepository,
-    private readonly columnRepository: RetroColumnRepository
+    private readonly columnRepository: RetroColumnRepository,
+    private readonly retroWebSocketGateway: RetroWebSocketGateway
   ) {}
 
   async create(
@@ -75,6 +77,7 @@ export class RetroBoardService {
       throw new ForbiddenException("You can only delete your own retro boards");
     }
 
+    this.retroWebSocketGateway.emitBoardDeleted(id);
     await this.boardRepository.delete(id);
   }
 
