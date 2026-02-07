@@ -330,7 +330,7 @@ export default function RetroPage({ boardId }: RetroPageProps) {
       onBoardDeleted: (deletedBoardId: string) => {
         if (deletedBoardId === boardId) {
           alert("Esta retrospectiva foi excluída pelo proprietário.");
-          router.push("/retro");
+          window.location.href = "/retro";
         }
       },
 
