@@ -34,7 +34,7 @@ export default function LoginForm() {
     try {
       const response = await authService.createGuestUser(data);
       setUser(response.user);
-      router.push('/dashboard');
+      router.push('/home');
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
       setError(error.response?.data?.message || 'Erro ao acessar como convidado');

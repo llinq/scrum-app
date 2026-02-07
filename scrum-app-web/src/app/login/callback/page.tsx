@@ -14,7 +14,7 @@ function LoginCallback() {
     if (token) {
       processGoogleToken(token).then(() => {
         // Remove o token da URL após processar
-        router.replace("/dashboard");
+        router.replace("/home");
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

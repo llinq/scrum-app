@@ -164,6 +164,10 @@ export class RetroWebSocketGateway
     this.server.to(`board:${boardId}`).emit("board-updated", { board });
   }
 
+  emitBoardDeleted(boardId: string) {
+    this.server.to(`board:${boardId}`).emit("board-deleted", { boardId });
+  }
+
   private joinBoard(boardId: string, userId: string) {
     if (!this.connectedUsers.has(boardId)) {
       this.connectedUsers.set(boardId, new Set());

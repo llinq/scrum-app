@@ -2,7 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Calendar, Users, ArrowRight, Settings } from "lucide-react";
+import {
+  Plus,
+  Calendar,
+  ArrowRight,
+  Settings,
+  Trash2,
+} from "lucide-react";
 import { RetroBoard } from "../../types/retro";
 import { retroService } from "../../services/retro";
 import Button from "../../components/Button";
@@ -27,8 +33,8 @@ export default function RetroListPage() {
         const boardsData = await retroService.getMyBoards();
         setBoards(boardsData);
       } catch (err) {
-        console.error('Erro ao carregar boards:', err);
-        setError('Erro ao carregar retrospectivas. Tente novamente.');
+        console.error("Erro ao carregar boards:", err);
+        setError("Erro ao carregar retrospectivas. Tente novamente.");
       } finally {
         setIsLoading(false);
       }
@@ -43,7 +49,7 @@ export default function RetroListPage() {
 
   const handleCreateRetro = async (retroName: string) => {
     setIsCreating(true);
-    
+
     try {
       const newBoard = await retroService.createBoard({
         title: retroName,
@@ -55,25 +61,33 @@ export default function RetroListPage() {
 
       setBoards((prev) => [newBoard, ...prev]);
       setShowCreateModal(false);
-      
+
       // Navigate to the new board
       router.push(`/retro/${newBoard.id}`);
     } catch (error) {
-      console.error('Erro ao criar retrospectiva:', error);
-      setError('Erro ao criar retrospectiva. Tente novamente.');
+      console.error("Erro ao criar retrospectiva:", error);
+      setError("Erro ao criar retrospectiva. Tente novamente.");
     } finally {
       setIsCreating(false);
     }
   };
 
-  const getTotalCards = (board: RetroBoard) => {
-    return board.columns?.reduce((total, col) => total + (col.cards?.length || 0), 0) || 0;
-  };
+  const handleDeleteBoard = async (e: React.MouseEvent, boardId: string) => {
+    e.stopPropagation();
 
-  const getTotalVotes = (board: RetroBoard) => {
-    return board.columns
-      ?.flatMap((col) => col.cards || [])
-      .reduce((total, card) => total + (card?.votes_count || 0), 0) || 0;
+    if (
+      confirm(
+        "Tem certeza que deseja excluir esta retrospectiva? Todos os dados serão perdidos.",
+      )
+    ) {
+      try {
+        await retroService.deleteBoard(boardId);
+        setBoards((prev) => prev.filter((b) => b.id !== boardId));
+      } catch (err) {
+        console.error("Erro ao excluir retrospectiva:", err);
+        alert("Erro ao excluir retrospectiva. Tente novamente.");
+      }
+    }
   };
 
   if (isLoading) {
@@ -102,9 +116,7 @@ export default function RetroListPage() {
                 <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
                   Erro ao carregar retrospectivas
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-6">
-                  {error}
-                </p>
+                <p className="text-gray-600 dark:text-gray-400 mb-6">{error}</p>
                 <Button onClick={() => window.location.reload()}>
                   Tentar novamente
                 </Button>
@@ -148,8 +160,8 @@ export default function RetroListPage() {
                   Nenhuma retrospectiva ainda
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400 mb-6">
-                  Crie sua primeira retrospectiva para começar a coletar feedback
-                  da equipe.
+                  Crie sua primeira retrospectiva para começar a coletar
+                  feedback da equipe.
                 </p>
                 <Button onClick={handleCreateBoard}>
                   <Plus className="w-5 h-5" />
@@ -172,29 +184,22 @@ export default function RetroListPage() {
                           {board.title}
                         </h3>
                       </div>
+                      <button
+                        className="cursor-pointer text-gray-400 hover:text-red-500 "
+                        onClick={(e) => handleDeleteBoard(e, board.id)}
+                        title="Excluir retrospectiva"
+                        aria-label="Excluir retrospectiva"
+                      >
+                        <Trash2 className="w-4 h-4x" />
+                      </button>
                     </div>
 
-                    <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 mb-4">
+                    <div className="flex items-center justify-between gap-4 text-sm text-gray-500 dark:text-gray-400">
                       <div className="flex items-center gap-1">
                         <Calendar className="w-4 h-4" />
-                        <span>{new Date(board.created_at).toLocaleDateString()}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Users className="w-4 h-4" />
-                        <span>{board.columns?.length || 0} colunas</span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex gap-4 text-sm">
-                        <span className="text-gray-600 dark:text-gray-400">
-                          {getTotalCards(board)} cards
+                        <span>
+                          {new Date(board.created_at).toLocaleDateString()}
                         </span>
-                        {board.allow_voting && (
-                          <span className="text-gray-600 dark:text-gray-400">
-                            {getTotalVotes(board)} votos
-                          </span>
-                        )}
                       </div>
 
                       <ArrowRight className="w-4 h-4 text-gray-400 dark:text-gray-500 group-hover:text-blue-500 transition-colors" />

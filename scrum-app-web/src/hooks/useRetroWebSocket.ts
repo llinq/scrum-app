@@ -12,6 +12,7 @@ interface WebSocketEvents {
   onColumnDeleted?: (columnId: string) => void;
   onColumnsReordered?: (columns: RetroColumn[]) => void;
   onBoardUpdated?: (board: RetroBoard) => void;
+  onBoardDeleted?: (boardId: string) => void;
   onActiveUsersUpdated?: (userIds: string[]) => void;
 }
 
@@ -156,6 +157,11 @@ export function useRetroWebSocket(
     socket.on("board-updated", ({ board }: { board: RetroBoard }) => {
       console.log("Board updated event received:", board);
       eventsRef.current.onBoardUpdated?.(board);
+    });
+
+    socket.on("board-deleted", ({ boardId }: { boardId: string }) => {
+      console.log("Board deleted event received:", boardId);
+      eventsRef.current.onBoardDeleted?.(boardId);
     });
 
     socket.on("active-users-updated", ({ userIds }: { userIds: string[] }) => {

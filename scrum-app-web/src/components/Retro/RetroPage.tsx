@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { Plus, Share2, HatGlasses, EyeOff } from "lucide-react";
 import {
   DndContext,
@@ -39,6 +40,7 @@ interface RetroPageProps {
 const MAX_COLUMNS = 4;
 
 export default function RetroPage({ boardId }: RetroPageProps) {
+  const router = useRouter();
   const [board, setBoard] = useState<RetroBoard | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -323,6 +325,13 @@ export default function RetroPage({ boardId }: RetroPageProps) {
             columns: prevBoard.columns, // Keep existing columns data
           };
         });
+      },
+
+      onBoardDeleted: (deletedBoardId: string) => {
+        if (deletedBoardId === boardId) {
+          alert("Esta retrospectiva foi excluída pelo proprietário.");
+          window.location.href = "/retro";
+        }
       },
 
       // onActiveUsersUpdated: (userIds: string[]) => {
