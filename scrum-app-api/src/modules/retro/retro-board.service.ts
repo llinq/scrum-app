@@ -77,6 +77,7 @@ export class RetroBoardService {
       throw new ForbiddenException("You can only delete your own retro boards");
     }
 
+    this.retroWebSocketGateway.emitBoardDeleted(id);
     await this.boardRepository.delete(id);
     this.retroWebSocketGateway.emitBoardDeleted(id);
   }
