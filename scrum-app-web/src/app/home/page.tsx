@@ -7,7 +7,7 @@ import Card from '@/components/Card';
 import { useRouter } from "next/navigation";
 import { MessageSquare, Kanban, Clock } from 'lucide-react';
 
-export default function DashboardPage() {
+export default function HomePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
 
