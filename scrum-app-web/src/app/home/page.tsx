@@ -7,7 +7,7 @@ import Card from '@/components/Card';
 import { useRouter } from "next/navigation";
 import { MessageSquare, Kanban, Clock } from 'lucide-react';
 
-export default function DashboardPage() {
+export default function HomePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
 
@@ -51,7 +51,15 @@ export default function DashboardPage() {
           {/* Card de Retrospectivas */}
           <div 
             className="cursor-pointer group"
+            role="button"
+            tabIndex={0}
             onClick={() => handleNavigate('/retro')}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleNavigate('/retro');
+              }
+            }}
           >
             <Card className="p-4 hover:shadow-md transition-shadow h-full border border-gray-200 dark:border-gray-700 relative overflow-hidden">
                <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-blue-500/10 to-transparent rounded-bl-full -mr-8 -mt-8 transition-all group-hover:scale-150"></div>

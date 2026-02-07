@@ -188,6 +188,7 @@ export default function RetroListPage() {
                         className="cursor-pointer text-gray-400 hover:text-red-500 "
                         onClick={(e) => handleDeleteBoard(e, board.id)}
                         title="Excluir retrospectiva"
+                        aria-label="Excluir retrospectiva"
                       >
                         <Trash2 className="w-4 h-4x" />
                       </button>

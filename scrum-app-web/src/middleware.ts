@@ -12,7 +12,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  // Se está autenticado e tentando acessar login ou root, redireciona para dashboard
+  // Se está autenticado e tentando acessar login ou root, redireciona para /home
   if (token && (isAuthPage || isRootPage)) {
     return NextResponse.redirect(new URL("/home", request.url));
   }

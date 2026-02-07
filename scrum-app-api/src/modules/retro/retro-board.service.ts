@@ -79,6 +79,7 @@ export class RetroBoardService {
 
     this.retroWebSocketGateway.emitBoardDeleted(id);
     await this.boardRepository.delete(id);
+    this.retroWebSocketGateway.emitBoardDeleted(id);
   }
 
   async archive(id: string, userId: string): Promise<RetroBoardResponseDto> {
