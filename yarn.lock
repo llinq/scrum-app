@@ -8957,12 +8957,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lucide-react@npm:^0.542.0":
-  version: 0.542.0
-  resolution: "lucide-react@npm:0.542.0"
+"lucide-react@npm:^0.563.0":
+  version: 0.563.0
+  resolution: "lucide-react@npm:0.563.0"
   peerDependencies:
     react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10c0/3ccdb898a480f0194f93abef0b6f0347bc2647db24051e65a17c1dbd22ca0d10a7636d9af68c92665b42b6c9e761567a0d65944fe8568fb0e30a7ea57281ccec
+  checksum: 10c0/4a2027be255755d64ce18040062426dec07a5da920c000d9cd330e383fa10716a584c927dc03e91daccc6e05f6f486d4f49d1bd009e5f7763aa6fcf704806554
   languageName: node
   linkType: hard
 
@@ -10765,7 +10765,7 @@ __metadata:
     globals: "npm:^16.5.0"
     jest: "npm:^30.2.0"
     js-cookie: "npm:^3.0.5"
-    lucide-react: "npm:^0.542.0"
+    lucide-react: "npm:^0.563.0"
     next: "npm:^15.5.12"
     next-auth: "npm:^4.24.13"
     passport: "npm:^0.7.0"
