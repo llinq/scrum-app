@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
   const token = request.cookies.get("auth-token");
   const isAuthPage = request.nextUrl.pathname.startsWith("/login");
-  const isProtectedPage = request.nextUrl.pathname.startsWith("/dashboard");
+  const isProtectedPage = request.nextUrl.pathname.startsWith("/home");
   const isRootPage = request.nextUrl.pathname === "/";
 
   // Se está tentando acessar uma página protegida sem token
@@ -14,7 +14,7 @@ export function middleware(request: NextRequest) {
 
   // Se está autenticado e tentando acessar login ou root, redireciona para dashboard
   if (token && (isAuthPage || isRootPage)) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    return NextResponse.redirect(new URL("/home", request.url));
   }
 
   // Se está na raiz sem token, redireciona para login
