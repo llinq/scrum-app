@@ -74,11 +74,31 @@ export class AuthController {
     const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
     const callbackUrl = `/login/callback?token=${token}`;
     
-    // Se houver um state (callbackUrl), adiciona como parâmetro
-    if (state) {
+    // Se houver um state (callbackUrl), valida e adiciona como parâmetro
+    if (state && this.isValidCallbackUrl(decodeURIComponent(state))) {
       return res.redirect(`${frontendUrl}${callbackUrl}&callbackUrl=${encodeURIComponent(state)}`);
     }
     
     return res.redirect(`${frontendUrl}${callbackUrl}`);
+  }
+
+  // Validate callback URL to prevent open redirect vulnerability
+  private isValidCallbackUrl(url: string): boolean {
+    // Must be a relative path starting with /
+    if (!url.startsWith('/')) {
+      return false;
+    }
+    
+    // Must not contain // (to prevent protocol-relative URLs like //evil.com)
+    if (url.includes('//')) {
+      return false;
+    }
+    
+    // Must not contain backslashes (to prevent bypass attempts)
+    if (url.includes('\\')) {
+      return false;
+    }
+    
+    return true;
   }
 }
