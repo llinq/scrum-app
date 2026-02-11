@@ -2624,6 +2624,14 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@scrum-app/shared@workspace:*, @scrum-app/shared@workspace:scrum-app-shared":
+  version: 0.0.0-use.local
+  resolution: "@scrum-app/shared@workspace:scrum-app-shared"
+  dependencies:
+    typescript: "npm:^5.9.3"
+  languageName: unknown
+  linkType: soft
+
 "@sinclair/typebox@npm:^0.34.0":
   version: 0.34.40
   resolution: "@sinclair/typebox@npm:0.34.40"
@@ -10724,6 +10732,7 @@ __metadata:
     "@nestjs/swagger": "npm:^11.2.6"
     "@nestjs/typeorm": "npm:^11.0.0"
     "@nestjs/websockets": "npm:^11.1.13"
+    "@scrum-app/shared": "workspace:*"
     class-transformer: "npm:^0.5.1"
     class-validator: "npm:^0.14.3"
     passport: "npm:^0.7.0"
@@ -10746,6 +10755,7 @@ __metadata:
     "@dnd-kit/sortable": "npm:^10.0.0"
     "@dnd-kit/utilities": "npm:^3.2.2"
     "@hookform/resolvers": "npm:^5.2.2"
+    "@scrum-app/shared": "workspace:*"
     axios: "npm:^1.13.4"
     clsx: "npm:^2.1.1"
     js-cookie: "npm:^3.0.5"

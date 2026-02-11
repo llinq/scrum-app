@@ -10,7 +10,7 @@ import Button from '@/components/Button';
 import Card, { CardHeader, CardContent } from '@/components/Card';
 import { authService } from '@/services/auth';
 import { useAuth } from '@/lib/auth-context';
-import { isValidCallbackUrl } from '@/lib/url-validation';
+import { isValidCallbackUrl } from '@scrum-app/shared';
 
 const guestSchema = z.object({
   name: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres'),

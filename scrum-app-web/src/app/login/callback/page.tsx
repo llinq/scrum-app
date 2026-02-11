@@ -3,7 +3,7 @@
 import React, { Suspense, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter, useSearchParams } from "next/navigation";
-import { isValidCallbackUrl } from "@/lib/url-validation";
+import { isValidCallbackUrl } from "@scrum-app/shared";
 
 function LoginCallback() {
   const { processGoogleToken, loading } = useAuth();

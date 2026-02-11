@@ -18,6 +18,7 @@ import { GoogleAuthGuard } from "../../common/guards/google-auth.guard";
 import { CurrentUser } from "src/common/decorators";
 import { IUser } from "../user/user.entity";
 import { UserService } from "../user/user.service";
+import { isValidCallbackUrl } from "@scrum-app/shared";
 
 @ApiTags("Authentication")
 @Controller("auth")
@@ -76,31 +77,11 @@ export class AuthController {
     const callbackUrl = `/login/callback?token=${token}`;
     
     // Se houver um state (callbackUrl), valida e adiciona como parâmetro
-    if (state && this.isValidCallbackUrl(state)) {
+    if (state && isValidCallbackUrl(state)) {
       // Re-encode for URL transmission
       return res.redirect(`${frontendUrl}${callbackUrl}&callbackUrl=${encodeURIComponent(state)}`);
     }
     
     return res.redirect(`${frontendUrl}${callbackUrl}`);
-  }
-
-  // Validate callback URL to prevent open redirect vulnerability
-  private isValidCallbackUrl(url: string): boolean {
-    // Must be a relative path starting with /
-    if (!url.startsWith('/')) {
-      return false;
-    }
-    
-    // Must not contain // (to prevent protocol-relative URLs like //evil.com)
-    if (url.includes('//')) {
-      return false;
-    }
-    
-    // Must not contain backslashes (to prevent bypass attempts)
-    if (url.includes('\\')) {
-      return false;
-    }
-    
-    return true;
   }
 }

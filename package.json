@@ -5,7 +5,8 @@
   "packageManager": "yarn@4.9.4",
   "workspaces": [
     "scrum-app-api",
-    "scrum-app-web"
+    "scrum-app-web",
+    "scrum-app-shared"
   ],
   "scripts": {
     "start": "concurrently \"yarn start:api\" \"yarn start:web\"",
