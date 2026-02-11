@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import Card, { CardHeader, CardContent } from '@/components/Card';
@@ -21,7 +21,9 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { setUser } = useAuth();
+  const callbackUrl = searchParams.get('callbackUrl') || '/home';
 
   const guestForm = useForm<GuestFormData>({
     resolver: zodResolver(guestSchema),
@@ -34,7 +36,7 @@ export default function LoginForm() {
     try {
       const response = await authService.createGuestUser(data);
       setUser(response.user);
-      router.push('/home');
+      router.push(callbackUrl);
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
       setError(error.response?.data?.message || 'Erro ao acessar como convidado');
@@ -45,7 +47,12 @@ export default function LoginForm() {
 
   const handleGoogleLogin = () => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-    window.location.href = `${apiUrl}/auth/google`;
+    // Passa o callbackUrl como state para ser recuperado após o OAuth
+    const googleAuthUrl = new URL(`${apiUrl}/auth/google`);
+    if (callbackUrl !== '/home') {
+      googleAuthUrl.searchParams.set('state', encodeURIComponent(callbackUrl));
+    }
+    window.location.href = googleAuthUrl.toString();
   };
 
   return (

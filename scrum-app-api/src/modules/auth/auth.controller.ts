@@ -7,9 +7,10 @@ import {
   Get,
   UseGuards,
   Res,
+  Req,
 } from "@nestjs/common";
 import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
-import { Response } from "express";
+import { Response, Request } from "express";
 import { AuthService } from "./auth.service";
 import { CreateGuestUserDto } from "../user/dto/create-guest-user.dto";
 import { JwtAuthGuard } from "../../common/guards/jwt-auth.guard";
@@ -54,16 +55,30 @@ export class AuthController {
     status: 302,
     description: "Redirecionamento para Google OAuth",
   })
-  async googleAuth() { }
+  async googleAuth() { 
+    // Passport will automatically handle the state parameter from query string
+  }
 
   @Get("google/callback")
   @UseGuards(GoogleAuthGuard)
   @ApiOperation({ summary: "Callback do Google OAuth" })
   @ApiResponse({ status: 200, description: "Autenticação bem-sucedida" })
-  async googleAuthRedirect(@CurrentUser() user: IUser, @Res() res: Response) {
+  async googleAuthRedirect(
+    @CurrentUser() user: IUser,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
     const token = await this.authService.generateToken(user.id);
+    const state = (req.query.state as string) || '';
 
     const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
-    return res.redirect(`${frontendUrl}/login/callback?token=${token}`);
+    const callbackUrl = `/login/callback?token=${token}`;
+    
+    // Se houver um state (callbackUrl), adiciona como parâmetro
+    if (state) {
+      return res.redirect(`${frontendUrl}${callbackUrl}&callbackUrl=${encodeURIComponent(state)}`);
+    }
+    
+    return res.redirect(`${frontendUrl}${callbackUrl}`);
   }
 }

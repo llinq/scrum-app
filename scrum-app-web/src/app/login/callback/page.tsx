@@ -9,12 +9,13 @@ function LoginCallback() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
+  const callbackUrl = searchParams.get("callbackUrl") || "/home";
 
   useEffect(() => {
     if (token) {
       processGoogleToken(token).then(() => {
-        // Remove o token da URL após processar
-        router.replace("/home");
+        // Redireciona para a URL original ou /home
+        router.replace(callbackUrl);
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
