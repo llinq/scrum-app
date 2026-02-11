@@ -9,6 +9,7 @@ import {
   DEFAULT_TWITTER,
 } from "@/lib/metadata";
 import { SoftwareApplicationJsonLd } from "@/components/SoftwareApplicationJsonLd";
+import Footer from "@/components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -64,11 +65,14 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
         <SoftwareApplicationJsonLd />
         <AuthProvider>
-          {children}
+          <div className="flex-grow">
+            {children}
+          </div>
+          <Footer />
         </AuthProvider>
       </body>
     </html>
