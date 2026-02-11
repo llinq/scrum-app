@@ -118,7 +118,7 @@ export default function RetroColumnComponent({
     <div
       ref={setSortableNodeRef}
       style={sortableStyle}
-      className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border-2 border-gray-200 dark:border-gray-700 min-w-40 flex flex-col"
+      className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border-2 border-gray-200 dark:border-gray-700 min-w-[280px] sm:min-w-[320px] w-full flex flex-col"
     >
       {/* Column Header */}
       <div className="p-4 border-b border-gray-200 dark:border-gray-700">
@@ -161,7 +161,7 @@ export default function RetroColumnComponent({
               </button>
 
               {showDropdown && (
-                <div className="absolute right-0 top-8 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-10 min-w-40">
+                <div className="absolute right-0 top-8 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50 min-w-[10rem]">
                   <button
                     onClick={handleEditTitle}
                     className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 text-gray-700 dark:text-gray-300 cursor-pointer"
