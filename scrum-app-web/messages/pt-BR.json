@@ -1,0 +1,67 @@
+{
+  "common": {
+    "home": "Home",
+    "retrospectives": "Retrospectivas",
+    "logout": "Sair",
+    "guest": "Convidado",
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso",
+    "cancel": "Cancelar",
+    "save": "Salvar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "create": "Criar",
+    "close": "Fechar",
+    "back": "Voltar",
+    "next": "Próximo",
+    "previous": "Anterior",
+    "comingSoon": "Em breve"
+  },
+  "login": {
+    "title": "Scrum App",
+    "subtitle": "Entre com Google ou continue como convidado",
+    "accessAccount": "Acesse sua conta",
+    "continueWithGoogle": "Continuar com Google",
+    "orContinueAsGuest": "ou continue como convidado",
+    "yourName": "Seu nome",
+    "namePlaceholder": "Como você gostaria de ser chamado?",
+    "accessAsGuest": "Acessar como convidado",
+    "nameMinLength": "Nome deve ter pelo menos 2 caracteres",
+    "guestAccessError": "Erro ao acessar como convidado"
+  },
+  "home": {
+    "title": "Console Principal",
+    "welcome": "Bem-vindo, {name}. Selecione um serviço para começar.",
+    "agilityServices": "Serviços de Agilidade",
+    "retrospectives": {
+      "title": "Retrospectivas",
+      "description": "Cerimônia de melhoria contínua com votação e ações."
+    },
+    "planningPoker": {
+      "title": "Planning Poker",
+      "description": "Estimativa colaborativa de tarefas e user stories."
+    },
+    "dailyStandup": {
+      "title": "Daily Standup",
+      "description": "Sincronização diária rápida e remoção de impedimentos."
+    }
+  },
+  "footer": {
+    "language": "Idioma",
+    "selectLanguage": "Selecione o idioma"
+  },
+  "metadata": {
+    "title": "Scrum App - Retrospectivas Ágeis em Tempo Real",
+    "titleTemplate": "%s | Scrum App",
+    "description": "Facilite suas cerimônias Scrum com ferramentas colaborativas em tempo real. Retrospectivas, votações e muito mais para equipes ágeis.",
+    "home": {
+      "title": "Dashboard - Suas Ferramentas Ágeis",
+      "description": "Acesse suas ferramentas ágeis e gerencie suas cerimônias Scrum."
+    },
+    "login": {
+      "title": "Login - Acesse suas Retrospectivas",
+      "description": "Entre para acessar suas retrospectivas e ferramentas ágeis."
+    }
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "common": {
+    "home": "Home",
+    "retrospectives": "Retrospectives",
+    "logout": "Logout",
+    "guest": "Guest",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "comingSoon": "Coming soon"
+  },
+  "login": {
+    "title": "Scrum App",
+    "subtitle": "Sign in with Google or continue as guest",
+    "accessAccount": "Access your account",
+    "continueWithGoogle": "Continue with Google",
+    "orContinueAsGuest": "or continue as guest",
+    "yourName": "Your name",
+    "namePlaceholder": "What would you like to be called?",
+    "accessAsGuest": "Access as guest",
+    "nameMinLength": "Name must be at least 2 characters",
+    "guestAccessError": "Error accessing as guest"
+  },
+  "home": {
+    "title": "Main Console",
+    "welcome": "Welcome, {name}. Select a service to get started.",
+    "agilityServices": "Agility Services",
+    "retrospectives": {
+      "title": "Retrospectives",
+      "description": "Continuous improvement ceremony with voting and actions."
+    },
+    "planningPoker": {
+      "title": "Planning Poker",
+      "description": "Collaborative estimation of tasks and user stories."
+    },
+    "dailyStandup": {
+      "title": "Daily Standup",
+      "description": "Quick daily synchronization and impediment removal."
+    }
+  },
+  "footer": {
+    "language": "Language",
+    "selectLanguage": "Select language"
+  },
+  "metadata": {
+    "title": "Scrum App - Real-Time Agile Retrospectives",
+    "titleTemplate": "%s | Scrum App",
+    "description": "Facilitate your Scrum ceremonies with real-time collaborative tools. Retrospectives, voting, and more for agile teams.",
+    "home": {
+      "title": "Dashboard - Your Agile Tools",
+      "description": "Access your agile tools and manage your Scrum ceremonies."
+    },
+    "login": {
+      "title": "Login - Access Your Retrospectives",
+      "description": "Sign in to access your retrospectives and agile tools."
+    }
+  }
+}

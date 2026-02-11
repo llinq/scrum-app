@@ -4,10 +4,12 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { LogOut, User as UserIcon, Home, RotateCcw, Menu, X } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
+import { useTranslations } from 'next-intl';
 import Button from '@/components/Button';
 
 export default function Header() {
   const { user, logout } = useAuth();
+  const t = useTranslations('common');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   if (!user) return null;
@@ -29,7 +31,7 @@ export default function Header() {
                 className="flex items-center space-x-1 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
               >
                 <Home className="w-4 h-4" />
-                <span>Home</span>
+                <span>{t('home')}</span>
               </Link>
               
               <Link 
@@ -37,7 +39,7 @@ export default function Header() {
                 className="flex items-center space-x-1 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
               >
                 <RotateCcw className="w-4 h-4" />
-                <span>Retrospectivas</span>
+                <span>{t('retrospectives')}</span>
               </Link>
             </nav>
           </div>
@@ -49,7 +51,7 @@ export default function Header() {
               <span className="text-sm text-gray-700 dark:text-gray-300">
                 {user.name}
                 {user.is_guest && (
-                  <span className="ml-1 text-xs text-gray-500 dark:text-gray-400">(Convidado)</span>
+                  <span className="ml-1 text-xs text-gray-500 dark:text-gray-400">({t('guest')})</span>
                 )}
               </span>
             </div>
@@ -61,7 +63,7 @@ export default function Header() {
               className="flex items-center space-x-1"
             >
               <LogOut className="h-4 w-4" />
-              <span>Sair</span>
+              <span>{t('logout')}</span>
             </Button>
           </div>
 
@@ -85,7 +87,7 @@ export default function Header() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 <Home className="w-5 h-5" />
-                <span>Home</span>
+                <span>{t('home')}</span>
               </Link>
               
               <Link 
@@ -94,7 +96,7 @@ export default function Header() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 <RotateCcw className="w-5 h-5" />
-                <span>Retrospectivas</span>
+                <span>{t('retrospectives')}</span>
               </Link>
 
               <div className="flex items-center space-x-2 px-3 py-2 text-gray-700 dark:text-gray-300 border-t border-gray-200 dark:border-gray-700 mt-2 pt-4">
@@ -102,7 +104,7 @@ export default function Header() {
                 <span className="text-sm">
                   {user.name}
                   {user.is_guest && (
-                    <span className="ml-1 text-xs text-gray-500 dark:text-gray-400">(Convidado)</span>
+                    <span className="ml-1 text-xs text-gray-500 dark:text-gray-400">({t('guest')})</span>
                   )}
                 </span>
               </div>
@@ -117,7 +119,7 @@ export default function Header() {
                 className="flex items-center justify-center space-x-2 mx-3"
               >
                 <LogOut className="h-4 w-4" />
-                <span>Sair</span>
+                <span>{t('logout')}</span>
               </Button>
             </nav>
           </div>

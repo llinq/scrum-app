@@ -2,13 +2,17 @@
 
 import React from 'react';
 import { useAuth } from '@/lib/auth-context';
+import { useTranslations } from 'next-intl';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import Card from '@/components/Card';
 import { useRouter } from "next/navigation";
 import { MessageSquare, Kanban, Clock } from 'lucide-react';
 
 export default function HomePage() {
   const { user, loading } = useAuth();
+  const t = useTranslations('home');
+  const tCommon = useTranslations('common');
   const router = useRouter();
 
   const handleNavigate = (path: string) => {
@@ -30,10 +34,10 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
       <Header />
       
-      <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+      <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 flex-1">
         {/* <div className="mb-8">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
             Console Principal
@@ -70,10 +74,10 @@ export default function HomePage() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-base">
-                    Retrospectivas
+                    {t('retrospectives.title')}
                   </h3>
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 leading-snug">
-                    Cerimônia de melhoria contínua com votação e ações.
+                    {t('retrospectives.description')}
                   </p>
                 </div>
               </div>
@@ -89,13 +93,13 @@ export default function HomePage() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-500 text-base">
-                    Planning Poker
+                    {t('planningPoker.title')}
                   </h3>
                   <p className="text-xs text-gray-500 mt-1 leading-snug">
-                    Estimativa colaborativa de tarefas e user stories.
+                    {t('planningPoker.description')}
                   </p>
                   <span className="inline-block mt-2 text-[10px] font-medium bg-gray-100 dark:bg-gray-800 text-gray-500 px-2 py-0.5 rounded-full">
-                    Em breve
+                    {tCommon('comingSoon')}
                   </span>
                 </div>
               </div>
@@ -110,13 +114,13 @@ export default function HomePage() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-500 text-base">
-                    Daily Standup
+                    {t('dailyStandup.title')}
                   </h3>
                   <p className="text-xs text-gray-500 mt-1 leading-snug">
-                    Sincronização diária rápida e remoção de impedimentos.
+                    {t('dailyStandup.description')}
                   </p>
                   <span className="inline-block mt-2 text-[10px] font-medium bg-gray-100 dark:bg-gray-800 text-gray-500 px-2 py-0.5 rounded-full">
-                    Em breve
+                    {tCommon('comingSoon')}
                   </span>
                 </div>
               </div>
@@ -124,6 +128,8 @@ export default function HomePage() {
           </div>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 }
