@@ -861,11 +861,17 @@ export default function RetroPage({ boardId }: RetroPageProps) {
     }
   };
 
+  // Responsive grid classes based on number of columns
   const gridColsClass = clsx({
-    "grid-cols-1": (board.columns?.length || 0) === 1,
-    "grid-cols-2": (board.columns?.length || 0) === 2,
-    "grid-cols-3": (board.columns?.length || 0) === 3,
-    "grid-cols-4": (board.columns?.length || 0) === 4,
+    // Mobile: Always 1 column
+    "grid-cols-1": true,
+    // Tablet: 2 columns only if we have 2 or more columns
+    "md:grid-cols-2": (board.columns?.length || 0) > 1,
+    // Desktop: Use actual number of columns
+    "lg:grid-cols-1": (board.columns?.length || 0) === 1,
+    "lg:grid-cols-2": (board.columns?.length || 0) === 2,
+    "lg:grid-cols-3": (board.columns?.length || 0) === 3,
+    "lg:grid-cols-4": (board.columns?.length || 0) === 4,
   });
 
   const canEdit = board.created_by === user?.id;
@@ -883,18 +889,18 @@ export default function RetroPage({ boardId }: RetroPageProps) {
       {/* Compact Header */}
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 break-words">
               {board.title}
             </h1>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 flex-wrap">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={handleShareBoard}
                 title="Compartilhar link"
-                className="rounded-full w-10 h-10 p-0 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
+                className="rounded-full w-10 h-10 p-0 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer shrink-0"
               >
                 <Share2 className="w-4 h-4" />
               </Button>
@@ -905,7 +911,7 @@ export default function RetroPage({ boardId }: RetroPageProps) {
                     variant={board.show_author ? "outline" : "secondary"}
                     size="sm"
                     onClick={handleShowAuthorToggle}
-                    className={`rounded-full w-10 h-10 p-0 transition-all duration-200 cursor-pointer ${
+                    className={`rounded-full w-10 h-10 p-0 transition-all duration-200 cursor-pointer shrink-0 ${
                       board.show_author
                         ? "hover:bg-gray-50 dark:hover:bg-gray-700"
                         : "bg-orange-500 hover:bg-orange-600 text-white border-orange-500 shadow-lg shadow-orange-200 dark:shadow-orange-900/20"
@@ -923,7 +929,7 @@ export default function RetroPage({ boardId }: RetroPageProps) {
                     variant={board.blur_mode ? "secondary" : "outline"}
                     size="sm"
                     onClick={handleBlurModeToggle}
-                    className={`rounded-full w-10 h-10 p-0 transition-all duration-200 cursor-pointer ${
+                    className={`rounded-full w-10 h-10 p-0 transition-all duration-200 cursor-pointer shrink-0 ${
                       board.blur_mode
                         ? "bg-purple-500 hover:bg-purple-600 text-white border-purple-500 shadow-lg shadow-purple-200 dark:shadow-purple-900/20"
                         : "hover:bg-gray-50 dark:hover:bg-gray-700"
@@ -954,7 +960,7 @@ export default function RetroPage({ boardId }: RetroPageProps) {
                         ? `Máximo de ${MAX_COLUMNS} colunas permitidas`
                         : "Adicionar coluna"
                     }
-                    className={`rounded-full w-10 h-10 p-0 ${
+                    className={`rounded-full w-10 h-10 p-0 shrink-0 ${
                       (board.columns?.length || 0) >= MAX_COLUMNS
                         ? "cursor-not-allowed"
                         : "cursor-pointer"
@@ -970,8 +976,8 @@ export default function RetroPage({ boardId }: RetroPageProps) {
       </div>
 
       {/* Board */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 pr-20">
-        <div className="px-4 sm:px-0">
+      <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <div className="sm:px-0">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
@@ -982,7 +988,7 @@ export default function RetroPage({ boardId }: RetroPageProps) {
               strategy={horizontalListSortingStrategy}
               disabled={!canEdit}
             >
-              <div className={`gap-6 pb-6 grid ${gridColsClass}`}>
+              <div className={`gap-4 sm:gap-6 pb-6 grid ${gridColsClass}`}>
                 {(board.columns || [])
                   .sort((a, b) => a.order_index - b.order_index)
                   .map((column) => (

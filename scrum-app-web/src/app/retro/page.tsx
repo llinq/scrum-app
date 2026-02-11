@@ -135,17 +135,17 @@ export default function RetroListPage() {
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 sm:px-0">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">
                 Retrospectivas
               </h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-2">
+              <p className="text-gray-600 dark:text-gray-400 mt-2 text-sm sm:text-base">
                 Gerencie e visualize suas retrospectivas de sprint
               </p>
             </div>
 
-            <Button onClick={handleCreateBoard}>
+            <Button onClick={handleCreateBoard} className="w-full sm:w-auto">
               <Plus className="w-5 h-5" />
               Nova Retrospectiva
             </Button>
@@ -170,7 +170,7 @@ export default function RetroListPage() {
               </div>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {boards.map((board) => (
                 <div
                   key={board.id}
