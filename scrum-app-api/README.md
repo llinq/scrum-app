@@ -154,19 +154,6 @@ The application uses PostgreSQL with TypeORM. Make sure to:
 - `POST /retro-cards/:id/vote` - Vote on card
 - `DELETE /retro-cards/:id/vote` - Remove vote
 
-## Run tests
-
-```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
-```
-
 ## Authentication
 
 All protected endpoints require JWT authentication. Include the token in the Authorization header:

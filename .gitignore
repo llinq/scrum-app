@@ -9,3 +9,6 @@
 .env.production.local
 **/env.local
 **/.env.local
+
+# yarn v4
+.yarn/install-state.gz
