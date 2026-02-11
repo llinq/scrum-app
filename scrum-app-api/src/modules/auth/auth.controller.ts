@@ -69,17 +69,16 @@ export class AuthController {
     @Res() res: Response,
   ) {
     const token = await this.authService.generateToken(user.id);
+    // Express automatically decodes query parameters
     const state = (req.query.state as string) || '';
 
     const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
     const callbackUrl = `/login/callback?token=${token}`;
     
     // Se houver um state (callbackUrl), valida e adiciona como parâmetro
-    if (state) {
-      const decodedState = decodeURIComponent(state);
-      if (this.isValidCallbackUrl(decodedState)) {
-        return res.redirect(`${frontendUrl}${callbackUrl}&callbackUrl=${encodeURIComponent(decodedState)}`);
-      }
+    if (state && this.isValidCallbackUrl(state)) {
+      // Re-encode for URL transmission
+      return res.redirect(`${frontendUrl}${callbackUrl}&callbackUrl=${encodeURIComponent(state)}`);
     }
     
     return res.redirect(`${frontendUrl}${callbackUrl}`);

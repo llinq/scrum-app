@@ -54,7 +54,8 @@ export default function LoginForm() {
     // Passa o callbackUrl como state para ser recuperado após o OAuth
     const googleAuthUrl = new URL(`${apiUrl}/auth/google`);
     if (callbackUrl !== '/home') {
-      googleAuthUrl.searchParams.set('state', encodeURIComponent(callbackUrl));
+      // searchParams.set() automatically URL-encodes the value
+      googleAuthUrl.searchParams.set('state', callbackUrl);
     }
     window.location.href = googleAuthUrl.toString();
   };
