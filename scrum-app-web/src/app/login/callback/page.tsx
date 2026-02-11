@@ -3,22 +3,26 @@
 import React, { Suspense, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter, useSearchParams } from "next/navigation";
+import { isValidCallbackUrl } from "@/lib/url-validation";
 
 function LoginCallback() {
   const { processGoogleToken, loading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
+  
+  // Validate and sanitize callbackUrl to prevent open redirect
+  const rawCallbackUrl = searchParams.get("callbackUrl") || "/home";
+  const callbackUrl = isValidCallbackUrl(rawCallbackUrl) ? rawCallbackUrl : "/home";
 
   useEffect(() => {
     if (token) {
       processGoogleToken(token).then(() => {
-        // Remove o token da URL após processar
-        router.replace("/home");
+        // Redireciona para a URL original ou /home
+        router.replace(callbackUrl);
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [token, callbackUrl, processGoogleToken, router]);
 
   if (loading) {
     return (

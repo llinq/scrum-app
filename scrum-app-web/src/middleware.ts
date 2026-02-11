@@ -4,12 +4,16 @@ import type { NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
   const token = request.cookies.get("auth-token");
   const isAuthPage = request.nextUrl.pathname.startsWith("/login");
-  const isProtectedPage = request.nextUrl.pathname.startsWith("/home");
+  const isProtectedPage = request.nextUrl.pathname.startsWith("/home") || 
+                          request.nextUrl.pathname.startsWith("/retro");
   const isRootPage = request.nextUrl.pathname === "/";
 
   // Se está tentando acessar uma página protegida sem token
   if (isProtectedPage && !token) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    const loginUrl = new URL("/login", request.url);
+    // Salva a URL que o usuário tentou acessar
+    loginUrl.searchParams.set("callbackUrl", request.nextUrl.pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
   // Se está autenticado e tentando acessar login ou root, redireciona para /home
