@@ -865,8 +865,8 @@ export default function RetroPage({ boardId }: RetroPageProps) {
   const gridColsClass = clsx({
     // Mobile: Always 1 column
     "grid-cols-1": true,
-    // Tablet: 2 columns if we have 2+ columns
-    "md:grid-cols-2": (board.columns?.length || 0) >= 2,
+    // Tablet: 2 columns only if we have 2 or more columns
+    "md:grid-cols-2": (board.columns?.length || 0) > 1,
     // Desktop: Use actual number of columns
     "lg:grid-cols-1": (board.columns?.length || 0) === 1,
     "lg:grid-cols-2": (board.columns?.length || 0) === 2,

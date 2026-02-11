@@ -118,7 +118,7 @@ export default function RetroColumnComponent({
     <div
       ref={setSortableNodeRef}
       style={sortableStyle}
-      className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border-2 border-gray-200 dark:border-gray-700 min-w-[280px] sm:min-w-[320px] w-full flex flex-col"
+      className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border-2 border-gray-200 dark:border-gray-700 min-w-[280px] sm:min-w-[320px] w-full max-w-full flex flex-col"
     >
       {/* Column Header */}
       <div className="p-4 border-b border-gray-200 dark:border-gray-700">
