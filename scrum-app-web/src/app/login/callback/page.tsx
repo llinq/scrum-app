@@ -3,26 +3,7 @@
 import React, { Suspense, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter, useSearchParams } from "next/navigation";
-
-// Validate callback URL to prevent open redirect vulnerability
-function isValidCallbackUrl(url: string): boolean {
-  // Must be a relative path starting with /
-  if (!url.startsWith('/')) {
-    return false;
-  }
-  
-  // Must not contain // (to prevent protocol-relative URLs like //evil.com)
-  if (url.includes('//')) {
-    return false;
-  }
-  
-  // Must not contain backslashes (to prevent bypass attempts)
-  if (url.includes('\\')) {
-    return false;
-  }
-  
-  return true;
-}
+import { isValidCallbackUrl } from "@/lib/url-validation";
 
 function LoginCallback() {
   const { processGoogleToken, loading } = useAuth();
@@ -41,8 +22,7 @@ function LoginCallback() {
         router.replace(callbackUrl);
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [token, callbackUrl, processGoogleToken, router]);
 
   if (loading) {
     return (

@@ -10,32 +10,13 @@ import Button from '@/components/Button';
 import Card, { CardHeader, CardContent } from '@/components/Card';
 import { authService } from '@/services/auth';
 import { useAuth } from '@/lib/auth-context';
+import { isValidCallbackUrl } from '@/lib/url-validation';
 
 const guestSchema = z.object({
   name: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres'),
 });
 
 type GuestFormData = z.infer<typeof guestSchema>;
-
-// Validate callback URL to prevent open redirect vulnerability
-function isValidCallbackUrl(url: string): boolean {
-  // Must be a relative path starting with /
-  if (!url.startsWith('/')) {
-    return false;
-  }
-  
-  // Must not contain // (to prevent protocol-relative URLs like //evil.com)
-  if (url.includes('//')) {
-    return false;
-  }
-  
-  // Must not contain backslashes (to prevent bypass attempts)
-  if (url.includes('\\')) {
-    return false;
-  }
-  
-  return true;
-}
 
 export default function LoginForm() {
   const [loading, setLoading] = useState(false);

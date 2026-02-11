@@ -75,8 +75,11 @@ export class AuthController {
     const callbackUrl = `/login/callback?token=${token}`;
     
     // Se houver um state (callbackUrl), valida e adiciona como parâmetro
-    if (state && this.isValidCallbackUrl(decodeURIComponent(state))) {
-      return res.redirect(`${frontendUrl}${callbackUrl}&callbackUrl=${encodeURIComponent(state)}`);
+    if (state) {
+      const decodedState = decodeURIComponent(state);
+      if (this.isValidCallbackUrl(decodedState)) {
+        return res.redirect(`${frontendUrl}${callbackUrl}&callbackUrl=${encodeURIComponent(decodedState)}`);
+      }
     }
     
     return res.redirect(`${frontendUrl}${callbackUrl}`);
