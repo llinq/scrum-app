@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="flex items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400">
           <span>Projeto colaborativo</span>
           <Heart className="w-3 h-3 text-red-500" />
-          <span className="text-gray-400 dark:text-gray-600">•</span>
+          <span className="text-gray-400 dark:text-gray-500">•</span>
           <Link
             href="https://github.com/llinq/scrum-app"
             target="_blank"
