@@ -6,6 +6,8 @@ A comprehensive full-stack web application designed to facilitate and streamline
 
 This platform provides essential tools for Scrum teams to conduct their ceremonies effectively, including retrospectives, planning poker sessions, team management, and roadmap visualization. The application supports both authenticated users (via Google OAuth) and guest participants, making it flexible for different team structures and workflows.
 
+Production version is available at: https://scrum-app-web-240887806504.us-east1.run.app
+
 ## Tech Stack
 
 - **Backend**: NestJS with TypeScript
@@ -366,7 +368,7 @@ For questions or discussions, please open an issue in our [GitHub repository](ht
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License
 
 ## Support
 
