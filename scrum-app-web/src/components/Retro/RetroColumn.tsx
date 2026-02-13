@@ -7,7 +7,6 @@ import { Plus, MoreVertical, Edit2, Trash2, GripVertical } from "lucide-react";
 import { RetroColumn } from "../../types/retro";
 import RetroCardComponent from "./RetroCard";
 import Button from "../Button";
-import { useAuth } from "@/lib/auth-context";
 
 interface RetroColumnProps {
   column: RetroColumn;
@@ -42,8 +41,6 @@ export default function RetroColumnComponent({
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(column.title);
   const [newCardContent, setNewCardContent] = useState("");
-
-  const { user } = useAuth();
 
   const {
     attributes: sortableAttributes,

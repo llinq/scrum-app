@@ -60,10 +60,10 @@ export default function RetroCardComponent({
 
     try {
       setIsUpdating(true);
-      
+
       // Chama a API para atualizar o card
-      await retroService.updateCard(card.id, { 
-        content: editContent.trim() 
+      await retroService.updateCard(card.id, {
+        content: editContent.trim(),
       });
 
       // Fechar o modo de edição após sucesso
@@ -117,71 +117,74 @@ export default function RetroCardComponent({
               disabled={isUpdating}
               className="w-full text-sm text-gray-800 dark:text-gray-200 bg-transparent border border-gray-300 dark:border-gray-600 rounded px-2 py-1 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-text disabled:opacity-50 disabled:cursor-not-allowed"
               rows={3}
-              placeholder={isUpdating ? "Salvando..." : "Digite o conteúdo do card"}
+              placeholder={
+                isUpdating ? "Salvando..." : "Digite o conteúdo do card"
+              }
             />
           ) : (
             <p
               className={`text-sm text-gray-800 dark:text-gray-200 leading-relaxed break-words overflow-hidden transition-all duration-300 ${
-                boardSettings.blurMode
-                  ? "blur-sm select-none"
-                  : ""
+                boardSettings.blurMode ? "blur-sm select-none" : ""
               }`}
             >
               {card.content}
             </p>
           )}
+        </div>
 
-          <div className="flex items-center gap-1 mt-2 text-xs text-gray-500 dark:text-gray-400">
+        <div className="flex items-center justify-between gap-1 mt-2">
+          <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
             <User className="w-3 h-3" />
             <span>{boardSettings.showAuthor ? card.author_name : ""}</span>
           </div>
-        </div>
 
-        <div className="flex items-center justify-end gap-1 mt-2">
-          {boardSettings.allowVoting && (
-            <button
-              onClick={handleVote}
-              className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-1 cursor-pointer transition-colors ${
-                hasVoted
-                  ? "text-red-500 hover:text-red-600"
-                  : "text-gray-400 hover:text-red-500"
-              }`}
-              title="Votar neste card"
-            >
-              <Heart className={`w-4 h-4 ${hasVoted ? "fill-current" : ""}`} />
-              {card.votes_count > 0 && (
-                <span className="text-xs">{card.votes_count}</span>
-              )}
-            </button>
-          )}
+          <div className="flex justify-end">
+            {boardSettings.allowVoting && (
+              <button
+                onClick={handleVote}
+                className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-1 cursor-pointer transition-colors ${
+                  hasVoted
+                    ? "text-red-500 hover:text-red-600"
+                    : "text-gray-400 hover:text-red-500"
+                }`}
+                title="Votar neste card"
+              >
+                <Heart
+                  className={`w-4 h-4 ${hasVoted ? "fill-current" : ""}`}
+                />
+                {card.votes_count > 0 && (
+                  <span className="text-xs">{card.votes_count}</span>
+                )}
+              </button>
+            )}
 
-          {canEdit && (
-            <>
-              <button
-                onClick={handleEdit}
-                className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 cursor-pointer transition-colors"
-                title="Editar card"
-              >
-                <Edit2 className="w-4 h-4" />
-              </button>
-              <button
-                onClick={handleDelete}
-                className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 cursor-pointer transition-colors"
-                title="Excluir card"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
-            </>
-          )}
+            {canEdit && (
+              <>
+                <button
+                  onClick={handleEdit}
+                  className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 cursor-pointer transition-colors"
+                  title="Editar card"
+                >
+                  <Edit2 className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 cursor-pointer transition-colors"
+                  title="Excluir card"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </>
+            )}
+          </div>
         </div>
       </div>
 
       {isEditing && (
         <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-          {isUpdating 
-            ? "Salvando alterações..." 
-            : "Pressione Ctrl+Enter para salvar ou Esc para cancelar"
-          }
+          {isUpdating
+            ? "Salvando alterações..."
+            : "Pressione Ctrl+Enter para salvar ou Esc para cancelar"}
         </div>
       )}
     </div>
