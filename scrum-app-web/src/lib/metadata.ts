@@ -1,18 +1,24 @@
 import { Metadata } from 'next';
 
+const TITLE_PREFIX = 'ScrumApp | ';
+
+function withTitlePrefix(title: string): string {
+  return title.startsWith(TITLE_PREFIX) ? title : `${TITLE_PREFIX}${title}`;
+}
+
 // Configuração base da aplicação
 export const APP_CONFIG = {
   name: 'Scrum App',
   shortName: 'ScrumApp',
   url: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
-  description: 'Scrum App: Ferramenta colaborativa de retrospectivas ágeis com votação, modo anônimo, blur mode e colaboração em tempo real via WebSocket. Ideal para times Scrum e metodologias ágeis no Brasil.',
+  description: 'Scrum App: Ferramenta Scrum para times ágeis. Atualmente com módulo de retrospectiva disponível, incluindo boards, colunas, cards, votação e colaboração em tempo real.',
   locale: 'pt_BR',
   language: 'pt-BR',
 };
 
 // Descrições específicas para diferentes páginas
 export const DESCRIPTIONS = {
-  root: 'Scrum App: Ferramenta colaborativa de retrospectivas ágeis com votação, modo anônimo, blur mode e colaboração em tempo real via WebSocket. Ideal para times Scrum e metodologias ágeis no Brasil.',
+  root: 'Scrum App: Ferramenta Scrum para times ágeis. Atualmente com módulo de retrospectiva disponível, incluindo boards, colunas, cards, votação e colaboração em tempo real.',
   retroList: 'Crie e gerencie retrospectivas de sprint com votação, cards arrastáveis e colaboração em tempo real. Organize cerimônias de melhoria contínua para seu time ágil.',
   login: 'Entre com Google ou como convidado para acessar retrospectivas Scrum colaborativas em tempo real.',
   home: 'Acesse retrospectivas, planning poker e ferramentas de cerimônias ágeis para seu time Scrum.',
@@ -88,21 +94,24 @@ export function generatePageMetadata({
 }): Metadata {
   const url = `${APP_CONFIG.url}${path}`;
   const pageImages = images || DEFAULT_OPEN_GRAPH.images;
+  const normalizedTitle = withTitlePrefix(title);
 
   return {
-    title,
+    title: {
+      absolute: normalizedTitle,
+    },
     description,
     keywords: keywords || ALL_KEYWORDS,
     openGraph: {
       ...DEFAULT_OPEN_GRAPH,
-      title,
+      title: normalizedTitle,
       description,
       url,
       images: pageImages,
     },
     twitter: {
       ...DEFAULT_TWITTER,
-      title,
+      title: normalizedTitle,
       description,
       images: pageImages.map((img) => img.url),
     },

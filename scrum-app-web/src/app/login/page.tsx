@@ -3,7 +3,7 @@ import LoginForm from '@/components/LoginForm';
 import { DESCRIPTIONS } from '@/lib/metadata';
 
 export const metadata: Metadata = {
-  title: 'Login - Acesse suas Retrospectivas',
+  title: 'Entrar',
   description: DESCRIPTIONS.login,
   robots: {
     index: false,

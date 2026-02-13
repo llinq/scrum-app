@@ -17,11 +17,6 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/home", request.url));
   }
 
-  // Se está na raiz sem token, redireciona para login
-  if (isRootPage && !token) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
   return NextResponse.next();
 }
 
