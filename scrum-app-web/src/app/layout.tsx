@@ -24,8 +24,8 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(APP_CONFIG.url),
   title: {
-    default: 'Scrum App - Retrospectivas Ágeis em Tempo Real',
-    template: '%s | Scrum App',
+    default: 'ScrumApp | Ferramenta Scrum para Times Ágeis',
+    template: 'ScrumApp | %s',
   },
   description: APP_CONFIG.description,
   keywords: ALL_KEYWORDS,
@@ -33,13 +33,13 @@ export const metadata: Metadata = {
   creator: 'Scrum App',
   openGraph: {
     ...DEFAULT_OPEN_GRAPH,
-    title: 'Scrum App - Retrospectivas Ágeis em Tempo Real',
+    title: 'ScrumApp | Ferramenta Scrum para Times Ágeis',
     description: APP_CONFIG.description,
     url: APP_CONFIG.url,
   },
   twitter: {
     ...DEFAULT_TWITTER,
-    title: 'Scrum App - Retrospectivas Ágeis',
+    title: 'ScrumApp | Ferramenta Scrum para Times Ágeis',
     description: APP_CONFIG.description,
   },
   robots: {

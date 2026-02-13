@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { generatePageMetadata, DESCRIPTIONS, KEYWORDS } from '@/lib/metadata';
 
 export const metadata: Metadata = generatePageMetadata({
-  title: 'Minhas Retrospectivas - Gerencie suas Retros',
+  title: 'ScrumApp | Minhas Retrospectivas',
   description: DESCRIPTIONS.retroList,
   keywords: [...KEYWORDS.primary, ...KEYWORDS.audience, 'gestão ágil', 'sprint review', 'melhoria contínua'],
   path: '/retro',

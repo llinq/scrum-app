@@ -274,8 +274,6 @@ yarn start:dev    # Start development server with hot reload
 yarn build        # Build for production
 yarn start:prod   # Start production server
 yarn lint         # Run ESLint
-yarn test         # Run unit tests
-yarn test:e2e     # Run end-to-end tests
 ```
 
 #### Frontend (scrum-app-web)

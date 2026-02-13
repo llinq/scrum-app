@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { DESCRIPTIONS } from '@/lib/metadata';
 
 export const metadata: Metadata = {
-  title: 'Dashboard - Suas Ferramentas Ágeis',
+  title: 'Home',
   description: DESCRIPTIONS.home,
   robots: {
     index: false,
