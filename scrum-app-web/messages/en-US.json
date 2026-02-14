@@ -49,7 +49,8 @@
   },
   "footer": {
     "language": "Language",
-    "selectLanguage": "Select language"
+    "selectLanguage": "Select language",
+    "collaborativeProject": "Collaborative project"
   },
   "metadata": {
     "title": "Scrum App - Real-Time Agile Retrospectives",

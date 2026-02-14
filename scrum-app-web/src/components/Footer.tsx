@@ -1,10 +1,11 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { useLocale } from '@/i18n/locale-context';
 import { locales, type Locale } from '@/i18n/config';
-import { Languages } from 'lucide-react';
+import { Github, Heart, Languages } from 'lucide-react';
 
 const localeNames: Record<Locale, string> = {
   'pt-BR': 'Português (BR)',
@@ -16,22 +17,34 @@ export default function Footer() {
   const { locale, setLocale } = useLocale();
 
   return (
-    <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-4 mt-auto">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="text-sm text-gray-600 dark:text-gray-400">
-            © {new Date().getFullYear()} Scrum App
+    <footer className="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+      <div className="max-w-7xl mx-auto py-3 px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 text-xs text-gray-500 dark:text-gray-400">
+          <div className="flex items-center gap-2">
+            <span>{t('collaborativeProject')}</span>
+            <Heart className="w-3 h-3 text-red-500" />
           </div>
           
-          <div className="flex items-center gap-2">
-            <Languages className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-            <span className="text-sm text-gray-600 dark:text-gray-400">
-              {t('language')}:
-            </span>
+          <span className="hidden sm:inline text-gray-400 dark:text-gray-500">•</span>
+          
+          <Link
+            href="https://github.com/llinq/scrum-app"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+          >
+            <Github className="w-3 h-3" />
+            <span>GitHub</span>
+          </Link>
+          
+          <span className="hidden sm:inline text-gray-400 dark:text-gray-500">•</span>
+          
+          <div className="flex items-center gap-1.5">
+            <Languages className="w-3 h-3" />
             <select
               value={locale}
               onChange={(e) => setLocale(e.target.value as Locale)}
-              className="text-sm border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="text-xs border border-gray-300 dark:border-gray-600 rounded px-1.5 py-0.5 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors"
               aria-label={t('selectLanguage')}
             >
               {locales.map((loc) => (
