@@ -6,6 +6,8 @@ A comprehensive full-stack web application designed to facilitate and streamline
 
 This platform provides essential tools for Scrum teams to conduct their ceremonies effectively, including retrospectives, planning poker sessions, team management, and roadmap visualization. The application supports both authenticated users (via Google OAuth) and guest participants, making it flexible for different team structures and workflows.
 
+Production version is available at: https://scrum-app-web-240887806504.us-east1.run.app
+
 ## Tech Stack
 
 - **Backend**: NestJS with TypeScript
@@ -128,18 +130,13 @@ yarn install
    ```bash
    cp .env.example .env.local
    ```
-   
-   Update `.env.local`:
-   ```env
-   NEXT_PUBLIC_API_URL=http://localhost:3001
-   ```
 
 3. **Start the development server**:
    ```bash
    yarn dev
    ```
 
-### 🔑 Google OAuth Setup
+### 🔑 Google OAuth Setup (optional)
 
 1. Go to [Google Cloud Console](https://console.developers.google.com/)
 2. Create a new project or select existing one
@@ -165,7 +162,7 @@ Default database configuration:
 
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:3001
-- **API Documentation**: http://localhost:3001/api (Swagger)
+- **API Documentation**: http://localhost:3001/api/docs (Swagger)
 
 ## Architecture
 
@@ -344,24 +341,29 @@ Ensure all environment variables are properly set for production:
 
 ## Contributing
 
-We welcome contributions! Please follow these guidelines:
+We welcome contributions from the community! This is a collaborative open-source project and contributors are welcome.
 
-1. **Fork the repository**
-2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
-3. **Commit changes**: `git commit -m 'Add amazing feature'`
-4. **Push to branch**: `git push origin feature/amazing-feature`
-5. **Open a Pull Request**
+Please read our [CONTRIBUTING.md](CONTRIBUTING.md) guide for detailed information on:
 
-### Code Style
+- Code of conduct
+- Development workflow
+- Coding standards
+- Commit guidelines
+- Pull request process
+- How to report bugs and suggest features
 
-- Follow TypeScript best practices
-- Use meaningful variable and function names
-- Add comments for complex logic
-- Ensure all tests pass before submitting
+Quick start:
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m 'feat: add amazing feature'`
+4. Push to your branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
+
+For questions or discussions, please open an issue in our [GitHub repository](https://github.com/llinq/scrum-app).
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License
 
 ## Support
 

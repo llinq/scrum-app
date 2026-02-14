@@ -35,21 +35,14 @@ src/
     └── auth.ts             # Authentication related types
 ```
 
-## Features
+## Key Features
 
 ### Authentication
-- Email/password login
-- Guest access (name only)
-- Route protection with middleware
-- Logout with token cleanup
-- Session persistence via cookies
-
-### Dashboard
-- Logged area with user information
-- Statistics cards
-- Current sprint and progress
-- Recent activities
-- Header with user information and logout
+- Google OAuth login via backend integration
+- Guest access with name-only registration
+- Route protection with Next.js middleware
+- Session persistence via secure cookies
+- Automatic token refresh and cleanup
 
 ### Retrospectives
 - **Boards**: Creation and management of retrospective sessions
@@ -65,57 +58,27 @@ src/
 - **Anonymous Mode**: Allows honest feedback through anonymous participation
 
 ### UI/UX
-- Responsive design with Tailwind CSS
-- Reusable components
-- Loading states
-- Error handling
+- Responsive design with Tailwind CSS (mobile-first approach)
+- Dark mode support with automatic theme detection
+- Reusable component library
+- Loading states and skeleton screens
+- Comprehensive error handling
 - Visual indicators for guest users
 
-## Funcionalidades
+## Setup and Configuration
 
-### Autenticação
-- Login com email/senha
-- Acesso como convidado (apenas com nome)
-- Proteção de rotas com middleware
-- Logout com limpeza de tokens
-- Persistência de sessão via cookies
+For detailed setup instructions, please refer to the [main README](../README.md) in the root directory.
 
-### Dashboard
-- Área logada com informações do usuário
-- Cards de estatísticas
-- Sprint atual e progresso
-- Atividades recentes
-- Header com informações do usuário e logout
+Quick reference for development:
 
-### UI/UX
-- Design responsivo com Tailwind CSS
-- Componentes reutilizáveis
-- Loading states
-- Tratamento de erros
-- Indicadores visuais para usuários convidados
-
-## Configuration
-
-1. **Install dependencies**:
-   
-   ⚠️ **Important**: Run the installation command from the root of the repository:
-   
+1. **Install dependencies** (from repository root):
    ```bash
-   # Go to the root directory of the repository
-   cd ../
-   
-   # Install dependencies for all projects
    yarn install
    ```
 
 2. **Configure environment variables**:
    ```bash
    cp .env.example .env.local
-   ```
-   
-   Edit the `.env.local` file with the settings:
-   ```
-   NEXT_PUBLIC_API_URL=http://localhost:3001
    ```
 
 3. **Run in development**:
@@ -131,28 +94,30 @@ src/
 
 ## API Integration
 
-The application is configured to integrate with the `scrum-app-api` API running on port 3001.
+The application integrates with the `scrum-app-api` backend running on port 3001.
 
-### Used endpoints:
+### Key Endpoints Used:
 - `POST /auth/guest` - Create guest user
 - `GET /auth/google` - Start Google authentication
 - `GET /auth/google/callback` - Google OAuth callback
 - `GET /auth/me` - Get current user
+- `/retro-*` - Retrospective board management
 
-### Authentication
-- **Google OAuth**: Secure login with Google account via "Continue with Google" button
-- **Guest Access**: Quick login with name only
-- **JWT Tokens**: Stored in cookies with 24-hour expiration
-- **Interceptors**: Axios automatically adds token to headers
-- **Redirect**: Automatic redirect to login on token expiration
-- **Middleware**: Route protection and authentication-based redirection
+### Authentication Flow
+1. User accesses the application
+2. Middleware checks for valid JWT token in cookies
+3. If not authenticated, redirects to `/login`
+4. User can choose Google OAuth or Guest access
+5. After successful authentication, redirects to dashboard
+6. Token is stored in secure HTTPOnly cookies (24-hour expiration)
+7. Axios interceptors automatically attach token to API requests
 
 ## Available Scripts
 
-- `yarn dev` - Run in development mode
+- `yarn dev` - Run in development mode with hot reload
 - `yarn build` - Build for production
-- `yarn start` - Run production version
-- `yarn lint` - Run linter
+- `yarn start` - Run production build
+- `yarn lint` - Run ESLint checks
 
 ## Technologies
 
@@ -166,18 +131,6 @@ The application is configured to integrate with the `scrum-app-api` API running 
 - Lucide React
 - js-cookie
 
-## Authentication Flow
+## Contributing
 
-1. **User accesses the application**
-2. **Middleware checks for valid token**
-3. **If not authenticated**: redirects to `/login`
-4. **On login screen**: user can choose between:
-   - **Google OAuth**: Login with Google account
-   - **Guest Access**: Login with name only
-5. **Google Authentication**:
-   - Redirect to Google OAuth
-   - Callback at `/login/callback` with token
-   - Automatic token processing
-6. **After authentication**: redirects to `/dashboard`
-7. **Token is persisted**: in cookies to maintain session between reloads
-8. **Expiration**: Tokens have 24-hour duration
+Please refer to the [CONTRIBUTING.md](../CONTRIBUTING.md) file in the repository root for contribution guidelines.

@@ -1,7 +1,5 @@
 # Scrum App API
 
-## Description
-
 NestJS-based backend API for the Scrum Management Platform. Provides comprehensive REST APIs for retrospectives, user management, and authentication with Google OAuth integration.
 
 ## Key Features
@@ -10,7 +8,7 @@ NestJS-based backend API for the Scrum Management Platform. Provides comprehensi
 - **Retrospectives**: Complete CRUD operations for boards, columns, cards, and voting system
 - **User Management**: User profiles and team management
 - **Database**: PostgreSQL with TypeORM for type-safe database operations
-- **Swagger Documentation**: Interactive API documentation at `/api`
+- **Swagger Documentation**: Interactive API documentation at `/api/docs`
 - **Validation**: Comprehensive input validation with class-validator
 - **Security**: JWT authentication, CORS protection, input sanitization
 
@@ -34,7 +32,13 @@ NestJS-based backend API for the Scrum Management Platform. Provides comprehensi
 - **Voting System**: Democratic prioritization of feedback
 - **Blur Mode**: Blur card content to prevent bias during writing phase
 
-## Project setup
+## Setup and Configuration
+
+For detailed setup instructions including prerequisites and environment setup, please refer to the [main README](../README.md) in the root directory.
+
+Quick reference for development:
+
+### Project setup
 
 ⚠️ **Important**: Run the installation command from the root of the repository:
 
@@ -46,7 +50,7 @@ cd ../
 yarn install
 ```
 
-## Environment Setup
+### Environment Setup
 
 Copy the environment file and configure variables:
 
@@ -75,7 +79,7 @@ GOOGLE_CALLBACK_URL=http://localhost:3001/auth/google/callback
 FRONTEND_URL=http://localhost:3000
 ```
 
-## Compile and run the project
+### Compile and run the project
 
 ```bash
 # development
@@ -92,7 +96,7 @@ $ yarn run start:prod
 
 Once the server is running, access the interactive Swagger documentation at:
 ```
-http://localhost:3001/api
+http://localhost:3001/api/docs
 ```
 
 This provides complete documentation for all endpoints including:
@@ -103,16 +107,9 @@ This provides complete documentation for all endpoints including:
 
 ## Database Setup
 
-The application uses PostgreSQL with TypeORM. Make sure to:
+The application uses PostgreSQL with TypeORM. See the [main README](../README.md) for database setup instructions.
 
-1. **Install PostgreSQL** (or use Docker Compose)
-2. **Create the database** and user:
-   ```sql
-   CREATE DATABASE "scrum-app";
-   CREATE USER scrum_user WITH PASSWORD 'scrum_password';
-   GRANT ALL PRIVILEGES ON DATABASE "scrum-app" TO scrum_user;
-   ```
-3. **Run migrations**: TypeORM will auto-sync in development mode
+For development, TypeORM will auto-sync entity changes. For production, use proper migrations.
 
 ## Available Endpoints
 
@@ -212,8 +209,6 @@ Common error codes:
 
 ## Development
 
-## Development
-
 ### Hot Reload
 The development server supports hot reload for immediate feedback:
 ```bash
@@ -225,7 +220,7 @@ In development mode, TypeORM automatically syncs entity changes to the database.
 
 ### Debugging
 - API runs on `http://localhost:3001`
-- Swagger docs available at `http://localhost:3001/api`
+- Swagger docs available at `http://localhost:3001/api/docs`
 - Database logs are shown in console during development
 
 ## Deployment
@@ -241,16 +236,16 @@ The project includes Docker configuration. See `docker-compose.yml` in the root 
 - Enable HTTPS for OAuth callbacks
 - Use environment-specific database credentials
 
+## Contributing
+
+Please refer to the [CONTRIBUTING.md](../CONTRIBUTING.md) file in the repository root for contribution guidelines.
+
 ## Support
 
 For API-specific questions:
-- Check the Swagger documentation at `/api`
+- Check the Swagger documentation at `/api/docs`
 - Review this README and the module-specific documentation
-- Create issues in the GitHub repository
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- Create issues in the [GitHub repository](https://github.com/llinq/scrum-app)
 
 ## License
 
