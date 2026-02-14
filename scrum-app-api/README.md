@@ -8,7 +8,7 @@ NestJS-based backend API for the Scrum Management Platform. Provides comprehensi
 - **Retrospectives**: Complete CRUD operations for boards, columns, cards, and voting system
 - **User Management**: User profiles and team management
 - **Database**: PostgreSQL with TypeORM for type-safe database operations
-- **Swagger Documentation**: Interactive API documentation at `/api`
+- **Swagger Documentation**: Interactive API documentation at `/api/docs`
 - **Validation**: Comprehensive input validation with class-validator
 - **Security**: JWT authentication, CORS protection, input sanitization
 
@@ -96,7 +96,7 @@ $ yarn run start:prod
 
 Once the server is running, access the interactive Swagger documentation at:
 ```
-http://localhost:3001/api
+http://localhost:3001/api/docs
 ```
 
 This provides complete documentation for all endpoints including:
@@ -220,7 +220,7 @@ In development mode, TypeORM automatically syncs entity changes to the database.
 
 ### Debugging
 - API runs on `http://localhost:3001`
-- Swagger docs available at `http://localhost:3001/api`
+- Swagger docs available at `http://localhost:3001/api/docs`
 - Database logs are shown in console during development
 
 ## Deployment
@@ -243,7 +243,7 @@ Please refer to the [CONTRIBUTING.md](../CONTRIBUTING.md) file in the repository
 ## Support
 
 For API-specific questions:
-- Check the Swagger documentation at `/api`
+- Check the Swagger documentation at `/api/docs`
 - Review this README and the module-specific documentation
 - Create issues in the [GitHub repository](https://github.com/llinq/scrum-app)
 

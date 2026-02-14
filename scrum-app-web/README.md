@@ -80,11 +80,6 @@ Quick reference for development:
    ```bash
    cp .env.example .env.local
    ```
-   
-   Edit `.env.local`:
-   ```
-   NEXT_PUBLIC_API_URL=http://localhost:3001
-   ```
 
 3. **Run in development**:
    ```bash

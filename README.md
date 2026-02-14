@@ -130,18 +130,13 @@ yarn install
    ```bash
    cp .env.example .env.local
    ```
-   
-   Update `.env.local`:
-   ```env
-   NEXT_PUBLIC_API_URL=http://localhost:3001
-   ```
 
 3. **Start the development server**:
    ```bash
    yarn dev
    ```
 
-### 🔑 Google OAuth Setup
+### 🔑 Google OAuth Setup (optional)
 
 1. Go to [Google Cloud Console](https://console.developers.google.com/)
 2. Create a new project or select existing one
@@ -167,7 +162,7 @@ Default database configuration:
 
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:3001
-- **API Documentation**: http://localhost:3001/api (Swagger)
+- **API Documentation**: http://localhost:3001/api/docs (Swagger)
 
 ## Architecture
 
