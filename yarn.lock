@@ -1621,9 +1621,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/platform-socket.io@npm:^11.1.13":
-  version: 11.1.13
-  resolution: "@nestjs/platform-socket.io@npm:11.1.13"
+"@nestjs/platform-socket.io@npm:^11.1.14":
+  version: 11.1.14
+  resolution: "@nestjs/platform-socket.io@npm:11.1.14"
   dependencies:
     socket.io: "npm:4.8.3"
     tslib: "npm:2.8.1"
@@ -1631,7 +1631,7 @@ __metadata:
     "@nestjs/common": ^11.0.0
     "@nestjs/websockets": ^11.0.0
     rxjs: ^7.1.0
-  checksum: 10c0/0b89536f692a83296627672fc3fe16ae8df39fb88966f37a404cad32633447fed23e36d97efc354b1390e95b055b9c9482815a80963150d2d5d34c4353e77fa9
+  checksum: 10c0/0e8bb66594fa1aacc60d1757ce6dcfae9b2ae04e77328f16443584bd9d242ea7ef8bb83c58bfa526be42b7b72a16f4eea72823270210d4702140348aecb554c0
   languageName: node
   linkType: hard
 
@@ -8307,7 +8307,7 @@ __metadata:
     "@nestjs/jwt": "npm:^11.0.2"
     "@nestjs/passport": "npm:^11.0.5"
     "@nestjs/platform-express": "npm:^11.1.13"
-    "@nestjs/platform-socket.io": "npm:^11.1.13"
+    "@nestjs/platform-socket.io": "npm:^11.1.14"
     "@nestjs/swagger": "npm:^11.2.6"
     "@nestjs/typeorm": "npm:^11.0.0"
     "@nestjs/websockets": "npm:^11.1.13"
@@ -8364,7 +8364,7 @@ __metadata:
     "@nestjs/jwt": "npm:^11.0.2"
     "@nestjs/passport": "npm:^11.0.5"
     "@nestjs/platform-express": "npm:^11.1.13"
-    "@nestjs/platform-socket.io": "npm:^11.1.13"
+    "@nestjs/platform-socket.io": "npm:^11.1.14"
     "@nestjs/schematics": "npm:^11.0.9"
     "@nestjs/swagger": "npm:^11.2.6"
     "@nestjs/typeorm": "npm:^11.0.0"
