@@ -4000,14 +4000,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"class-validator@npm:^0.14.3":
-  version: 0.14.3
-  resolution: "class-validator@npm:0.14.3"
+"class-validator@npm:^0.15.1":
+  version: 0.15.1
+  resolution: "class-validator@npm:0.15.1"
   dependencies:
     "@types/validator": "npm:^13.15.3"
     libphonenumber-js: "npm:^1.11.1"
-    validator: "npm:^13.15.20"
-  checksum: 10c0/6d451c359aecb04479b95034b10cca02015d3b6f34480574c618c070e12f3676cb4cdfa76bfa61353356a483ff01326e9ce3f07ef584be6c31806190117f7fa4
+    validator: "npm:^13.15.22"
+  checksum: 10c0/bc030e0118d79a5fc2d053dfd4c7475092dd159222eafe946c2b01d7ff22a0a8075c8713a96239a3db536ff2a18e18d791c3a6bfabd66dbac077f7d3fd950402
   languageName: node
   linkType: hard
 
@@ -8312,7 +8312,7 @@ __metadata:
     "@nestjs/typeorm": "npm:^11.0.0"
     "@nestjs/websockets": "npm:^11.1.13"
     class-transformer: "npm:^0.5.1"
-    class-validator: "npm:^0.14.3"
+    class-validator: "npm:^0.15.1"
     passport: "npm:^0.7.0"
     passport-google-oauth20: "npm:^2.0.0"
     passport-jwt: "npm:^4.0.1"
@@ -8380,7 +8380,7 @@ __metadata:
     "@types/react-dom": "npm:^19.2.3"
     axios: "npm:^1.13.5"
     class-transformer: "npm:^0.5.1"
-    class-validator: "npm:^0.14.3"
+    class-validator: "npm:^0.15.1"
     clsx: "npm:^2.1.1"
     concurrently: "npm:^9.2.1"
     eslint: "npm:^9.39.2"
@@ -9847,7 +9847,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"validator@npm:^13.15.20":
+"validator@npm:^13.15.22":
   version: 13.15.26
   resolution: "validator@npm:13.15.26"
   checksum: 10c0/d66041685c531423f6b514d0481228503b96682fe30ed7925ad77ff3cd08c3983dc94f45e18457e44f62f89027b94a3342009d65421800ce65f6e0d2c6eaf7fc
